@@ -25,20 +25,32 @@ Then open **http://127.0.0.1:8899**.
 
 **Filenames do not matter. How many you have does not matter.**
 
-1. Put your `.jpg` / `.jpeg` / `.png` files into the matching folder inside
-   `assets/images/`.
-2. Run the image script:
+Put your `.jpg` / `.jpeg` / `.png` files into the matching folder inside
+`assets/images/` and **refresh the page**. That is the whole job.
 
-   ```
-   Windows:  double-click  scripts\update-images.bat
-   Anywhere: python scripts/generate-images.py
-   ```
+Five photos in a folder shows five. Add three more and it shows eight. Remove
+some and it shows fewer. Every section, the gallery and the gallery's filter
+tabs all resize themselves around whatever is there.
 
-3. Refresh the page.
+While you are working locally, `js/autoscan.js` reads the folders straight
+from your dev server, so nothing needs running.
 
-Five photos in a folder shows five. Add three more, run the script, and it
-shows eight. Remove some and it shows fewer. Every section, the gallery and
-the gallery's filter tabs all resize themselves around whatever is there.
+### …but run this before you publish
+
+Photos found by scanning are served **at full size** — a 2 MB photo stays
+2 MB, because only Python can build the small WebP copies. So once you are
+happy with the photos:
+
+```
+Windows:  double-click  scripts\update-images.bat
+Anywhere: python scripts/generate-images.py
+```
+
+That drops the whole set from ~10 MB to ~1 MB. The browser console tells you
+when photos are still waiting for it.
+
+> Deploying to Netlify? You can skip this — Netlify runs it for you on every
+> push. See section 6.
 
 ### Which folder feeds which section
 
@@ -60,10 +72,12 @@ you only uploaded one room photo.
 
 ### Adding a brand-new gallery tab
 
-Create a folder (say `assets/images/spa/`), put photos in it, run the script.
-A **Spa** tab appears on its own. To control the exact wording of the tab,
-add one line to the `FOLDERS` list at the top of
-`scripts/generate-images.py`.
+Create a folder (say `assets/images/spa/`), put photos in it, refresh. A
+**Spa** tab appears on its own.
+
+To control the exact wording of the tab, or to keep a folder out of the
+gallery, add an entry to **`assets/images/folders.json`**. Both the Python
+script and the browser read that same file, so they can never disagree.
 
 ### Photo descriptions (optional but good for Google)
 
@@ -170,7 +184,58 @@ to the repo and must be uploaded with the site.
 
 ---
 
-## 6. Before going live
+## 6. Deploying to Netlify
+
+`netlify.toml` is already in the repo, so there is nothing to set up in
+Netlify's dashboard.
+
+1. Go to **app.netlify.com → Add new site → Import an existing project**.
+2. Pick this GitHub repository.
+3. Leave every field as Netlify suggests — it reads `netlify.toml`.
+4. **Deploy**.
+
+Every push to the branch redeploys automatically.
+
+### Photos on Netlify
+
+Netlify does not serve directory listings, so the live-scanning in
+`js/autoscan.js` cannot work there. Instead **Netlify runs the image script
+for you** during the build (`scripts/netlify-build.sh`), so the workflow is
+unchanged:
+
+```
+drop photos into assets/images/…  →  commit  →  push  →  live
+```
+
+You never run the script by hand. It builds the WebP copies on Netlify's
+servers, and the first build takes an extra minute or two while it does.
+
+The build **cannot fail the deploy** — the script always exits successfully.
+If Python or Pillow is unavailable, the site falls back to the committed
+`js/images.js` and `assets/images/_optimized/`, which is always a working
+state. That is also why both are committed rather than ignored.
+
+### What the config sets
+
+- `404.html` is served for unknown addresses (Netlify finds it by name).
+- Fonts cached for a year; photos for a day, so replacing a photo shows up
+  quickly; HTML/CSS/JS always revalidated.
+- `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy` and
+  `Permissions-Policy` are set on every response.
+- A stricter `Content-Security-Policy` is included but **commented out**,
+  because the search-engine data is added by JavaScript and a few browsers
+  block that as an inline script. Turn it on after confirming the page still
+  passes <https://search.google.com/test/rich-results>.
+
+### After the first deploy
+
+Netlify gives you a `something.netlify.app` address. Put your real domain in
+`js/data.js` (`seo.siteUrl`), `robots.txt` and `sitemap.xml` — see the next
+section — then push again.
+
+---
+
+## 7. Before going live
 
 1. Set **`seo.siteUrl`** in `js/data.js` to your real address, e.g.
    `https://www.theriverfrontresort.in`. WhatsApp and Facebook link previews
@@ -191,7 +256,7 @@ to the repo and must be uploaded with the site.
 
 ---
 
-## 7. Folder structure
+## 8. Folder structure
 
 ```
 Generic_resort_Site/

@@ -1,0 +1,109 @@
+# ============================================================================
+#  NETLIFY DEPLOY CONFIG
+# ============================================================================
+#  Connect the repo at app.netlify.com and Netlify reads this file. There is
+#  nothing to configure in their dashboard.
+#
+#  WHY THERE IS A BUILD STEP
+#  -------------------------
+#  Netlify does not serve directory listings, so js/autoscan.js cannot read
+#  the photo folders the way it does on your machine. Instead, the build runs
+#  scripts/generate-images.py on Netlify's servers: every time you push a
+#  photo, the WebP copies and js/images.js are rebuilt for you.
+#
+#  So the workflow stays the same as locally — drop photos in, commit, push.
+#  You never have to run the script by hand.
+#
+#  The build can never fail the deploy: scripts/netlify-build.sh always exits
+#  0, so a bad photo or a pip hiccup falls back to whatever is committed.
+# ============================================================================
+
+[build]
+  publish = "."
+  command = "bash scripts/netlify-build.sh"
+
+[build.environment]
+  PYTHON_VERSION = "3.11"
+
+# 404.html is picked up automatically by Netlify — no redirect needed.
+
+# ---------------------------------------------------------------------------
+#  Headers
+# ---------------------------------------------------------------------------
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Stop the site being framed by someone else.
+    X-Frame-Options = "SAMEORIGIN"
+    # Trust the declared Content-Type; do not let browsers guess.
+    X-Content-Type-Options = "nosniff"
+    # Send the full URL to our own pages, only the origin to other sites.
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # The page needs none of these, so switch them off.
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+
+    # -----------------------------------------------------------------------
+    #  Content-Security-Policy is left off by default because the search-engine
+    #  data (JSON-LD) is added by JavaScript, and a few browsers treat that as
+    #  an inline script and block it — which would quietly cost you the rich
+    #  result in Google.
+    #
+    #  To turn it on: deploy, open the page, confirm it passes
+    #  https://search.google.com/test/rich-results , then uncomment the line
+    #  below and deploy again. Check the browser console for CSP errors.
+    #
+    #  Content-Security-Policy = "default-src 'self'; img-src 'self' data: https://*.gstatic.com https://*.googleapis.com; frame-src https://www.google.com https://maps.google.com; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; form-action 'self'; base-uri 'self'; object-src 'none'"
+    # -----------------------------------------------------------------------
+
+# Fonts never change without changing their filename, so cache them hard.
+[[headers]]
+  for = "/assets/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Access-Control-Allow-Origin = "*"
+
+# Photos keep their filenames when you replace them, so a long cache would
+# serve the old one. A day is a fair trade, and Netlify still answers with a
+# 304 when nothing changed.
+[[headers]]
+  for = "/assets/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, must-revalidate"
+
+[[headers]]
+  for = "/assets/video/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, must-revalidate"
+
+# Code and markup are not fingerprinted, so always revalidate. These are small
+# and Netlify returns 304 Not Modified when nothing has changed.
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# ---------------------------------------------------------------------------
+#  Keep the build tooling out of search results. The files are harmless, but
+#  there is no reason for Google to index a Python script.
+# ---------------------------------------------------------------------------
+[[headers]]
+  for = "/scripts/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"
+
+[[headers]]
+  for = "/assets/images/_optimized/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"
+    Cache-Control = "public, max-age=86400, must-revalidate"

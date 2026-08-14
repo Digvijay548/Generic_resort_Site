@@ -214,6 +214,9 @@ window.buildResortData = function (manifest) {
         eyebrow: "Gallery",
         title: "Moments at The Riverfront",
         sub: "A glimpse of the resort, rooms, pool and food.",
+        // {n} becomes the number of photos in the current filter
+        viewAll: "View all {n} photos",
+        viewLess: "Show fewer",
       },
       offers: {
         eyebrow: "Our Offers",

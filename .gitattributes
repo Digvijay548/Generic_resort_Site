@@ -1,2 +1,18 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Shell scripts must keep LF endings. A CRLF line ending makes Linux fail with
+# "bash: \r: command not found", which would break the Netlify build.
+*.sh text eol=lf
+
+# Binary assets must never be line-ending converted.
+*.woff2 binary
+*.jpg   binary
+*.jpeg  binary
+*.png   binary
+*.webp  binary
+*.gif   binary
+*.avif  binary
+*.mp4   binary
+*.webm  binary
+*.ico   binary

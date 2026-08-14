@@ -823,7 +823,10 @@
 
   /* ------------------------------ gallery + lightbox ------------------------------ */
   var currentFilter = "All";
-  var refreshGalleryArrows = function () {};
+
+  /* How many tiles show before "View all". One full mosaic cycle. */
+  var GALLERY_PREVIEW = 10;
+  var galleryExpanded = false;
 
   function galleryItemsForFilter() {
     if (currentFilter === "All") return DATA.gallery.slice();
@@ -867,10 +870,64 @@
       item.addEventListener("click", function () { openLightbox(i, item); });
       grid.appendChild(item);
     });
+
+    layoutGallery();
+  }
+
+  /**
+   * Size the mosaic tiles.
+   *
+   * Every 10 visible tiles form a block that fills a 4-column grid exactly:
+   * a 2x2 feature, four singles, two singles, another 2x2 feature, two more
+   * singles. The feature alternates between the left and right of the grid,
+   * which is what gives the wall its rhythm.
+   *
+   * Sizes are assigned by position among the VISIBLE tiles, not by DOM index,
+   * so filtering to a category re-flows the pattern instead of leaving holes.
+   */
+  function layoutGallery() {
+    var all = $all(".gallery-item").filter(function (el) {
+      return !el.classList.contains("is-hidden");
+    });
+    var visible = galleryExpanded ? all : all.slice(0, GALLERY_PREVIEW);
+    var count = visible.length;
+
+    var grid = $("#galleryGrid");
+    /* Very few photos would leave a four-column grid mostly empty, so narrow
+       the grid instead and let each photo be larger. */
+    if (grid) grid.dataset.count = count < 4 ? String(count) : "many";
+
+    visible.forEach(function (el, i) {
+      var slot = i % 10;
+      var remaining = count - i;
+      /* A feature only earns its place if the tiles that close its block are
+         actually there: the left-hand one needs four more after it, the
+         right-hand one needs two. Otherwise it punches a hole in the wall. */
+      var feature =
+        (slot === 0 && remaining >= 5) || (slot === 7 && remaining >= 3);
+      el.classList.toggle("g-feature", feature);
+    });
+
+    all.forEach(function (el, i) {
+      el.classList.toggle("is-clipped", !galleryExpanded && i >= GALLERY_PREVIEW);
+    });
+
+    var more = $("#galleryMoreBtn");
+    if (!more) return;
+    if (all.length <= GALLERY_PREVIEW) {
+      more.hidden = true;
+      return;
+    }
+    more.hidden = false;
+    more.textContent = galleryExpanded
+      ? DATA.ui.gallery.viewLess
+      : DATA.ui.gallery.viewAll.replace("{n}", all.length);
+    more.setAttribute("aria-expanded", String(galleryExpanded));
   }
 
   function setFilter(filter) {
     currentFilter = filter;
+    galleryExpanded = false; // a new category starts collapsed again
     $all(".filter-btn").forEach(function (b) {
       var on = b.dataset.filter === filter;
       b.classList.toggle("active", on);
@@ -879,11 +936,7 @@
     $all(".gallery-item").forEach(function (item) {
       item.classList.toggle("is-hidden", !(filter === "All" || item.dataset.category === filter));
     });
-    /* The row just got shorter or longer — re-evaluate the scroll arrows and
-       pull the strip back to the start so it is not scrolled past the end. */
-    var grid = $("#galleryGrid");
-    if (grid) grid.scrollLeft = 0;
-    refreshGalleryArrows();
+    layoutGallery();
   }
 
   var lightbox = $("#lightbox");
@@ -959,52 +1012,23 @@
     });
   }
 
-  function initGalleryScroll() {
-    var grid = $("#galleryGrid");
-    var next = $("#gsNext");
-    var prev = $("#gsPrev");
-    if (!grid || !next || !prev) return;
+  function initGalleryExpand() {
+    var more = $("#galleryMoreBtn");
+    if (!more) return;
 
-    function updateArrows() {
-      var max = grid.scrollWidth - grid.clientWidth;
-      var atStart = grid.scrollLeft <= 4;
-      var atEnd = grid.scrollLeft >= max - 4;
-      prev.classList.toggle("disabled", atStart);
-      next.classList.toggle("disabled", atEnd);
-      prev.disabled = atStart;
-      next.disabled = atEnd;
-      /* Nothing to scroll (one screenful, or a filter with few photos). */
-      $("#galleryNav").hidden = max <= 4;
-    }
-    refreshGalleryArrows = updateArrows;
+    more.addEventListener("click", function () {
+      var grid = $("#galleryGrid");
+      var wasCollapsed = !galleryExpanded;
+      galleryExpanded = !galleryExpanded;
+      layoutGallery();
 
-    function animateScroll(target) {
-      var max = grid.scrollWidth - grid.clientWidth;
-      target = Math.max(0, Math.min(target, max));
-      var start = grid.scrollLeft;
-      var diff = target - start;
-      if (Math.abs(diff) < 2) return;
-      if (REDUCED_MOTION) { grid.scrollLeft = target; return; }
-      var dur = Math.min(650, Math.max(320, Math.abs(diff) * 0.35));
-      var t0 = performance.now();
-      function ease(t) { return 1 - Math.pow(1 - t, 3); }
-      function frame(now) {
-        var p = Math.min(1, (now - t0) / dur);
-        grid.scrollLeft = start + diff * ease(p);
-        if (p < 1) requestAnimationFrame(frame);
+      /* Collapsing can leave the viewport below the shortened wall, so bring
+         the top of the gallery back into view. Expanding keeps your place. */
+      if (!wasCollapsed && grid) {
+        var top = grid.getBoundingClientRect().top + window.scrollY - 120;
+        window.scrollTo({ top: top, behavior: REDUCED_MOTION ? "auto" : "smooth" });
       }
-      requestAnimationFrame(frame);
-    }
-
-    next.addEventListener("click", function () {
-      animateScroll(grid.scrollLeft + grid.clientWidth * 0.85);
     });
-    prev.addEventListener("click", function () {
-      animateScroll(grid.scrollLeft - grid.clientWidth * 0.85);
-    });
-    grid.addEventListener("scroll", updateArrows, { passive: true });
-    window.addEventListener("resize", updateArrows);
-    updateArrows();
   }
 
   /* ------------------------------ important info ------------------------------ */
@@ -1576,7 +1600,7 @@
     buildAmenities();
     buildGallery();
     initLightbox();
-    initGalleryScroll();
+    initGalleryExpand();
     buildTestimonials();
     buildFaq();
     buildInfo();

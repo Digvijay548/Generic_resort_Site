@@ -227,10 +227,18 @@
           <p class="section-sub" id="galSub">A glimpse of the resort, rooms, pool and food.</p>
         </header>
         <div class="gallery-filters reveal" id="galleryFilters"><!-- populated from data.js --></div>
-        <div class="gallery-grid" id="galleryGrid"><!-- populated from data.js --></div>
-        <div class="gallery-nav" id="galleryNav" aria-label="Gallery scroll controls">
-          <button type="button" class="gs-btn" id="gsPrev" aria-label="Scroll gallery left">&#10094;</button>
-          <button type="button" class="gs-btn" id="gsNext" aria-label="Scroll gallery right">&#10095;</button>
+      </div>
+
+      <!--
+        The mosaic sits OUTSIDE .container so it runs the full width of the
+        window. Tile sizes are assigned by js/main.js, recalculated whenever
+        a filter changes so the rhythm never breaks.
+      -->
+      <div class="gallery-grid" id="galleryGrid"><!-- populated from data.js --></div>
+
+      <div class="container">
+        <div class="gallery-more">
+          <button type="button" class="btn btn-outline" id="galleryMoreBtn" hidden></button>
         </div>
       </div>
     </section>

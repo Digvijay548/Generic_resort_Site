@@ -1181,109 +1181,114 @@ section[id] { scroll-margin-top: var(--header-h); }
 .gallery-filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 8px;
   justify-content: center;
   margin-bottom: 48px;
 }
 .filter-btn {
   position: relative;
   font-family: var(--font-body);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: var(--tracking-mid);
   text-transform: uppercase;
   color: var(--muted);
   background: transparent;
-  border: 0;
-  padding: 12px 20px;
+  border: 1px solid rgba(15, 42, 34, 0.14);
+  border-radius: var(--radius);
+  padding: 13px 24px;
   cursor: pointer;
-  transition: color 0.35s var(--ease);
+  transition: color 0.35s var(--ease), background-color 0.35s var(--ease),
+    border-color 0.35s var(--ease);
 }
-.filter-btn::after {
-  content: "";
-  position: absolute;
-  left: 20px; right: 20px; bottom: 6px;
-  height: 1px;
+.filter-btn:hover { color: var(--emerald-900); border-color: rgba(212, 175, 55, 0.6); }
+.filter-btn.active {
+  color: var(--emerald-900);
   background: var(--gold);
-  transform: scaleX(0);
-  transition: transform 0.45s var(--ease-soft);
+  border-color: var(--gold);
 }
-.filter-btn:hover { color: var(--emerald-900); }
-.filter-btn.active { color: var(--emerald-900); }
-.filter-btn.active::after { transform: scaleX(1); }
 
+/* --- full-bleed mosaic ---
+   Runs the whole width of the window rather than sitting inside the 1240px
+   column, so the photography gets the room it deserves. Tile spans are put
+   on by js/main.js; see layoutGallery() for how the rhythm is worked out. */
 .gallery-grid {
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(380px, 520px);
-  grid-auto-rows: 500px;
-  gap: 20px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x proximity;
-  padding: 2px 2px 20px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--sand-300) transparent;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 250px;
+  grid-auto-flow: dense;
+  gap: 14px;
+  padding: 0 clamp(14px, 2.6vw, 44px);
 }
-.gallery-grid::-webkit-scrollbar { height: 3px; }
-.gallery-grid::-webkit-scrollbar-track { background: var(--sand-200); }
-.gallery-grid::-webkit-scrollbar-thumb { background: var(--gold); }
+/* A filter with only a photo or two would sit in a mostly empty four-column
+   grid, so narrow it and give each photo more room instead. */
+.gallery-grid[data-count="1"] { grid-template-columns: 1fr; grid-auto-rows: 520px; }
+.gallery-grid[data-count="2"] { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 420px; }
+.gallery-grid[data-count="3"] { grid-template-columns: repeat(3, 1fr); grid-auto-rows: 360px; }
 
 .gallery-item {
   position: relative;
   display: block;
   padding: 0;
+  margin: 0;
   border: none;
-  background: none;
+  background: var(--sand-200);
   border-radius: var(--radius);
   overflow: hidden;
   cursor: pointer;
   font-family: inherit;
-  scroll-snap-align: start;
+  transition: box-shadow 0.6s var(--ease-soft);
 }
-.gallery-item .img-frame { border-radius: var(--radius); height: 100%; aspect-ratio: auto; }
-.gallery-item img { transition: transform 1.4s var(--ease-soft); }
-.gallery-item:hover img { transform: scale(1.05); }
-.gallery-item.is-hidden { display: none; }
+/* The 2x2 feature tile. Two per ten-tile block, one left, one right. */
+.gallery-item.g-feature { grid-column: span 2; grid-row: span 2; }
+.gallery-item.is-hidden,
+.gallery-item.is-clipped { display: none; }
+
+.gallery-item .img-frame {
+  border-radius: 0;
+  height: 100%;
+  aspect-ratio: auto;
+  background: none;
+}
+.gallery-item img { transition: transform 1.6s var(--ease-soft); }
+.gallery-item:hover img { transform: scale(1.055); }
+.gallery-item:hover { box-shadow: 0 18px 44px rgba(9, 26, 21, 0.28); }
+
+/* A thin gold frame drawn inside the tile on hover. */
+.gallery-item::after {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.85);
+  opacity: 0;
+  transform: scale(1.03);
+  transition: opacity 0.5s var(--ease), transform 0.6s var(--ease-soft);
+  pointer-events: none;
+  z-index: 2;
+}
+.gallery-item:hover::after { opacity: 1; transform: none; }
+
 .gallery-item .gallery-label {
   position: absolute;
   inset: auto 0 0 0;
-  padding: 60px 24px 22px;
-  font-size: 0.66rem;
+  z-index: 3;
+  padding: 64px 26px 24px;
+  font-size: 0.62rem;
   font-weight: 600;
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
   color: var(--white);
   text-align: left;
-  background: linear-gradient(180deg, transparent, rgba(9, 26, 21, 0.8));
+  background: linear-gradient(180deg, transparent, rgba(9, 26, 21, 0.82));
   opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease-soft);
+  transform: translateY(10px);
+  transition: opacity 0.5s var(--ease), transform 0.6s var(--ease-soft);
 }
 .gallery-item:hover .gallery-label { opacity: 1; transform: none; }
+/* The feature tile earns a larger caption. */
+.gallery-item.g-feature .gallery-label { font-size: 0.72rem; padding-bottom: 30px; }
 
-.gallery-nav { display: flex; justify-content: center; gap: 12px; margin-top: 36px; }
-.gs-btn {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: var(--hairline);
-  background: transparent;
-  color: var(--emerald-900);
-  font-size: 0.85rem;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.4s var(--ease), color 0.4s var(--ease),
-    border-color 0.4s var(--ease), opacity 0.4s var(--ease);
-}
-.gs-btn:hover:not(.disabled) {
-  background: var(--emerald-900);
-  border-color: var(--emerald-900);
-  color: var(--ivory);
-}
-.gs-btn.disabled { opacity: 0.25; cursor: not-allowed; }
+.gallery-more { display: flex; justify-content: center; margin-top: 48px; }
 
 /* ------------------------------ info ------------------------------ */
 .info-section { background: var(--emerald-900); }
@@ -1749,7 +1754,7 @@ textarea:focus-visible {
   .about-grid { gap: 64px; }
   .location-grid { gap: 48px; }
   .contact-grid { gap: 56px; }
-  .gallery-grid { grid-auto-columns: minmax(340px, 460px); grid-auto-rows: 440px; }
+  .gallery-grid { grid-auto-rows: 220px; }
 }
 
 @media (max-width: 992px) {
@@ -1771,6 +1776,7 @@ textarea:focus-visible {
 
 @media (max-width: 900px) {
   .section { padding: 96px 0; }
+  .gallery-grid { grid-template-columns: repeat(3, 1fr); grid-auto-rows: 200px; gap: 10px; }
   .section-head { margin-bottom: 56px; }
   .about-grid { grid-template-columns: 1fr; gap: 72px; }
   .about-media { max-width: 640px; }
@@ -1802,7 +1808,11 @@ textarea:focus-visible {
   .plan-card { padding: 48px 28px 36px; }
   .testim-slide { padding: 16px 8px 56px; }
   .testim-nav { display: none; }
-  .gallery-grid { grid-auto-columns: minmax(260px, 320px); grid-auto-rows: 340px; }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 168px; gap: 8px; }
+  .gallery-item::after { inset: 8px; }
+  .gallery-item .gallery-label { padding: 40px 14px 14px; font-size: 0.56rem; }
+  .gallery-item.g-feature .gallery-label { font-size: 0.6rem; padding-bottom: 18px; }
+  .gallery-more { margin-top: 32px; }
   .info-times { grid-template-columns: 1fr; }
   .info-time + .info-time { border-left: 0; border-top: 1px solid rgba(212, 175, 55, 0.3); }
   .info-list { grid-template-columns: 1fr; }
