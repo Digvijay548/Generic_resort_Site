@@ -1,4 +1,4 @@
-# The Riverfront Resort & Camping — Website
+# The Riverfront Resort — Website
 
 A simple, fast, responsive single-page website for the resort. Everything you need to update
 is kept in **one file**, and photos are just files you drop into folders — no coding required.
@@ -37,6 +37,26 @@ Everything visible on the page is configurable in `data.js`:
 
 > Tip: use Ctrl+F in `data.js` to find the field you want, e.g. search `072777 75060` to change the phone.
 
+### Add or change offers, pricing, reviews, FAQ & amenities
+
+Everything below is **configurable and addable** — the code loops over the arrays, so any
+number of items renders automatically. No HTML/CSS/JS changes needed.
+
+| Section      | Config block in `js/data.js`            | To add an item, copy an existing entry…                |
+|--------------|-----------------------------------------|--------------------------------------------------------|
+| Reviews      | `testimonials.items[]`                  | `{ name, tag, rating, text }` (rating 1–5, shows stars) |
+| Offers       | `offers.items[]`                        | `{ badge, title, text }` (badge = e.g. `"25% off"`)    |
+| Pricing      | `packages.plans[]`                      | `{ name, price, priceNote, featured, features[] }`     |
+| Amenities    | `amenities.<category>.items[]`          | `{ icon, label }` (`icon` must exist in `js/main.js` → `ICONS`) |
+| Stay cards   | `stays[]`                               | `{ id, title, description, image, facilities[] }`      |
+| Gallery tabs | `galleryFilters[]`                      | a string, e.g. `"Surroundings"`                        |
+| FAQ          | `faq.items[]`                           | `{ q, a }`                                             |
+| Nav links    | `nav[]`                                 | `{ label, href }`                                      |
+
+- **Mark a pricing plan as the featured one:** set `featured: true` (gets the ribbon + dark card).
+- **Testimonials:** set `rating` (1–5) and add as many as you like — the carousel grows dots automatically.
+- New amenity icons must be added to the `ICONS` map in `js/main.js` (or the icon falls back to a generic circle).
+
 ### Add or replace photos
 
 All photos live in **`assets/images/`** in folders by category. **No naming
@@ -62,8 +82,8 @@ Which folder feeds which section:
 |------------------------|--------------------------------------|
 | Hero background        | `hero/` (first photo = desktop, second = mobile) |
 | About                  | `resort/` (first two photos)         |
-| Stay cards             | `rooms/`, `camping/`, `activities/`  |
-| Gallery                | **all** folders, in the order: `gallery/`, `resort/`, `rooms/`, `camping/`, `pool/`, `food/`, `activities/`, `surroundings/` |
+| Stay cards             | `rooms/`, `activities/`             |
+| Gallery                | **all** folders, in the order: `gallery/`, `resort/`, `rooms/`, `pool/`, `food/`, `activities/` |
 | Location               | `surroundings/` (first photo)        |
 
 ### Add more gallery photos
@@ -90,15 +110,14 @@ deepseek/
 │   └── generate-placeholders.py  ← optional: regenerates the placeholder images
 └── assets/
     └── images/                 ← ⭐ put your photos in these folders
-        ├── branding/           ← resort-logo.png, resort-favicon.png
-        ├── hero/               ← hero-main.jpg, hero-mobile.jpg  (big background)
+        ├── branding/           ← resort-logo.png (logo + favicon)
+        ├── hero/               ← hero background photos (first = desktop, second = mobile)
         ├── resort/             ← exterior & riverfront photos (About section)
         ├── rooms/              ← room photos (Stay cards + Gallery)
-        ├── camping/            ← camping photos (Stay cards + Gallery)
         ├── pool/               ← swimming pool photos (Gallery)
         ├── food/               ← breakfast / buffet / dinner photos (Gallery)
         ├── activities/         ← family / group activity photos (Gallery)
-        ├── surroundings/       ← nature around the resort (Location + Gallery)
+        ├── surroundings/       ← nature around the resort (Location only)
         └── gallery/            ← extra gallery photos
 ```
 
@@ -119,9 +138,9 @@ All current images are **replaceable placeholders** (simple illustrations), not 
 | Header logo / favicon    | `branding/`                                 |
 | Hero background          | `hero/`                                     |
 | About                    | `resort/`                                   |
-| Stay & Camping cards     | `rooms/`, `camping/`, `activities/`         |
+| Stay cards             | `rooms/`, `activities/`             |
 | Amenities (icons)        | (built-in icons, no images)                 |
-| Gallery (Moments)        | `gallery/`, `rooms/`, `camping/`, `pool/`, `food/`, `activities/`, `surroundings/`, `resort/` |
+| Gallery (Moments)        | `gallery/`, `rooms/`, `pool/`, `food/`, `activities/`, `resort/` |
 | Location                 | `surroundings/` + a Google Map embed        |
 | Contact / footer         | text only (from `data.js`)                  |
 

@@ -2,18 +2,6 @@
 window.IMAGE_MANIFEST = {
   "activities": [
     {
-      "jpg": "assets/images/activities/activity-family-01.jpg",
-      "webp": "assets/images/activities/activity-family-01.webp",
-      "alt": "Activity Family 01",
-      "category": "Activities"
-    },
-    {
-      "jpg": "assets/images/activities/activity-group-01.jpg",
-      "webp": "assets/images/activities/activity-group-01.webp",
-      "alt": "Activity Group 01",
-      "category": "Activities"
-    },
-    {
       "jpg": "assets/images/activities/activity-group-02.jpg",
       "webp": "",
       "alt": "Activity Group 02",
@@ -52,109 +40,119 @@ window.IMAGE_MANIFEST = {
   ],
   "branding": [
     {
-      "jpg": "assets/images/branding/resort-favicon.png",
-      "webp": "",
-      "alt": "Resort Favicon",
-      "category": ""
-    },
-    {
       "jpg": "assets/images/branding/resort-logo.png",
       "webp": "",
       "alt": "Resort Logo",
       "category": ""
     }
   ],
-  "camping": [
-    {
-      "jpg": "assets/images/camping/camping-01.jpg",
-      "webp": "assets/images/camping/camping-01.webp",
-      "alt": "Camping 01",
-      "category": "Camping"
-    },
-    {
-      "jpg": "assets/images/camping/camping-02.jpg",
-      "webp": "assets/images/camping/camping-02.webp",
-      "alt": "Camping 02",
-      "category": "Camping"
-    },
-    {
-      "jpg": "assets/images/camping/camping-night-01.jpg",
-      "webp": "assets/images/camping/camping-night-01.webp",
-      "alt": "Camping Night 01",
-      "category": "Camping"
-    }
-  ],
   "food": [
     {
-      "jpg": "assets/images/food/food-breakfast-01.jpg",
-      "webp": "assets/images/food/food-breakfast-01.webp",
-      "alt": "Food Breakfast 01",
+      "jpg": "assets/images/food/SaveClip.App_630009485_17909303118337753_1059438545162966691_n.jpg",
+      "webp": "",
+      "alt": "SaveClip.App 630009485 17909303118337753 1059438545162966691 N",
       "category": "Food"
     },
     {
-      "jpg": "assets/images/food/food-buffet-01.jpg",
-      "webp": "assets/images/food/food-buffet-01.webp",
-      "alt": "Food Buffet 01",
+      "jpg": "assets/images/food/SaveClip.App_630108451_17909303145337753_8987344963266750178_n.jpg",
+      "webp": "",
+      "alt": "SaveClip.App 630108451 17909303145337753 8987344963266750178 N",
       "category": "Food"
     },
     {
-      "jpg": "assets/images/food/food-dinner-01.jpg",
-      "webp": "assets/images/food/food-dinner-01.webp",
-      "alt": "Food Dinner 01",
+      "jpg": "assets/images/food/SaveClip.App_630184206_17909303136337753_5257966624234150124_n.jpg",
+      "webp": "",
+      "alt": "SaveClip.App 630184206 17909303136337753 5257966624234150124 N",
+      "category": "Food"
+    },
+    {
+      "jpg": "assets/images/food/SaveClip.App_630206121_17909303127337753_4776752966663419988_n.jpg",
+      "webp": "",
+      "alt": "SaveClip.App 630206121 17909303127337753 4776752966663419988 N",
+      "category": "Food"
+    },
+    {
+      "jpg": "assets/images/food/SaveClip.App_696296505_969248349411165_3586370953481485829_n.jpg",
+      "webp": "",
+      "alt": "SaveClip.App 696296505 969248349411165 3586370953481485829 N",
+      "category": "Food"
+    },
+    {
+      "jpg": "assets/images/food/SaveClip.App_707393633_17926417797337753_2143520799247043779_n.jpg",
+      "webp": "",
+      "alt": "SaveClip.App 707393633 17926417797337753 2143520799247043779 N",
       "category": "Food"
     }
   ],
   "gallery": [
     {
-      "jpg": "assets/images/gallery/gallery-01.jpg",
-      "webp": "assets/images/gallery/gallery-01.webp",
-      "alt": "Gallery 01",
+      "jpg": "assets/images/gallery/SaveClip.App_529855907_17887488453337753_5068259327826850295_n.jpg",
+      "webp": "",
+      "alt": "SaveClip.App 529855907 17887488453337753 5068259327826850295 N",
       "category": "Resort"
     },
     {
-      "jpg": "assets/images/gallery/gallery-02.jpg",
-      "webp": "assets/images/gallery/gallery-02.webp",
-      "alt": "Gallery 02",
+      "jpg": "assets/images/gallery/SaveClip.App_530543311_17887488498337753_9037298146911317242_n.jpg",
+      "webp": "",
+      "alt": "SaveClip.App 530543311 17887488498337753 9037298146911317242 N",
       "category": "Resort"
     },
     {
-      "jpg": "assets/images/gallery/gallery-03.jpg",
-      "webp": "assets/images/gallery/gallery-03.webp",
-      "alt": "Gallery 03",
+      "jpg": "assets/images/gallery/SaveClip.App_531211298_17887488489337753_3733645661466837347_n.jpg",
+      "webp": "",
+      "alt": "SaveClip.App 531211298 17887488489337753 3733645661466837347 N",
       "category": "Resort"
     },
     {
-      "jpg": "assets/images/gallery/gallery-04.jpg",
-      "webp": "assets/images/gallery/gallery-04.webp",
-      "alt": "Gallery 04",
+      "jpg": "assets/images/gallery/SaveClip.App_531408235_17887488444337753_197040834168579816_n.jpg",
+      "webp": "",
+      "alt": "SaveClip.App 531408235 17887488444337753 197040834168579816 N",
+      "category": "Resort"
+    },
+    {
+      "jpg": "assets/images/gallery/SaveClip.App_532248537_17887488516337753_1380408753307852513_n.jpg",
+      "webp": "",
+      "alt": "SaveClip.App 532248537 17887488516337753 1380408753307852513 N",
+      "category": "Resort"
+    },
+    {
+      "jpg": "assets/images/gallery/SaveClip.App_532660778_17887488462337753_8126991347647587568_n.jpg",
+      "webp": "",
+      "alt": "SaveClip.App 532660778 17887488462337753 8126991347647587568 N",
+      "category": "Resort"
+    },
+    {
+      "jpg": "assets/images/gallery/SaveClip.App_565462126_17895074739337753_2930093498321574042_n.jpg",
+      "webp": "",
+      "alt": "SaveClip.App 565462126 17895074739337753 2930093498321574042 N",
       "category": "Resort"
     }
   ],
   "hero": [
     {
-      "jpg": "assets/images/hero/hero-main.jpg",
-      "webp": "assets/images/hero/hero-main.webp",
-      "alt": "Hero Main",
+      "jpg": "assets/images/hero/Gemini_Generated_Image_fxf8qvfxf8qvfxf8.png",
+      "webp": "",
+      "alt": "Gemini Generated Image Fxf8qvfxf8qvfxf8",
       "category": "Hero"
     },
     {
-      "jpg": "assets/images/hero/hero-mobile.jpg",
-      "webp": "assets/images/hero/hero-mobile.webp",
-      "alt": "Hero Mobile",
+      "jpg": "assets/images/hero/Gemini_Generated_Image_yl0414yl0414yl04.png",
+      "webp": "",
+      "alt": "Gemini Generated Image Yl0414yl0414yl04",
       "category": "Hero"
     }
   ],
   "pool": [
     {
-      "jpg": "assets/images/pool/swimming-pool-01.jpg",
-      "webp": "assets/images/pool/swimming-pool-01.webp",
-      "alt": "Swimming Pool 01",
+      "jpg": "assets/images/pool/SaveClip.App_532369698_17887488471337753_2515676446559289373_n.jpg",
+      "webp": "",
+      "alt": "SaveClip.App 532369698 17887488471337753 2515676446559289373 N",
       "category": "Swimming Pool"
     },
     {
-      "jpg": "assets/images/pool/swimming-pool-02.jpg",
-      "webp": "assets/images/pool/swimming-pool-02.webp",
-      "alt": "Swimming Pool 02",
+      "jpg": "assets/images/pool/SaveClip.App_563813874_17895074760337753_6719465863272514228_n.jpg",
+      "webp": "",
+      "alt": "SaveClip.App 563813874 17895074760337753 6719465863272514228 N",
       "category": "Swimming Pool"
     }
   ],
@@ -164,49 +162,19 @@ window.IMAGE_MANIFEST = {
       "webp": "",
       "alt": "SaveClip.App 724230430 17929143597337753 196008195900583165 N",
       "category": "Resort"
-    },
-    {
-      "jpg": "assets/images/resort/resort-exterior-01.jpg",
-      "webp": "assets/images/resort/resort-exterior-01.webp",
-      "alt": "Resort Exterior 01",
-      "category": "Resort"
-    },
-    {
-      "jpg": "assets/images/resort/resort-exterior-02.jpg",
-      "webp": "assets/images/resort/resort-exterior-02.webp",
-      "alt": "Resort Exterior 02",
-      "category": "Resort"
-    },
-    {
-      "jpg": "assets/images/resort/resort-riverfront-01.jpg",
-      "webp": "assets/images/resort/resort-riverfront-01.webp",
-      "alt": "Resort Riverfront 01",
-      "category": "Resort"
     }
   ],
   "rooms": [
     {
-      "jpg": "assets/images/rooms/room-01.jpg",
-      "webp": "assets/images/rooms/room-01.webp",
-      "alt": "Room 01",
+      "jpg": "assets/images/rooms/SaveClip.App_530924145_17887488507337753_2216503104786821007_n.jpg",
+      "webp": "",
+      "alt": "SaveClip.App 530924145 17887488507337753 2216503104786821007 N",
       "category": "Rooms"
     },
     {
-      "jpg": "assets/images/rooms/room-02.jpg",
-      "webp": "assets/images/rooms/room-02.webp",
-      "alt": "Room 02",
-      "category": "Rooms"
-    },
-    {
-      "jpg": "assets/images/rooms/room-03.jpg",
-      "webp": "assets/images/rooms/room-03.webp",
-      "alt": "Room 03",
-      "category": "Rooms"
-    },
-    {
-      "jpg": "assets/images/rooms/room-bathroom-01.jpg",
-      "webp": "assets/images/rooms/room-bathroom-01.webp",
-      "alt": "Room Bathroom 01",
+      "jpg": "assets/images/rooms/SaveClip.App_565412821_17895074748337753_8244442311990717578_n.jpg",
+      "webp": "",
+      "alt": "SaveClip.App 565412821 17895074748337753 8244442311990717578 N",
       "category": "Rooms"
     }
   ],

@@ -287,7 +287,7 @@
     media.appendChild(secondary);
   }
 
-  /* ------------------------------ stay & camping ------------------------------ */
+  /* ------------------------------ stay cards ------------------------------ */
   function buildStays() {
     var grid = $("#stayGrid");
     DATA.stays.forEach(function (stay, i) {
@@ -299,7 +299,7 @@
       var body = document.createElement("div");
       body.className = "stay-body";
       var facs = stay.facilities.map(function (f) { return "<li>" + esc(f) + "</li>"; }).join("");
-      var msg = "Hello, I would like to enquire about the " + stay.title + " at The Riverfront Resort & Camping.";
+      var msg = "Hello, I would like to enquire about the " + stay.title + " at The Riverfront Resort.";
       body.innerHTML =
         "<h3>" + esc(stay.title) + "</h3>" +
         "<p>" + esc(stay.description) + "</p>" +
@@ -311,6 +311,126 @@
       grid.appendChild(card);
     });
     $("#stayNote").textContent = DATA.stayNote;
+  }
+
+  /* ------------------------------ offers & discounts ------------------------------ */
+  function buildOffers() {
+    var grid = $("#offersGrid");
+    if (!grid || !DATA.offers) return;
+    DATA.offers.items.forEach(function (o, i) {
+      var card = document.createElement("article");
+      card.className = "offer-card reveal reveal-d" + (i % 3);
+      card.innerHTML =
+        '<span class="offer-badge">' + esc(o.badge) + "</span>" +
+        "<h3>" + esc(o.title) + "</h3>" +
+        "<p>" + esc(o.text) + "</p>";
+      grid.appendChild(card);
+    });
+  }
+
+  /* ------------------------------ packages & pricing ------------------------------ */
+  function buildPackages() {
+    var grid = $("#plansGrid");
+    if (!grid || !DATA.packages) return;
+    DATA.packages.plans.forEach(function (p, i) {
+      var card = document.createElement("article");
+      card.className =
+        "plan-card reveal reveal-d" + (i % 2) + (p.featured ? " featured" : "");
+      var feats = p.features.map(function (f) { return "<li>" + esc(f) + "</li>"; }).join("");
+      var msg = "Hello, I would like to book the " + p.name + " at The Riverfront Resort.";
+      card.innerHTML =
+        (p.featured ? '<span class="plan-ribbon">Most Popular</span>' : "") +
+        "<h3>" + esc(p.name) + "</h3>" +
+        '<p class="plan-price">' + esc(p.price) + "</p>" +
+        '<p class="plan-note">' + esc(p.priceNote) + "</p>" +
+        '<ul class="plan-features">' + feats + "</ul>" +
+        '<a class="btn btn-whatsapp" target="_blank" rel="noopener" href="' + waHref(msg) + '">' + DATA.ui.packages.book + "</a>";
+      grid.appendChild(card);
+    });
+  }
+
+  /* ------------------------------ testimonials ------------------------------ */
+  function buildTestimonials() {
+    var track = $("#testimTrack");
+    if (!track || !DATA.testimonials) return;
+    var items = DATA.testimonials.items;
+    var dots = $("#testimDots");
+    var idx = 0;
+    var timer = null;
+    var slideCount = items.length;
+
+    function stars(r) {
+      var s = "";
+      for (var i = 0; i < 5; i++) s += i < r ? "&#9733;" : "&#9734;";
+      return s;
+    }
+
+    items.forEach(function (t, i) {
+      var slide = document.createElement("div");
+      slide.className = "testim-slide";
+      slide.innerHTML =
+        '<div class="testim-stars">' + stars(t.rating) + "</div>" +
+        '<blockquote class="testim-text">' + esc(t.text) + "</blockquote>" +
+        '<div class="testim-author">' +
+        '<span class="testim-name">' + esc(t.name) + "</span>" +
+        '<span class="testim-tag">' + esc(t.tag) + "</span>" +
+        "</div>";
+      track.appendChild(slide);
+
+      var dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "ts-dot";
+      dot.setAttribute("aria-label", "Go to testimonial " + (i + 1));
+      dot.addEventListener("click", function () { goTo(i); });
+      dots.appendChild(dot);
+    });
+
+    function goTo(n) {
+      idx = (n + slideCount) % slideCount;
+      track.style.transform = "translateX(-" + idx * 100 + "%)";
+      $all(".ts-dot", dots).forEach(function (d, i) {
+        d.classList.toggle("active", i === idx);
+      });
+      restart();
+    }
+
+    function restart() {
+      if (timer) clearInterval(timer);
+      if (slideCount > 1) timer = setInterval(function () { goTo(idx + 1); }, 6000);
+    }
+
+    var prevBtn = $("#tsPrev");
+    var nextBtn = $("#tsNext");
+    if (prevBtn) prevBtn.addEventListener("click", function () { goTo(idx - 1); });
+    if (nextBtn) nextBtn.addEventListener("click", function () { goTo(idx + 1); });
+
+    var startX = null;
+    track.addEventListener("touchstart", function (e) {
+      startX = e.touches[0].clientX;
+    }, { passive: true });
+    track.addEventListener("touchend", function (e) {
+      if (startX === null) return;
+      var dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 40) goTo(idx + (dx < 0 ? 1 : -1));
+      startX = null;
+    }, { passive: true });
+
+    goTo(0);
+  }
+
+  /* ------------------------------ faq ------------------------------ */
+  function buildFaq() {
+    var list = $("#faqList");
+    if (!list || !DATA.faq) return;
+    DATA.faq.items.forEach(function (it, i) {
+      var item = document.createElement("details");
+      item.className = "faq-item";
+      if (i === 0) item.open = true;
+      item.innerHTML =
+        "<summary>" + esc(it.q) + '<span class="faq-icon" aria-hidden="true"></span></summary>' +
+        "<p>" + esc(it.a) + "</p>";
+      list.appendChild(item);
+    });
   }
 
   /* ------------------------------ amenities ------------------------------ */
@@ -453,11 +573,28 @@
       next.classList.toggle("disabled", grid.scrollLeft >= max - 4);
     }
 
+    function animateScroll(target) {
+      var max = grid.scrollWidth - grid.clientWidth;
+      target = Math.max(0, Math.min(target, max));
+      var start = grid.scrollLeft;
+      var diff = target - start;
+      if (Math.abs(diff) < 2) return;
+      var dur = Math.min(650, Math.max(320, Math.abs(diff) * 0.35));
+      var t0 = performance.now();
+      function ease(t) { return 1 - Math.pow(1 - t, 3); } // ease-out cubic
+      function frame(now) {
+        var p = Math.min(1, (now - t0) / dur);
+        grid.scrollLeft = start + diff * ease(p);
+        if (p < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
     next.addEventListener("click", function () {
-      grid.scrollBy({ left: grid.clientWidth * 0.85, behavior: "smooth" });
+      animateScroll(grid.scrollLeft + grid.clientWidth * 0.85);
     });
     prev.addEventListener("click", function () {
-      grid.scrollBy({ left: -grid.clientWidth * 0.85, behavior: "smooth" });
+      animateScroll(grid.scrollLeft - grid.clientWidth * 0.85);
     });
     grid.addEventListener("scroll", updateArrows, { passive: true });
     window.addEventListener("resize", updateArrows);
@@ -674,6 +811,22 @@
     $("#stayTitle").textContent = ui.stay.title;
     $("#staySub").textContent = ui.stay.sub;
 
+    $("#offersEyebrow").textContent = ui.offers.eyebrow;
+    $("#offersTitle").textContent = ui.offers.title;
+    $("#offersSub").textContent = ui.offers.sub;
+
+    $("#packagesEyebrow").textContent = ui.packages.eyebrow;
+    $("#packagesTitle").textContent = ui.packages.title;
+    $("#packagesSub").textContent = ui.packages.sub;
+
+    $("#testimEyebrow").textContent = ui.testimonials.eyebrow;
+    $("#testimTitle").textContent = ui.testimonials.title;
+    $("#testimSub").textContent = ui.testimonials.sub;
+
+    $("#faqEyebrow").textContent = ui.faq.eyebrow;
+    $("#faqTitle").textContent = ui.faq.title;
+    $("#faqSub").textContent = ui.faq.sub;
+
     $("#amenEyebrow").textContent = ui.amenities.eyebrow;
     $("#amenTitle").textContent = ui.amenities.title;
     $("#amenSub").textContent = ui.amenities.sub;
@@ -814,10 +967,14 @@
     buildHeroParticles();
     buildAbout();
     buildStays();
+    buildOffers();
+    buildPackages();
     buildAmenities();
     buildGallery();
     initLightbox();
     initGalleryScroll();
+    buildTestimonials();
+    buildFaq();
     buildInfo();
     buildLocation();
     buildContact();

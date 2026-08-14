@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- *  THE RIVERFRONT RESORT & CAMPING — CENTRAL SITE DATA
+ *  THE RIVERFRONT RESORT — CENTRAL SITE DATA
  * ============================================================================
  *  This is the ONLY file you normally need to edit to update the website.
  *
@@ -61,11 +61,9 @@
       "gallery",
       "resort",
       "rooms",
-      "camping",
       "pool",
       "food",
       "activities",
-      "surroundings",
     ];
     order.forEach(function (cat) {
       (IMG[cat] || []).forEach(function (p) {
@@ -84,7 +82,7 @@
     /* ------------------------------------------------------------------ */
     /*  BRANDING & CONTACT                                                  */
     /* ------------------------------------------------------------------ */
-    name: "The Riverfront Resort & Camping",
+    name: "The Riverfront Resort",
     shortName: "The Riverfront",
     tagline: "Relax by nature. Stay in comfort. Create unforgettable memories.",
 
@@ -92,16 +90,16 @@
     /*  SEO — shown in browser tabs, Google results & social shares.        */
     /* ------------------------------------------------------------------ */
     seo: {
-      title: "The Riverfront Resort & Camping | Relax by nature",
+      title: "The Riverfront Resort | Relax by nature",
       description:
-        "The Riverfront Resort & Camping — a peaceful riverside resort in Pimpri-Chinchwad for families, couples, groups and pet owners. Rooms, camping, amenities and a welcoming atmosphere.",
+        "The Riverfront Resort — a peaceful riverside resort in Pimpri-Chinchwad for families, couples, groups and pet owners. Rooms, amenities and a welcoming atmosphere.",
     },
     // logo / favicon live in assets/images/branding/
     logo: {
       image: "assets/images/branding/resort-logo.png",
-      alt: "The Riverfront Resort & Camping logo",
+      alt: "The Riverfront Resort logo",
     },
-    favicon: "assets/images/branding/resort-favicon.png",
+    favicon: "assets/images/branding/resort-logo.png",
 
     phone: {
       display: "072777 75060",
@@ -121,7 +119,7 @@
       number: "917277775060",
       // default message used by the "Book Your Stay" / "Book Now" buttons
       message:
-        "Hello, I would like to enquire about availability at The Riverfront Resort & Camping.",
+        "Hello, I would like to enquire about availability at The Riverfront Resort.",
     },
 
     /* ------------------------------------------------------------------ */
@@ -130,7 +128,7 @@
     nav: [
       { label: "Home", href: "#home" },
       { label: "About", href: "#about" },
-      { label: "Stay & Camping", href: "#stay" },
+      { label: "Stay", href: "#stay" },
       { label: "Amenities", href: "#amenities" },
       { label: "Gallery", href: "#gallery" },
       { label: "Location", href: "#location" },
@@ -142,7 +140,7 @@
     /*  Change these to rebrand the whole site for any client.             */
     /* ------------------------------------------------------------------ */
     ui: {
-      nameSub: "Resort & Camping", // small tagline under the brand name
+      nameSub: "Resort", // small tagline under the brand name
       navBook: "Book Now",
       hero: { book: "Book Your Stay", call: "Call Now" },
       about: {
@@ -152,9 +150,9 @@
         wa: "Enquire on WhatsApp",
       },
       stay: {
-        eyebrow: "Stay & Camping",
+        eyebrow: "Stay",
         title: "Choose your stay",
-        sub: "Comfortable rooms and a true camping experience by the river — perfect for families, couples, groups and pets.",
+        sub: "Comfortable rooms and a welcoming riverside stay — perfect for families, couples, groups and pets.",
         enquire: "Enquire Now",
       },
       amenities: {
@@ -165,7 +163,28 @@
       gallery: {
         eyebrow: "Gallery",
         title: "Moments at The Riverfront",
-        sub: "A glimpse of the resort, rooms, camping, pool, food and surroundings.",
+        sub: "A glimpse of the resort, rooms, pool and food.",
+      },
+      offers: {
+        eyebrow: "Our Offers",
+        title: "Special offers & discounts",
+        sub: "Enjoy exclusive deals on your stay — perfect for honeymoons, family holidays and group getaways.",
+      },
+      packages: {
+        eyebrow: "Stay Packages",
+        title: "Pricing plan for the best value",
+        sub: "Choose a package that fits your stay — every package includes meals and all amenities.",
+        book: "Book Now",
+      },
+      testimonials: {
+        eyebrow: "Testimonials",
+        title: "What our guests say",
+        sub: "Real experiences from happy guests who relaxed by the river.",
+      },
+      faq: {
+        eyebrow: "FAQ",
+        title: "Frequently asked questions",
+        sub: "Answers to the questions guests ask us most.",
       },
       info: {
         eyebrow: "Good to Know",
@@ -203,7 +222,7 @@
         required: ["name", "phone"], // field keys that show a red *
         submit: "Send Enquiry",
         hint: "Your enquiry opens in WhatsApp — no account or backend needed.",
-        preferences: ["Room", "Camping", "Group Outing"],
+        preferences: ["Room", "Group Outing"],
       },
       footer: {
         quickLinks: "Quick Links",
@@ -214,24 +233,25 @@
 
     /* ------------------------------------------------------------------ */
     /*  HERO (section: hero)                                                */
-    /*  hero-main.jpg  = desktop hero       hero-mobile.jpg = mobile hero   */
+    /*  Uses the photos in assets/images/hero/ (auto-loaded, no naming     */
+    /*  needed). First photo = desktop hero, second = mobile hero.         */
     /* ------------------------------------------------------------------ */
     hero: {
-      heading: "The Riverfront Resort & Camping",
+      heading: "The Riverfront Resort",
       subtitle:
         "Relax by nature. Stay in comfort. Create unforgettable memories.",
       images: (function () {
         var desktop =
           pick("hero", 0) ||
           photo(
-            "assets/images/hero/hero-main.jpg",
-            "Riverside view of The Riverfront Resort & Camping at dusk"
+            "assets/images/hero/Gemini_Generated_Image_fxf8qvfxf8qvfxf8.png",
+            "Riverside view of The Riverfront Resort at dusk"
           );
         var mobile =
           pick("hero", 1) ||
           photo(
-            "assets/images/hero/hero-mobile.jpg",
-            "Peaceful riverside view at The Riverfront Resort & Camping"
+            "assets/images/hero/Gemini_Generated_Image_yl0414yl0414yl04.png",
+            "Peaceful riverside view at The Riverfront Resort"
           );
         return [desktop, mobile];
       })(),
@@ -241,7 +261,7 @@
     /*  ABOUT (section: about)                                              */
     /* ------------------------------------------------------------------ */
     about: {
-      text: "Escape the noise of the city and enjoy a peaceful stay surrounded by nature at The Riverfront Resort & Camping. Whether you are planning a relaxing family holiday, a group outing, a camping experience, or a weekend getaway, the resort offers comfortable facilities, delicious food, and a welcoming atmosphere.",
+      text: "Escape the noise of the city and enjoy a peaceful stay surrounded by nature at The Riverfront Resort. Whether you are planning a relaxing family holiday, a group outing, or a weekend getaway, the resort offers comfortable facilities, delicious food, and a welcoming atmosphere.",
       image:
         pick("resort", 0) ||
         photo(
@@ -257,7 +277,7 @@
     },
 
     /* ------------------------------------------------------------------ */
-    /*  STAY & CAMPING CARDS (section: stay)                                */
+    /*  STAY CARDS (section: stay)                                        */
     /* ------------------------------------------------------------------ */
     stays: [
       {
@@ -276,24 +296,6 @@
           "Private bathroom",
           "Shower",
           "Kitchen facilities",
-        ],
-      },
-      {
-        id: "camping",
-        title: "Camping Experience",
-        description:
-          "Spend the night under the open sky, close to the river and the sound of nature.",
-        image:
-          pick("camping", 0) ||
-          photo(
-            "assets/images/camping/camping-01.jpg",
-            "Camping tents set up in the resort grounds"
-          ),
-        facilities: [
-          "Open-air stay",
-          "Bonfire",
-          "Nature setting",
-          "Group friendly",
         ],
       },
       {
@@ -337,6 +339,139 @@
     // shared note shown below the stay cards
     stayNote:
       "Resort room facilities include air conditioning, private bathroom, shower and kitchen facilities. For rates and availability, use the Enquire Now buttons below.",
+
+    /* ------------------------------------------------------------------ */
+    /*  OFFERS & DISCOUNTS (section: offers)                                */
+    /*  Each offer shows a badge + title + short description.              */
+    /* ------------------------------------------------------------------ */
+    offers: {
+      items: [
+        {
+          badge: "25% off",
+          title: "Honeymoon",
+          text: "Enjoy an exclusive discount on your honeymoon stay at The Riverfront Resort.",
+        },
+        {
+          badge: "10% off",
+          title: "Family Stay",
+          text: "A special discount for family holidays — more memories, less spend.",
+        },
+        {
+          badge: "35% off",
+          title: "Group Outing",
+          text: "Exclusive group discounts for outings, corporate trips and reunions.",
+        },
+      ],
+    },
+
+    /* ------------------------------------------------------------------ */
+    /*  STAY PACKAGES & PRICING (section: packages)                         */
+    /*  Each plan shows a price, what's included and a Book Now button.    */
+    /* ------------------------------------------------------------------ */
+    packages: {
+      plans: [
+        {
+          name: "Couple Package",
+          price: "INR 7999/-",
+          priceNote: "per couple per night",
+          featured: false,
+          features: [
+            "Extra person Rs. 2000/-",
+            "Child between 5-11 years Rs. 1500/-",
+            "Child between 3-5 years Rs. 800/-",
+            "Below 3 years FREE",
+            "All amenities and meals included",
+            "Stay / TV / hot water",
+            "Check-in 1:00 PM",
+            "Check-out 10:00 AM",
+          ],
+        },
+        {
+          name: "Group Package",
+          price: "INR 2999/-",
+          priceNote: "per person per night",
+          featured: true,
+          features: [
+            "Minimum 4 persons required",
+            "Child between 5-11 years Rs. 1500/-",
+            "Child between 3-5 years Rs. 800/-",
+            "Below 3 years FREE",
+            "All amenities and meals included",
+            "Stay / TV / hot water",
+            "Check-in 1:00 PM",
+            "Check-out 10:00 AM",
+          ],
+        },
+      ],
+    },
+
+    /* ------------------------------------------------------------------ */
+    /*  TESTIMONIALS (section: testimonials) — guest reviews carousel       */
+    /* ------------------------------------------------------------------ */
+    testimonials: {
+      items: [
+        {
+          name: "Rohan Deshmukh",
+          tag: "Family Stay",
+          rating: 5,
+          text: "Took my parents and kids here for a weekend and everyone loved it. The rooms were clean, the food was home-style and the river view from the lawn is beautiful. Staff treated us like family.",
+        },
+        {
+          name: "Priya Kulkarni",
+          tag: "Honeymoon",
+          rating: 5,
+          text: "We spent our honeymoon here and it was perfect — quiet, peaceful and so green. Mornings by the river with chai were the best part. The private feel made it special for us.",
+        },
+        {
+          name: "Amit Sharma",
+          tag: "Group Outing",
+          rating: 5,
+          text: "Organised our office outing here with 15 people. Great open space, good food and the pool kept everyone busy. Rates are very reasonable for what you get. Highly recommended.",
+        },
+        {
+          name: "Sneha Patil",
+          tag: "Weekend Getaway",
+          rating: 4,
+          text: "Lovely little getaway from the city. The property is well maintained and very green. Would suggest reaching early to enjoy the whole day by the riverside. Will visit again!",
+        },
+        {
+          name: "Vikram Joshi",
+          tag: "Pet Friendly",
+          rating: 5,
+          text: "Finally a resort where our dog was genuinely welcome! Lots of open space to walk around, clean rooms and the staff even arranged a bowl for him. Thank you for the warm stay.",
+        },
+        {
+          name: "Anjali Nair",
+          tag: "Family Stay",
+          rating: 5,
+          text: "Booked the couple package for our parents' anniversary. Everything was arranged neatly — cake, good food and a beautiful riverside setting. They still talk about it!",
+        },
+      ],
+    },
+
+    /* ------------------------------------------------------------------ */
+    /*  FAQ (section: faq) — collapsible question & answer list             */
+    /* ------------------------------------------------------------------ */
+    faq: {
+      items: [
+        {
+          q: "What are the check-in and check-out timings?",
+          a: "Check-in is at 1:00 PM and check-out is at 10:00 AM.",
+        },
+        {
+          q: "Do your stay packages include meals?",
+          a: "Yes, every stay package includes all meals and access to all amenities.",
+        },
+        {
+          q: "Is the resort pet friendly?",
+          a: "Yes, The Riverfront Resort is pet friendly — pets are welcome.",
+        },
+        {
+          q: "How do I book a stay or enquire about availability?",
+          a: "Tap any Book Now / Enquire Now button or use the enquiry form — it opens WhatsApp with your details and we reply with availability.",
+        },
+      ],
+    },
 
     /* ------------------------------------------------------------------ */
     /*  AMENITIES (section: amenities) — each item needs an icon            */
@@ -394,11 +529,9 @@
       "All",
       "Resort",
       "Rooms",
-      "Camping",
       "Swimming Pool",
       "Food",
       "Activities",
-      "Surroundings",
     ],
     gallery: (function () {
       var auto = galleryFromFolders();
@@ -410,9 +543,6 @@
         photo("assets/images/gallery/gallery-02.jpg", "Comfortable room interior at the resort", "Rooms"),
         photo("assets/images/rooms/room-03.jpg", "Another cosy room at the resort", "Rooms"),
         photo("assets/images/rooms/room-bathroom-01.jpg", "Private bathroom with shower", "Rooms"),
-        photo("assets/images/gallery/gallery-03.jpg", "Camping setup in the resort grounds", "Camping"),
-        photo("assets/images/camping/camping-night-01.jpg", "Camping under the night sky", "Camping"),
-        photo("assets/images/camping/camping-02.jpg", "Camping tents by the greenery", "Camping"),
         photo("assets/images/pool/swimming-pool-01.jpg", "Swimming pool at the resort", "Swimming Pool"),
         photo("assets/images/pool/swimming-pool-02.jpg", "Relaxing at the swimming pool", "Swimming Pool"),
         photo("assets/images/food/food-breakfast-01.jpg", "Breakfast spread at the resort", "Food"),
@@ -420,8 +550,6 @@
         photo("assets/images/food/food-dinner-01.jpg", "Dinner served at the resort", "Food"),
         photo("assets/images/activities/activity-family-01.jpg", "Family enjoying activities together", "Activities"),
         photo("assets/images/activities/activity-group-01.jpg", "Group activities at the resort", "Activities"),
-        photo("assets/images/surroundings/surroundings-01.jpg", "Beautiful surroundings near the river", "Surroundings"),
-        photo("assets/images/surroundings/surroundings-02.jpg", "Nature around the resort", "Surroundings"),
       ];
     })(),
 
@@ -447,13 +575,13 @@
     /* ------------------------------------------------------------------ */
     location: {
       addressLines: [
-        "The Riverfront Resort & Camping",
+        "The Riverfront Resort",
         "Solu, Alandi-Markal Road, behind Dosti Hotel,",
         "Pimpri-Chinchwad, Maharashtra 412105",
       ],
 // full address used in the map search & directions link
       fullAddress:
-        "The Riverfront Resort & Camping, Solu, Alandi-Markal Road, behind Dosti Hotel, Pimpri-Chinchwad, Maharashtra 412105",
+        "The Riverfront Resort, Solu, Alandi-Markal Road, behind Dosti Hotel, Pimpri-Chinchwad, Maharashtra 412105",
       // ==========================================================
       //  ⭐ GOOGLE MAP — paste any Google Maps embed URL here to
       //  point the map at a different address.
@@ -463,14 +591,14 @@
       mapEmbedSrc:
         "https://www.google.com/maps?q=" +
         encodeURIComponent(
-          "The Riverfront Resort & Camping, Solu, Alandi-Markal Road, behind Dosti Hotel, Pimpri-Chinchwad, Maharashtra 412105"
+          "The Riverfront Resort, Solu, Alandi-Markal Road, behind Dosti Hotel, Pimpri-Chinchwad, Maharashtra 412105"
         ) +
         "&output=embed",
       // "Get Directions" button — uses the same address
       directionsUrl:
         "https://www.google.com/maps/dir/?api=1&destination=" +
         encodeURIComponent(
-          "The Riverfront Resort & Camping, Solu, Alandi-Markal Road, behind Dosti Hotel, Pimpri-Chinchwad, Maharashtra 412105"
+          "The Riverfront Resort, Solu, Alandi-Markal Road, behind Dosti Hotel, Pimpri-Chinchwad, Maharashtra 412105"
         ),
       image:
         pick("surroundings", 0) ||
@@ -488,7 +616,7 @@
       quickLinks: [
         { label: "Home", href: "#home" },
         { label: "About", href: "#about" },
-        { label: "Stay & Camping", href: "#stay" },
+{ label: "Stay", href: "#stay" },
         { label: "Amenities", href: "#amenities" },
         { label: "Gallery", href: "#gallery" },
         { label: "Location", href: "#location" },
@@ -500,7 +628,7 @@
         { icon: "youtube", label: "YouTube", href: "#" },
       ],
       // shown in the copyright line
-      copyrightHolder: "The Riverfront Resort & Camping",
+      copyrightHolder: "The Riverfront Resort",
     },
   };
 

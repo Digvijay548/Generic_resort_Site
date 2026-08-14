@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" id="metaDescription" content="The Riverfront Resort & Camping — a peaceful riverside resort in Pimpri-Chinchwad for families, couples, groups and pet owners. Rooms, camping, amenities and a welcoming atmosphere." />
-  <title>The Riverfront Resort & Camping | Relax by nature</title>
+  <meta name="description" id="metaDescription" content="The Riverfront Resort — a peaceful riverside resort in Pimpri-Chinchwad for families, couples, groups and pet owners. Rooms, amenities and a welcoming atmosphere." />
+  <title>The Riverfront Resort | Relax by nature</title>
 
   <!-- Social share preview (values updated from js/data.js) -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" id="ogTitle" content="The Riverfront Resort & Camping | Relax by nature" />
-  <meta property="og:description" id="ogDescription" content="The Riverfront Resort & Camping — a peaceful riverside resort in Pimpri-Chinchwad." />
-  <meta property="og:image" id="ogImage" content="assets/images/hero/hero-main.jpg" />
+  <meta property="og:title" id="ogTitle" content="The Riverfront Resort | Relax by nature" />
+  <meta property="og:description" id="ogDescription" content="The Riverfront Resort — a peaceful riverside resort in Pimpri-Chinchwad." />
+  <meta property="og:image" id="ogImage" content="assets/images/branding/resort-logo.png" />
   <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- Favicon (assets/images/branding/resort-favicon.png) -->
-  <link rel="icon" type="image/png" href="assets/images/branding/resort-favicon.png" />
+  <!-- Favicon (assets/images/branding/resort-logo.png) -->
+  <link rel="icon" type="image/png" href="assets/images/branding/resort-logo.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -38,10 +38,10 @@
   <header class="site-header" id="siteHeader">
     <nav class="nav container" aria-label="Main navigation">
       <a href="#home" class="brand">
-        <img id="navLogo" src="assets/images/branding/resort-logo.png" alt="The Riverfront Resort & Camping logo" width="42" height="42" />
+        <img id="navLogo" src="assets/images/branding/resort-logo.png" alt="The Riverfront Resort logo" width="42" height="42" />
         <span class="brand-name">
           <span class="brand-name-text" id="brandName">The Riverfront</span>
-          <em id="brandSub">Resort &amp; Camping</em>
+          <em id="brandSub">Resort</em>
         </span>
       </a>
 
@@ -72,7 +72,7 @@
       <div class="hero-orb hero-orb-3" aria-hidden="true"></div>
       <div class="hero-orb hero-orb-4" aria-hidden="true"></div>
       <div class="hero-content container">
-        <h1 class="hero-title" id="heroHeading">The Riverfront Resort &amp; Camping</h1>
+        <h1 class="hero-title" id="heroHeading">The Riverfront Resort</h1>
         <p class="hero-subtitle" id="heroSubtitle">Relax by nature. Stay in comfort. Create unforgettable memories.</p>
         <div class="hero-actions">
           <a id="heroBookBtn" class="btn btn-primary btn-lg" target="_blank" rel="noopener">Book Your Stay</a>
@@ -100,16 +100,40 @@
       </div>
     </section>
 
-    <!-- ============================ STAY & CAMPING ============================ -->
+    <!-- ============================ STAY ============================ -->
     <section class="section section-tinted" id="stay">
       <div class="container">
         <header class="section-head reveal">
-          <p class="eyebrow" id="stayEyebrow">Stay &amp; Camping</p>
+          <p class="eyebrow" id="stayEyebrow">Stay</p>
           <h2 class="section-title" id="stayTitle">Choose your stay</h2>
-          <p class="section-sub" id="staySub">Comfortable rooms and a true camping experience by the river — perfect for families, couples, groups and pets.</p>
+          <p class="section-sub" id="staySub">Comfortable rooms and a welcoming riverside stay — perfect for families, couples, groups and pets.</p>
         </header>
         <div class="stay-grid" id="stayGrid"><!-- cards populated from data.js --></div>
         <p class="stay-note reveal" id="stayNote"></p>
+      </div>
+    </section>
+
+    <!-- ============================ OFFERS & DISCOUNTS ============================ -->
+    <section class="section" id="offers">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="eyebrow" id="offersEyebrow">Our Offers</p>
+          <h2 class="section-title" id="offersTitle">Special offers &amp; discounts</h2>
+          <p class="section-sub" id="offersSub">Enjoy exclusive deals on your stay — perfect for honeymoons, family holidays and group getaways.</p>
+        </header>
+        <div class="offers-grid" id="offersGrid"><!-- cards populated from data.js --></div>
+      </div>
+    </section>
+
+    <!-- ============================ PACKAGES & PRICING ============================ -->
+    <section class="section section-tinted" id="packages">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="eyebrow" id="packagesEyebrow">Stay Packages</p>
+          <h2 class="section-title" id="packagesTitle">Pricing plan for the best value</h2>
+          <p class="section-sub" id="packagesSub">Choose a package that fits your stay — every package includes meals and all amenities.</p>
+        </header>
+        <div class="plans-grid" id="plansGrid"><!-- cards populated from data.js --></div>
       </div>
     </section>
 
@@ -131,7 +155,7 @@
         <header class="section-head reveal">
           <p class="eyebrow" id="galEyebrow">Gallery</p>
           <h2 class="section-title" id="galTitle">Moments at The Riverfront</h2>
-          <p class="section-sub" id="galSub">A glimpse of the resort, rooms, camping, pool, food and surroundings.</p>
+          <p class="section-sub" id="galSub">A glimpse of the resort, rooms, pool and food.</p>
         </header>
         <div class="gallery-filters reveal" id="galleryFilters"><!-- populated from data.js --></div>
         <div class="gallery-grid" id="galleryGrid"><!-- populated from data.js --></div>
@@ -139,6 +163,37 @@
           <button type="button" class="gs-btn" id="gsPrev" aria-label="Scroll gallery left">&#10094;</button>
           <button type="button" class="gs-btn" id="gsNext" aria-label="Scroll gallery right">&#10095;</button>
         </div>
+      </div>
+    </section>
+
+    <!-- ============================ TESTIMONIALS ============================ -->
+    <section class="section" id="testimonials">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="eyebrow" id="testimEyebrow">Testimonials</p>
+          <h2 class="section-title" id="testimTitle">What our guests say</h2>
+          <p class="section-sub" id="testimSub">Real experiences from happy guests who relaxed by the river.</p>
+        </header>
+        <div class="testim-slider reveal" id="testimSlider" aria-live="polite">
+          <div class="testim-track" id="testimTrack"><!-- slides populated from data.js --></div>
+          <div class="testim-nav" id="testimNav" aria-label="Testimonial controls">
+            <button type="button" class="ts-btn" id="tsPrev" aria-label="Previous testimonial">&#10094;</button>
+            <button type="button" class="ts-btn" id="tsNext" aria-label="Next testimonial">&#10095;</button>
+          </div>
+          <div class="testim-dots" id="testimDots"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ FAQ ============================ -->
+    <section class="section section-tinted" id="faq">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="eyebrow" id="faqEyebrow">FAQ</p>
+          <h2 class="section-title" id="faqTitle">Frequently asked questions</h2>
+          <p class="section-sub" id="faqSub">Answers to the questions guests ask us most.</p>
+        </header>
+        <div class="faq-list reveal" id="faqList"><!-- items populated from data.js --></div>
       </div>
     </section>
 
@@ -237,7 +292,6 @@
               <label for="fPref">Stay preference</label>
               <select id="fPref" name="preference">
                 <option value="Room">Room</option>
-                <option value="Camping">Camping</option>
                 <option value="Group Outing">Group Outing</option>
               </select>
             </div>
@@ -259,7 +313,7 @@
   <footer class="site-footer" id="siteFooter">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <img id="footerLogo" src="assets/images/branding/resort-logo.png" alt="The Riverfront Resort & Camping logo" width="48" height="48" />
+        <img id="footerLogo" src="assets/images/branding/resort-logo.png" alt="The Riverfront Resort logo" width="48" height="48" />
         <p class="footer-name" id="footerName"></p>
         <p class="footer-note" id="footerNote"></p>
         <div class="footer-social" id="footerSocial"><!-- populated from data.js --></div>
