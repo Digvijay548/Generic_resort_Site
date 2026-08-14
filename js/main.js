@@ -6,6 +6,22 @@
   function $(sel, ctx) { return (ctx || document).querySelector(sel); }
   function $all(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
 
+  /* If js/data.js failed to load there is nothing to render. Say so plainly
+     instead of throwing on the first property access and leaving a blank page. */
+  if (!DATA) {
+    document.documentElement.classList.add("data-missing");
+    var warning = document.createElement("p");
+    warning.className = "boot-error";
+    warning.textContent =
+      "This page could not load its content (js/data.js is missing). " +
+      "Please call 072777 75060.";
+    document.body.insertBefore(warning, document.body.firstChild);
+    return;
+  }
+
+  var REDUCED_MOTION =
+    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   function esc(str) {
     return String(str == null ? "" : str)
       .replace(/&/g, "&amp;")
@@ -18,10 +34,17 @@
   function waHref(message) {
     return (
       "https://wa.me/" +
-      DATA.whatsapp.number +
+      encodeURIComponent(DATA.whatsapp.number) +
       "?text=" +
       encodeURIComponent(message || DATA.whatsapp.message)
     );
+  }
+
+  /* Hide a section whose content could not be built (e.g. no photos yet)
+     rather than leaving an empty heading with nothing under it. */
+  function hideSection(id) {
+    var section = document.getElementById(id);
+    if (section) section.hidden = true;
   }
 
   var ICONS = {
@@ -99,51 +122,62 @@
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16c4-2 7-5 8-10 2 4 5 7 9 8-4 0-7 1-9 4-1-1-3-2-8-2z"/></svg>',
   };
 
-  /* Hero ambient particles — add icons here to grow the pool */
+  /* Hero ambient particles — add icon names here to grow the pool */
   var HERO_EFFECTS = {
     particles: 16,
     colors: ["#ffffff", "#f5c878", "#8cd2be", "#ffeeb0", "#a9e0f0"],
     icons: ["leaf", "drop", "sparkle", "sun", "wave", "tree", "flower", "bird"],
   };
 
-  function createPicture(photoObj, opts) {
+  /* ------------------------------ images ------------------------------ */
+  /**
+   * Build a <picture> from a manifest entry.
+   *
+   * The generator produces WebP copies at several widths, so the browser can
+   * download the one that fits the screen instead of a full-size photo. The
+   * <img> always points at a plain JPEG/PNG, which is what a browser without
+   * WebP support falls back to.
+   */
+  function createPicture(photo, opts) {
     opts = opts || {};
     var wrapper = document.createElement("figure");
     wrapper.className = "img-frame skeleton" + (opts.className ? " " + opts.className : "");
 
-    var pic = document.createElement("picture");
-    var srcs = "";
-    var hasWebp = photoObj.webp && photoObj.webp !== photoObj.jpg;
-    if (opts.media) {
-      if (hasWebp) srcs += '<source media="' + esc(opts.media) + '" srcset="' + photoObj.webp + '" type="image/webp">';
-      srcs += '<source media="' + esc(opts.media) + '" srcset="' + photoObj.jpg + '">';
-    } else if (hasWebp) {
-      srcs += '<source srcset="' + photoObj.webp + '" type="image/webp">';
+    if (!photo) {
+      wrapper.classList.add("is-loaded", "img-error");
+      wrapper.classList.remove("skeleton");
+      return wrapper;
     }
-    var loading = opts.eager ? "eager" : "lazy";
-    var extra = opts.eager ? ' fetchpriority="high"' : "";
-    pic.innerHTML =
-      srcs +
-      '<img src="' + photoObj.jpg + '" alt="' + esc(photoObj.alt) + '" loading="' + loading + '" decoding="async"' + extra + ">";
+
+    var pic = document.createElement("picture");
+    var html = "";
+    if (photo.srcset) {
+      html +=
+        '<source type="image/webp" srcset="' + esc(photo.srcset) + '"' +
+        (opts.sizes ? ' sizes="' + esc(opts.sizes) + '"' : "") + ">";
+    }
+    html +=
+      '<img src="' + esc(photo.src) + '"' +
+      ' alt="' + esc(photo.alt) + '"' +
+      (photo.w ? ' width="' + photo.w + '"' : "") +
+      (photo.h ? ' height="' + photo.h + '"' : "") +
+      ' loading="' + (opts.eager ? "eager" : "lazy") + '"' +
+      ' decoding="async"' +
+      (opts.eager ? ' fetchpriority="high"' : "") +
+      ">";
+    pic.innerHTML = html;
 
     var img = pic.querySelector("img");
+    function settle(ok) {
+      wrapper.classList.remove("skeleton");
+      wrapper.classList.add("is-loaded");
+      if (!ok) wrapper.classList.add("img-error");
+    }
     if (img.complete) {
-      if (img.naturalWidth > 0) {
-        wrapper.classList.add("is-loaded");
-        wrapper.classList.remove("skeleton");
-      } else {
-        wrapper.classList.add("is-loaded", "img-error");
-        wrapper.classList.remove("skeleton");
-      }
+      settle(img.naturalWidth > 0);
     } else {
-      img.addEventListener("load", function () {
-        wrapper.classList.add("is-loaded");
-        wrapper.classList.remove("skeleton");
-      });
-      img.addEventListener("error", function () {
-        wrapper.classList.add("is-loaded", "img-error");
-        wrapper.classList.remove("skeleton");
-      });
+      img.addEventListener("load", function () { settle(true); });
+      img.addEventListener("error", function () { settle(false); });
     }
     wrapper.appendChild(pic);
     return wrapper;
@@ -154,54 +188,62 @@
     $("#navLogo").src = DATA.logo.image;
     $("#brandName").textContent = DATA.shortName;
 
-    var navLinks = $("#navLinks");
-    DATA.nav.forEach(function (item) {
-      var li = document.createElement("li");
-      var a = document.createElement("a");
-      a.href = item.href;
-      a.textContent = item.label;
-      a.dataset.target = item.href.slice(1);
-      li.appendChild(a);
-      navLinks.appendChild(li);
-    });
+    function fill(list, items) {
+      items.forEach(function (item) {
+        var li = document.createElement("li");
+        var a = document.createElement("a");
+        a.href = item.href;
+        a.textContent = item.label;
+        a.dataset.target = item.href.slice(1);
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+    }
+    fill($("#navLinks"), DATA.nav);
+    fill($("#mobileLinks"), DATA.nav);
 
-    var mobileLinks = $("#mobileLinks");
-    DATA.nav.forEach(function (item) {
-      var li = document.createElement("li");
-      var a = document.createElement("a");
-      a.href = item.href;
-      a.textContent = item.label;
-      li.appendChild(a);
-      mobileLinks.appendChild(li);
+    [$("#navBookBtn"), $("#mobileBookBtn")].forEach(function (btn) {
+      btn.href = waHref();
+      btn.textContent = DATA.ui.navBook;
     });
-
     $("#navBookBtn").className = "btn btn-gradient btn-sm";
-    $("#navBookBtn").href = waHref();
-    $("#navBookBtn").textContent = DATA.ui.navBook;
     $("#mobileBookBtn").className = "btn btn-gradient";
-    $("#mobileBookBtn").href = waHref();
-    $("#mobileBookBtn").textContent = DATA.ui.navBook;
   }
 
-  var navToggle = $("#navToggle");
-  var mobileMenu = $("#mobileMenu");
-
   function initNav() {
-    navToggle.addEventListener("click", function () {
-      var open = mobileMenu.classList.toggle("open");
+    var navToggle = $("#navToggle");
+    var mobileMenu = $("#mobileMenu");
+
+    /* A closed menu must be invisible AND unreachable by keyboard. `inert`
+       does that in one step; the CSS visibility rule covers older browsers. */
+    function setOpen(open) {
+      mobileMenu.classList.toggle("open", open);
+      mobileMenu.inert = !open;
+      mobileMenu.setAttribute("aria-hidden", String(!open));
       navToggle.setAttribute("aria-expanded", String(open));
       navToggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    }
+    setOpen(false);
+
+    navToggle.addEventListener("click", function () {
+      setOpen(!mobileMenu.classList.contains("open"));
     });
     $all("a", mobileMenu).forEach(function (a) {
-      a.addEventListener("click", function () {
-        mobileMenu.classList.remove("open");
-        navToggle.setAttribute("aria-expanded", "false");
-      });
+      a.addEventListener("click", function () { setOpen(false); });
     });
     document.addEventListener("click", function (e) {
-      if (mobileMenu.classList.contains("open") && !mobileMenu.contains(e.target) && !navToggle.contains(e.target)) {
-        mobileMenu.classList.remove("open");
-        navToggle.setAttribute("aria-expanded", "false");
+      if (
+        mobileMenu.classList.contains("open") &&
+        !mobileMenu.contains(e.target) &&
+        !navToggle.contains(e.target)
+      ) {
+        setOpen(false);
+      }
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && mobileMenu.classList.contains("open")) {
+        setOpen(false);
+        navToggle.focus();
       }
     });
   }
@@ -217,31 +259,49 @@
     $("#heroBookBtn").textContent = DATA.ui.hero.book;
     $("#heroCallBtn").textContent = DATA.ui.hero.call;
 
-    var desktop = hero.images[0];
-    var mobile = hero.images[1] || desktop;
     var media = $("#heroMedia");
+    var desktop = hero.images[0];
+    if (!desktop) {
+      media.classList.add("is-loaded", "no-photo");
+      return;
+    }
+    var mobile = hero.images[1] || desktop;
+
     var pic = document.createElement("picture");
-    var html =
-      (mobile.webp && mobile.webp !== mobile.jpg
-        ? '<source media="(max-width: 992px)" srcset="' + mobile.webp + '" type="image/webp">'
-        : "") +
-      '<source media="(max-width: 992px)" srcset="' + mobile.jpg + '">' +
-      (desktop.webp && desktop.webp !== desktop.jpg
-        ? '<source srcset="' + desktop.webp + '" type="image/webp">'
-        : "") +
-      '<img src="' + desktop.jpg + '" alt="' + esc(desktop.alt) + '" loading="eager" decoding="async" fetchpriority="high">';
+    var html = "";
+    if (mobile.srcset) {
+      html += '<source media="(max-width: 992px)" type="image/webp" srcset="' +
+        esc(mobile.srcset) + '" sizes="100vw">';
+    }
+    html += '<source media="(max-width: 992px)" srcset="' + esc(mobile.src) + '">';
+    if (desktop.srcset) {
+      html += '<source type="image/webp" srcset="' + esc(desktop.srcset) + '" sizes="100vw">';
+    }
+    html +=
+      '<img src="' + esc(desktop.src) + '" alt="' + esc(desktop.alt) + '"' +
+      (desktop.w ? ' width="' + desktop.w + '"' : "") +
+      (desktop.h ? ' height="' + desktop.h + '"' : "") +
+      ' loading="eager" decoding="async" fetchpriority="high">';
     pic.innerHTML = html;
+
     var img = pic.querySelector("img");
-    if (img.complete && img.naturalWidth > 0) {
+    /* Mark the hero ready on success AND on failure — otherwise a missing
+       photo leaves the image permanently transparent over a dark panel. */
+    function reveal(ok) {
       media.classList.add("is-loaded");
+      if (!ok) media.classList.add("no-photo");
+    }
+    if (img.complete) {
+      reveal(img.naturalWidth > 0);
     } else {
-      img.addEventListener("load", function () { media.classList.add("is-loaded"); });
+      img.addEventListener("load", function () { reveal(true); });
+      img.addEventListener("error", function () { reveal(false); });
     }
     media.appendChild(pic);
   }
 
-  /* ------------------------------ hero particles ------------------------------ */
   function buildHeroParticles() {
+    if (REDUCED_MOTION) return;
     var cfg = HERO_EFFECTS;
     var hero = $("#home");
     if (!hero) return;
@@ -250,15 +310,12 @@
     wrap.className = "hero-particles";
     wrap.id = "heroParticles";
     wrap.setAttribute("aria-hidden", "true");
-
-    var content = hero.querySelector(".hero-content");
-    hero.insertBefore(wrap, content);
+    hero.insertBefore(wrap, hero.querySelector(".hero-content"));
 
     for (var i = 0; i < cfg.particles; i++) {
       var p = document.createElement("span");
       p.className = "hero-particle";
-      var icon = cfg.icons[i % cfg.icons.length];
-      p.innerHTML = ICONS[icon] || ICONS.sparkle;
+      p.innerHTML = ICONS[cfg.icons[i % cfg.icons.length]] || ICONS.sparkle;
       var size = 14 + Math.random() * 30;
       p.style.width = size.toFixed(1) + "px";
       p.style.height = size.toFixed(1) + "px";
@@ -281,10 +338,23 @@
     $("#aboutWaBtn").href = waHref();
 
     var media = $("#aboutMedia");
-    var main = createPicture(about.image, { className: "about-main", eager: true });
-    media.appendChild(main);
-    var secondary = createPicture(about.imageB, { className: "about-b" });
-    media.appendChild(secondary);
+    if (!about.image) {
+      media.hidden = true;
+      document.querySelector(".about-grid").classList.add("no-media");
+      return;
+    }
+    media.appendChild(createPicture(about.image, {
+      className: "about-main",
+      eager: true,
+      sizes: "(max-width: 900px) 92vw, 560px",
+    }));
+    /* Only show the small inset when it is a genuinely different photo. */
+    if (about.imageB && about.imageB.src !== about.image.src) {
+      media.appendChild(createPicture(about.imageB, {
+        className: "about-b",
+        sizes: "(max-width: 900px) 44vw, 260px",
+      }));
+    }
   }
 
   /* ------------------------------ stay cards ------------------------------ */
@@ -292,34 +362,39 @@
     var grid = $("#stayGrid");
     DATA.stays.forEach(function (stay, i) {
       var card = document.createElement("article");
-      card.className = "stay-card reveal reveal-d" + (i % 3);
+      card.className = "stay-card reveal reveal-d" + ((i % 3) + 1);
 
-      var media = createPicture(stay.image, { className: "stay-media" });
+      if (stay.image) {
+        card.appendChild(createPicture(stay.image, {
+          className: "stay-media",
+          sizes: "(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 570px",
+        }));
+      }
 
       var body = document.createElement("div");
       body.className = "stay-body";
       var facs = stay.facilities.map(function (f) { return "<li>" + esc(f) + "</li>"; }).join("");
-      var msg = "Hello, I would like to enquire about the " + stay.title + " at The Riverfront Resort.";
+      var msg = "Hello, I would like to enquire about the " + stay.title + " at " + DATA.name + ".";
       body.innerHTML =
         "<h3>" + esc(stay.title) + "</h3>" +
         "<p>" + esc(stay.description) + "</p>" +
         '<ul class="stay-facilities">' + facs + "</ul>" +
-        '<a class="btn btn-whatsapp btn-sm" target="_blank" rel="noopener" href="' + waHref(msg) + '">' + DATA.ui.stay.enquire + "</a>";
+        '<a class="btn btn-whatsapp btn-sm" target="_blank" rel="noopener" href="' +
+        esc(waHref(msg)) + '">' + esc(DATA.ui.stay.enquire) + "</a>";
 
-      card.appendChild(media);
       card.appendChild(body);
       grid.appendChild(card);
     });
     $("#stayNote").textContent = DATA.stayNote;
   }
 
-  /* ------------------------------ offers & discounts ------------------------------ */
+  /* ------------------------------ offers ------------------------------ */
   function buildOffers() {
     var grid = $("#offersGrid");
     if (!grid || !DATA.offers) return;
     DATA.offers.items.forEach(function (o, i) {
       var card = document.createElement("article");
-      card.className = "offer-card reveal reveal-d" + (i % 3);
+      card.className = "offer-card reveal reveal-d" + ((i % 3) + 1);
       card.innerHTML =
         '<span class="offer-badge">' + esc(o.badge) + "</span>" +
         "<h3>" + esc(o.title) + "</h3>" +
@@ -328,23 +403,24 @@
     });
   }
 
-  /* ------------------------------ packages & pricing ------------------------------ */
+  /* ------------------------------ packages ------------------------------ */
   function buildPackages() {
     var grid = $("#plansGrid");
     if (!grid || !DATA.packages) return;
     DATA.packages.plans.forEach(function (p, i) {
       var card = document.createElement("article");
       card.className =
-        "plan-card reveal reveal-d" + (i % 2) + (p.featured ? " featured" : "");
+        "plan-card reveal reveal-d" + ((i % 3) + 1) + (p.featured ? " featured" : "");
       var feats = p.features.map(function (f) { return "<li>" + esc(f) + "</li>"; }).join("");
-      var msg = "Hello, I would like to book the " + p.name + " at The Riverfront Resort.";
+      var msg = "Hello, I would like to book the " + p.name + " at " + DATA.name + ".";
       card.innerHTML =
         (p.featured ? '<span class="plan-ribbon">Most Popular</span>' : "") +
         "<h3>" + esc(p.name) + "</h3>" +
         '<p class="plan-price">' + esc(p.price) + "</p>" +
         '<p class="plan-note">' + esc(p.priceNote) + "</p>" +
         '<ul class="plan-features">' + feats + "</ul>" +
-        '<a class="btn btn-whatsapp" target="_blank" rel="noopener" href="' + waHref(msg) + '">' + DATA.ui.packages.book + "</a>";
+        '<a class="btn btn-whatsapp" target="_blank" rel="noopener" href="' +
+        esc(waHref(msg)) + '">' + esc(DATA.ui.packages.book) + "</a>";
       grid.appendChild(card);
     });
   }
@@ -354,9 +430,13 @@
     var track = $("#testimTrack");
     if (!track || !DATA.testimonials) return;
     var items = DATA.testimonials.items;
+    if (!items.length) { hideSection("testimonials"); return; }
+
     var dots = $("#testimDots");
+    var slider = $("#testimSlider");
     var idx = 0;
     var timer = null;
+    var paused = false;
     var slideCount = items.length;
 
     function stars(r) {
@@ -368,8 +448,12 @@
     items.forEach(function (t, i) {
       var slide = document.createElement("div");
       slide.className = "testim-slide";
+      slide.setAttribute("role", "group");
+      slide.setAttribute("aria-roledescription", "slide");
+      slide.setAttribute("aria-label", (i + 1) + " of " + slideCount);
       slide.innerHTML =
-        '<div class="testim-stars">' + stars(t.rating) + "</div>" +
+        '<div class="testim-stars" role="img" aria-label="' + t.rating + ' out of 5 stars">' +
+        stars(t.rating) + "</div>" +
         '<blockquote class="testim-text">' + esc(t.text) + "</blockquote>" +
         '<div class="testim-author">' +
         '<span class="testim-name">' + esc(t.name) + "</span>" +
@@ -381,28 +465,48 @@
       dot.type = "button";
       dot.className = "ts-dot";
       dot.setAttribute("aria-label", "Go to testimonial " + (i + 1));
-      dot.addEventListener("click", function () { goTo(i); });
+      dot.addEventListener("click", function () { goTo(i, true); });
       dots.appendChild(dot);
     });
 
-    function goTo(n) {
+    function goTo(n, fromUser) {
       idx = (n + slideCount) % slideCount;
       track.style.transform = "translateX(-" + idx * 100 + "%)";
       $all(".ts-dot", dots).forEach(function (d, i) {
         d.classList.toggle("active", i === idx);
+        d.setAttribute("aria-current", i === idx ? "true" : "false");
       });
+      $all(".testim-slide", track).forEach(function (s, i) {
+        s.inert = i !== idx;
+      });
+      if (fromUser) restart();
+    }
+
+    /* Autoplay is a convenience, not a requirement: it stops on hover, on
+       keyboard focus, when the tab is hidden, and for reduced-motion users. */
+    function restart() {
+      if (timer) clearInterval(timer);
+      timer = null;
+      if (REDUCED_MOTION || paused || slideCount < 2) return;
+      timer = setInterval(function () { goTo(idx + 1); }, 6000);
+    }
+    function setPaused(value) {
+      paused = value;
       restart();
     }
 
-    function restart() {
-      if (timer) clearInterval(timer);
-      if (slideCount > 1) timer = setInterval(function () { goTo(idx + 1); }, 6000);
-    }
+    slider.addEventListener("mouseenter", function () { setPaused(true); });
+    slider.addEventListener("mouseleave", function () { setPaused(false); });
+    slider.addEventListener("focusin", function () { setPaused(true); });
+    slider.addEventListener("focusout", function () { setPaused(false); });
+    document.addEventListener("visibilitychange", function () {
+      setPaused(document.hidden);
+    });
 
     var prevBtn = $("#tsPrev");
     var nextBtn = $("#tsNext");
-    if (prevBtn) prevBtn.addEventListener("click", function () { goTo(idx - 1); });
-    if (nextBtn) nextBtn.addEventListener("click", function () { goTo(idx + 1); });
+    if (prevBtn) prevBtn.addEventListener("click", function () { goTo(idx - 1, true); });
+    if (nextBtn) nextBtn.addEventListener("click", function () { goTo(idx + 1, true); });
 
     var startX = null;
     track.addEventListener("touchstart", function (e) {
@@ -411,11 +515,12 @@
     track.addEventListener("touchend", function (e) {
       if (startX === null) return;
       var dx = e.changedTouches[0].clientX - startX;
-      if (Math.abs(dx) > 40) goTo(idx + (dx < 0 ? 1 : -1));
+      if (Math.abs(dx) > 40) goTo(idx + (dx < 0 ? 1 : -1), true);
       startX = null;
     }, { passive: true });
 
     goTo(0);
+    restart();
   }
 
   /* ------------------------------ faq ------------------------------ */
@@ -450,13 +555,14 @@
           );
         })
         .join("");
-      sec.innerHTML = "<h3>" + esc(cat.title) + "</h3><ul class='amenity-grid'>" + items + "</ul>";
+      sec.innerHTML = "<h3>" + esc(cat.title) + '</h3><ul class="amenity-grid">' + items + "</ul>";
       wrap.appendChild(sec);
     });
   }
 
   /* ------------------------------ gallery + lightbox ------------------------------ */
   var currentFilter = "All";
+  var refreshGalleryArrows = function () {};
 
   function galleryItemsForFilter() {
     if (currentFilter === "All") return DATA.gallery.slice();
@@ -464,6 +570,11 @@
   }
 
   function buildGallery() {
+    if (!DATA.gallery.length) {
+      hideSection("gallery");
+      return;
+    }
+
     var filters = $("#galleryFilters");
     DATA.galleryFilters.forEach(function (f, i) {
       var b = document.createElement("button");
@@ -471,6 +582,7 @@
       b.className = "filter-btn" + (i === 0 ? " active" : "");
       b.textContent = f;
       b.dataset.filter = f;
+      b.setAttribute("aria-pressed", i === 0 ? "true" : "false");
       b.addEventListener("click", function () { setFilter(f); });
       filters.appendChild(b);
     });
@@ -483,12 +595,15 @@
       item.dataset.index = i;
       item.dataset.category = g.category;
       item.setAttribute("aria-label", "View image: " + g.alt);
-      item.appendChild(createPicture(g, { className: "gallery-media" }));
+      item.appendChild(createPicture(g, {
+        className: "gallery-media",
+        sizes: "(max-width: 640px) 300px, 560px",
+      }));
       var label = document.createElement("span");
       label.className = "gallery-label";
       label.textContent = g.category;
       item.appendChild(label);
-      item.addEventListener("click", function () { openLightbox(i); });
+      item.addEventListener("click", function () { openLightbox(i, item); });
       grid.appendChild(item);
     });
   }
@@ -496,12 +611,18 @@
   function setFilter(filter) {
     currentFilter = filter;
     $all(".filter-btn").forEach(function (b) {
-      b.classList.toggle("active", b.dataset.filter === filter);
+      var on = b.dataset.filter === filter;
+      b.classList.toggle("active", on);
+      b.setAttribute("aria-pressed", String(on));
     });
     $all(".gallery-item").forEach(function (item) {
-      var show = filter === "All" || item.dataset.category === filter;
-      item.classList.toggle("is-hidden", !show);
+      item.classList.toggle("is-hidden", !(filter === "All" || item.dataset.category === filter));
     });
+    /* The row just got shorter or longer — re-evaluate the scroll arrows and
+       pull the strip back to the start so it is not scrolled past the end. */
+    var grid = $("#galleryGrid");
+    if (grid) grid.scrollLeft = 0;
+    refreshGalleryArrows();
   }
 
   var lightbox = $("#lightbox");
@@ -510,33 +631,37 @@
   var lbCounter = $("#lbCounter");
   var lbItems = [];
   var lbPos = 0;
+  var lbReturnFocus = null;
 
-  function openLightbox(galleryIndex) {
+  function openLightbox(galleryIndex, trigger) {
     lbItems = galleryItemsForFilter();
-    lbPos = lbItems.findIndex(function (g) {
-      return DATA.gallery.indexOf(g) === galleryIndex;
-    });
+    lbPos = lbItems.indexOf(DATA.gallery[galleryIndex]);
     if (lbPos < 0) lbPos = 0;
+    lbReturnFocus = trigger || document.activeElement;
     renderLightbox();
     lightbox.classList.add("open");
     lightbox.setAttribute("aria-hidden", "false");
     document.body.classList.add("lb-open");
+    $("#lbClose").focus();
   }
 
   function closeLightbox() {
     lightbox.classList.remove("open");
     lightbox.setAttribute("aria-hidden", "true");
     document.body.classList.remove("lb-open");
+    /* Send focus back to the thumbnail that opened the viewer, so keyboard
+       users are not dumped at the top of the document. */
+    if (lbReturnFocus && lbReturnFocus.focus) lbReturnFocus.focus();
+    lbReturnFocus = null;
   }
 
   function renderLightbox() {
     var item = lbItems[lbPos];
-    lbImage.src = item.webp;
+    if (!item) return;
+    /* Use the plain original here: assigning an empty string would make the
+       browser re-request the page itself as if it were an image. */
+    lbImage.src = item.original || item.src;
     lbImage.alt = item.alt;
-    lbImage.onerror = function () {
-      lbImage.onerror = null;
-      lbImage.src = item.jpg;
-    };
     lbCaption.textContent = item.alt;
     lbCounter.textContent = (lbPos + 1) + " / " + lbItems.length;
   }
@@ -547,6 +672,7 @@
   }
 
   function initLightbox() {
+    var buttons = [$("#lbClose"), $("#lbPrev"), $("#lbNext")];
     $("#lbClose").addEventListener("click", closeLightbox);
     $("#lbPrev").addEventListener("click", function () { stepLightbox(-1); });
     $("#lbNext").addEventListener("click", function () { stepLightbox(1); });
@@ -555,9 +681,20 @@
     });
     document.addEventListener("keydown", function (e) {
       if (!lightbox.classList.contains("open")) return;
-      if (e.key === "Escape") closeLightbox();
-      if (e.key === "ArrowLeft") stepLightbox(-1);
-      if (e.key === "ArrowRight") stepLightbox(1);
+      if (e.key === "Escape") { closeLightbox(); return; }
+      if (e.key === "ArrowLeft") { stepLightbox(-1); return; }
+      if (e.key === "ArrowRight") { stepLightbox(1); return; }
+      /* Keep Tab inside the viewer while it is open. */
+      if (e.key === "Tab") {
+        var order = buttons.filter(function (b) { return b.offsetParent !== null; });
+        if (!order.length) return;
+        var at = order.indexOf(document.activeElement);
+        var next = e.shiftKey ? at - 1 : at + 1;
+        if (at === -1 || next < 0 || next >= order.length) {
+          e.preventDefault();
+          order[e.shiftKey ? order.length - 1 : 0].focus();
+        }
+      }
     });
   }
 
@@ -569,9 +706,16 @@
 
     function updateArrows() {
       var max = grid.scrollWidth - grid.clientWidth;
-      prev.classList.toggle("disabled", grid.scrollLeft <= 4);
-      next.classList.toggle("disabled", grid.scrollLeft >= max - 4);
+      var atStart = grid.scrollLeft <= 4;
+      var atEnd = grid.scrollLeft >= max - 4;
+      prev.classList.toggle("disabled", atStart);
+      next.classList.toggle("disabled", atEnd);
+      prev.disabled = atStart;
+      next.disabled = atEnd;
+      /* Nothing to scroll (one screenful, or a filter with few photos). */
+      $("#galleryNav").hidden = max <= 4;
     }
+    refreshGalleryArrows = updateArrows;
 
     function animateScroll(target) {
       var max = grid.scrollWidth - grid.clientWidth;
@@ -579,9 +723,10 @@
       var start = grid.scrollLeft;
       var diff = target - start;
       if (Math.abs(diff) < 2) return;
+      if (REDUCED_MOTION) { grid.scrollLeft = target; return; }
       var dur = Math.min(650, Math.max(320, Math.abs(diff) * 0.35));
       var t0 = performance.now();
-      function ease(t) { return 1 - Math.pow(1 - t, 3); } // ease-out cubic
+      function ease(t) { return 1 - Math.pow(1 - t, 3); }
       function frame(now) {
         var p = Math.min(1, (now - t0) / dur);
         grid.scrollLeft = start + diff * ease(p);
@@ -607,8 +752,10 @@
     var items = info.items.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("");
     $("#infoCard").innerHTML =
       '<div class="info-times">' +
-      '<div class="info-time"><p class="it-label">' + esc(DATA.ui.info.checkIn) + "</p><p class=\"it-value\">" + esc(info.checkIn) + "</p></div>" +
-      '<div class="info-time"><p class="it-label">' + esc(DATA.ui.info.checkOut) + "</p><p class=\"it-value\">" + esc(info.checkOut) + "</p></div>" +
+      '<div class="info-time"><p class="it-label">' + esc(DATA.ui.info.checkIn) +
+      '</p><p class="it-value">' + esc(info.checkIn) + "</p></div>" +
+      '<div class="info-time"><p class="it-label">' + esc(DATA.ui.info.checkOut) +
+      '</p><p class="it-value">' + esc(info.checkOut) + "</p></div>" +
       "</div>" +
       '<ul class="info-list">' + items + "</ul>";
   }
@@ -616,8 +763,7 @@
   /* ------------------------------ location ------------------------------ */
   function buildLocation() {
     var loc = DATA.location;
-    var addr = $("#locAddress");
-    addr.innerHTML = loc.addressLines.map(esc).join("<br>");
+    $("#locAddress").innerHTML = loc.addressLines.map(esc).join("<br>");
 
     $("#directionsBtn").href = loc.directionsUrl;
     $("#locCallBtn").href = "tel:" + DATA.phone.tel;
@@ -655,16 +801,37 @@
   function initForm() {
     var form = $("#enquiryForm");
     var fields = {
-      name: { el: $("#fName"), err: $("#errName"), valid: function (v) { return v.trim().length >= 2; } },
+      name: {
+        el: $("#fName"),
+        err: $("#errName"),
+        valid: function (v) { return v.trim().length >= 2; },
+        message: "Please enter your full name.",
+      },
       phone: {
         el: $("#fPhone"),
         err: $("#errPhone"),
         valid: function (v) { return /^[+\d][\d\s\-()]{8,14}$/.test(v.trim()); },
+        message: "Please enter a valid phone number.",
       },
-      checkin: { el: $("#fCheckIn"), err: $("#errCheckIn"), valid: function (v, all) { return !v || !all.checkout || all.checkout > v; } },
-      checkout: { el: $("#fCheckOut"), err: $("#errCheckOut"), valid: function (v, all) { return !v || !all.checkin || v > all.checkin; } },
-      adults: { el: $("#fAdults"), err: null, valid: function (v) { return !v || parseInt(v, 10) >= 1; } },
+      checkin: {
+        el: $("#fCheckIn"),
+        err: $("#errCheckIn"),
+        valid: function (v, all) { return !v || !all.checkout || all.checkout > v; },
+        message: "Check-out must be after check-in.",
+      },
+      checkout: {
+        el: $("#fCheckOut"),
+        err: $("#errCheckOut"),
+        valid: function (v, all) { return !v || !all.checkin || v > all.checkin; },
+        message: "Check-out must be after check-in.",
+      },
     };
+    var keys = Object.keys(fields);
+
+    // Nobody books a stay in the past.
+    var today = new Date().toISOString().slice(0, 10);
+    $("#fCheckIn").min = today;
+    $("#fCheckOut").min = today;
 
     function values() {
       return {
@@ -672,7 +839,7 @@
         phone: fields.phone.el.value,
         checkin: fields.checkin.el.value,
         checkout: fields.checkout.el.value,
-        adults: fields.adults.el.value || "2",
+        adults: $("#fAdults").value || "2",
         children: $("#fChildren").value || "0",
         preference: $("#fPref").value,
         message: $("#fMessage").value,
@@ -683,25 +850,20 @@
       var f = fields[key];
       if (!f || !f.err) return;
       f.el.closest(".form-field").classList.toggle("invalid", Boolean(msg));
+      f.el.setAttribute("aria-invalid", msg ? "true" : "false");
       f.err.textContent = msg || "";
     }
 
     function validate() {
       var v = values();
-      var allOk = true;
-
-      showError("name", fields.name.valid(v.name) ? "" : "Please enter your full name.");
-      showError("phone", fields.phone.valid(v.phone) ? "" : "Please enter a valid phone number.");
-      showError("checkin", fields.checkin.valid(v.checkin, v) ? "" : "Check-out must be after check-in.");
-      showError("checkout", fields.checkout.valid(v.checkout, v) ? "" : "Check-out must be after check-in.");
-      if (fields.adults.valid(v.adults)) {
-        showError("adults", "");
-      }
-
-      ["name", "phone", "checkin", "checkout"].forEach(function (k) {
-        if (!fields[k].valid(v[k], v)) allOk = false;
+      var firstBad = null;
+      keys.forEach(function (k) {
+        var ok = fields[k].valid(v[k], v);
+        showError(k, ok ? "" : fields[k].message);
+        if (!ok && !firstBad) firstBad = fields[k];
       });
-      return allOk;
+      if (firstBad) firstBad.el.focus();
+      return !firstBad;
     }
 
     form.addEventListener("submit", function (e) {
@@ -722,7 +884,7 @@
       ];
       if (v.message.trim()) lines.push("Message: " + v.message.trim());
 
-      window.open(waHref(lines.join("\n")), "_blank");
+      window.open(waHref(lines.join("\n")), "_blank", "noopener");
 
       var btn = $("#sendBtn");
       var original = btn.textContent;
@@ -734,10 +896,8 @@
       }, 3000);
     });
 
-    ["name", "phone", "checkin", "checkout"].forEach(function (k) {
-      fields[k].el.addEventListener("input", function () {
-        showError(k, "");
-      });
+    keys.forEach(function (k) {
+      fields[k].el.addEventListener("input", function () { showError(k, ""); });
     });
   }
 
@@ -745,9 +905,11 @@
   function buildFooter() {
     $("#footerName").textContent = DATA.name;
     $("#footerNote").textContent = DATA.footer.note;
+    $("#footerLogo").src = DATA.logo.image;
 
     var social = $("#footerSocial");
-    DATA.footer.social.forEach(function (s) {
+    /* A social icon with no address is a dead link — leave it out entirely. */
+    DATA.footer.social.filter(function (s) { return s.href; }).forEach(function (s) {
       var a = document.createElement("a");
       a.href = s.href;
       a.setAttribute("aria-label", s.label);
@@ -773,98 +935,201 @@
     fp.textContent = DATA.phone.display;
     $("#footerWaBtn").href = waHref();
 
-    var year = new Date().getFullYear();
-    $("#copyright").textContent = "\u00A9 " + year + " " + DATA.footer.copyrightHolder + ". All rights reserved.";
+    $("#copyright").textContent =
+      "© " + new Date().getFullYear() + " " + DATA.footer.copyrightHolder +
+      ". All rights reserved.";
   }
 
   /* ------------------------------ SEO ------------------------------ */
+  function siteOrigin() {
+    var configured = (DATA.seo.siteUrl || "").replace(/\/+$/, "");
+    if (configured) return configured;
+    // Fall back to wherever the page is actually being served from.
+    return window.location.origin + window.location.pathname.replace(/\/[^/]*$/, "");
+  }
+
+  function absoluteUrl(path) {
+    if (!path) return "";
+    if (/^https?:\/\//i.test(path)) return path;
+    return siteOrigin() + "/" + String(path).replace(/^\/+/, "");
+  }
+
+  function setMeta(id, content) {
+    var el = document.getElementById(id);
+    if (el && content) el.setAttribute("content", content);
+  }
+
   function buildSeo() {
     var seo = DATA.seo;
     document.title = seo.title;
-    var desc = $("#metaDescription");
-    if (desc) desc.setAttribute("content", seo.description);
-    var ogTitle = $("#ogTitle");
-    if (ogTitle) ogTitle.setAttribute("content", seo.title);
-    var ogDesc = $("#ogDescription");
-    if (ogDesc) ogDesc.setAttribute("content", seo.description);
-    var ogImage = $("#ogImage");
-    if (ogImage && DATA.hero.images[0]) ogImage.setAttribute("content", DATA.hero.images[0].jpg);
+    setMeta("metaDescription", seo.description);
+    setMeta("ogTitle", seo.title);
+    setMeta("ogDescription", seo.description);
+    setMeta("ogSiteName", DATA.name);
+    setMeta("twitterTitle", seo.title);
+    setMeta("twitterDescription", seo.description);
+
+    /* Link previews need a full https:// address — a relative path shows up
+       as a blank card on WhatsApp, Facebook and X. */
+    var shareImage = DATA.hero.images[0] || DATA.gallery[0];
+    var shareUrl = absoluteUrl(shareImage ? shareImage.original : DATA.logo.image);
+    setMeta("ogImage", shareUrl);
+    setMeta("twitterImage", shareUrl);
+    if (shareImage && shareImage.alt) setMeta("ogImageAlt", shareImage.alt);
+
+    var pageUrl = siteOrigin() + "/";
+    setMeta("ogUrl", pageUrl);
+    var canonical = $("#canonicalLink");
+    if (canonical) canonical.href = pageUrl;
+
+    buildStructuredData(pageUrl, shareUrl);
+  }
+
+  /* Tells Google this is a resort with an address, phone, prices and reviews,
+     which is what earns the rich result in search. */
+  function buildStructuredData(pageUrl, shareUrl) {
+    var loc = DATA.location;
+    var schema = {
+      "@context": "https://schema.org",
+      "@type": "Resort",
+      name: DATA.name,
+      description: DATA.seo.description,
+      url: pageUrl,
+      telephone: DATA.phone.tel,
+      priceRange: DATA.seo.priceRange,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: loc.street,
+        addressLocality: loc.city,
+        addressRegion: loc.region,
+        postalCode: loc.postalCode,
+        addressCountry: loc.country,
+      },
+      checkinTime: DATA.importantInfo.checkIn,
+      checkoutTime: DATA.importantInfo.checkOut,
+      petsAllowed: true,
+      smokingAllowed: false,
+      hasMap: loc.directionsUrl,
+      amenityFeature: Object.keys(DATA.amenities).reduce(function (out, key) {
+        DATA.amenities[key].items.forEach(function (item) {
+          out.push({ "@type": "LocationFeatureSpecification", name: item.label, value: true });
+        });
+        return out;
+      }, []),
+    };
+
+    if (shareUrl) schema.image = [shareUrl];
+
+    var social = DATA.footer.social
+      .filter(function (s) { return s.href; })
+      .map(function (s) { return s.href; });
+    if (social.length) schema.sameAs = social;
+
+    if (DATA.seo.ratingValue && DATA.seo.ratingCount) {
+      schema.aggregateRating = {
+        "@type": "AggregateRating",
+        ratingValue: DATA.seo.ratingValue,
+        reviewCount: DATA.seo.ratingCount,
+        bestRating: 5,
+      };
+    }
+
+    schema.review = DATA.testimonials.items.map(function (t) {
+      return {
+        "@type": "Review",
+        author: { "@type": "Person", name: t.name },
+        reviewRating: { "@type": "Rating", ratingValue: t.rating, bestRating: 5 },
+        reviewBody: t.text,
+      };
+    });
+
+    var faq = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: DATA.faq.items.map(function (item) {
+        return {
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a },
+        };
+      }),
+    };
+
+    var tag = document.createElement("script");
+    tag.type = "application/ld+json";
+    tag.textContent = JSON.stringify([schema, faq]);
+    document.head.appendChild(tag);
   }
 
   /* ------------------------------ UI TEXTS ------------------------------ */
   function applyUi() {
     var ui = DATA.ui;
+    var text = {
+      brandSub: ui.nameSub,
+      aboutEyebrow: ui.about.eyebrow,
+      aboutHeading: ui.about.title,
+      aboutExploreBtn: ui.about.explore,
+      aboutWaBtn: ui.about.wa,
+      stayEyebrow: ui.stay.eyebrow,
+      stayTitle: ui.stay.title,
+      staySub: ui.stay.sub,
+      offersEyebrow: ui.offers.eyebrow,
+      offersTitle: ui.offers.title,
+      offersSub: ui.offers.sub,
+      packagesEyebrow: ui.packages.eyebrow,
+      packagesTitle: ui.packages.title,
+      packagesSub: ui.packages.sub,
+      testimEyebrow: ui.testimonials.eyebrow,
+      testimTitle: ui.testimonials.title,
+      testimSub: ui.testimonials.sub,
+      faqEyebrow: ui.faq.eyebrow,
+      faqTitle: ui.faq.title,
+      faqSub: ui.faq.sub,
+      amenEyebrow: ui.amenities.eyebrow,
+      amenTitle: ui.amenities.title,
+      amenSub: ui.amenities.sub,
+      galEyebrow: ui.gallery.eyebrow,
+      galTitle: ui.gallery.title,
+      galSub: ui.gallery.sub,
+      infoEyebrow: ui.info.eyebrow,
+      infoTitle: ui.info.title,
+      locEyebrow: ui.location.eyebrow,
+      locHeading: ui.location.title,
+      directionsBtn: ui.location.directions,
+      locCallBtn: ui.location.call,
+      locWaBtn: ui.location.wa,
+      conEyebrow: ui.contact.eyebrow,
+      conTitle: ui.contact.title,
+      conIntro: ui.contact.intro,
+      formTitle: ui.contact.formTitle,
+      sendBtn: ui.contact.submit,
+      formHint: ui.contact.hint,
+      footerQuickTitle: ui.footer.quickLinks,
+      footerContactTitle: ui.footer.contact,
+      footerWaBtn: ui.footer.wa,
+    };
+    Object.keys(text).forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = text[id];
+    });
 
-    $("#brandSub").textContent = ui.nameSub;
-    $("#navBookBtn").textContent = ui.navBook;
-    $("#mobileBookBtn").textContent = ui.navBook;
-
-    $("#heroBookBtn").textContent = ui.hero.book;
-    $("#heroCallBtn").textContent = ui.hero.call;
-
-    $("#aboutEyebrow").textContent = ui.about.eyebrow;
-    $("#aboutHeading").textContent = ui.about.title;
-    $("#aboutExploreBtn").textContent = ui.about.explore;
-    $("#aboutWaBtn").textContent = ui.about.wa;
-
-    $("#stayEyebrow").textContent = ui.stay.eyebrow;
-    $("#stayTitle").textContent = ui.stay.title;
-    $("#staySub").textContent = ui.stay.sub;
-
-    $("#offersEyebrow").textContent = ui.offers.eyebrow;
-    $("#offersTitle").textContent = ui.offers.title;
-    $("#offersSub").textContent = ui.offers.sub;
-
-    $("#packagesEyebrow").textContent = ui.packages.eyebrow;
-    $("#packagesTitle").textContent = ui.packages.title;
-    $("#packagesSub").textContent = ui.packages.sub;
-
-    $("#testimEyebrow").textContent = ui.testimonials.eyebrow;
-    $("#testimTitle").textContent = ui.testimonials.title;
-    $("#testimSub").textContent = ui.testimonials.sub;
-
-    $("#faqEyebrow").textContent = ui.faq.eyebrow;
-    $("#faqTitle").textContent = ui.faq.title;
-    $("#faqSub").textContent = ui.faq.sub;
-
-    $("#amenEyebrow").textContent = ui.amenities.eyebrow;
-    $("#amenTitle").textContent = ui.amenities.title;
-    $("#amenSub").textContent = ui.amenities.sub;
-
-    $("#galEyebrow").textContent = ui.gallery.eyebrow;
-    $("#galTitle").textContent = ui.gallery.title;
-    $("#galSub").textContent = ui.gallery.sub;
-
-    $("#infoEyebrow").textContent = ui.info.eyebrow;
-    $("#infoTitle").textContent = ui.info.title;
-
-    $("#locEyebrow").textContent = ui.location.eyebrow;
-    $("#locHeading").textContent = ui.location.title;
-    $("#directionsBtn").textContent = ui.location.directions;
-    $("#locCallBtn").textContent = ui.location.call;
-    $("#locWaBtn").textContent = ui.location.wa;
-
-    $("#conEyebrow").textContent = ui.contact.eyebrow;
-    $("#conTitle").textContent = ui.contact.title;
-    $("#conIntro").textContent = ui.contact.intro;
-    $("#formTitle").textContent = ui.contact.formTitle;
-    $("#sendBtn").textContent = ui.contact.submit;
-    $("#formHint").textContent = ui.contact.hint;
-
-    var L = ui.contact.labels;
-    var req = ui.contact.required || [];
-    function setLabel(forId, text, key) {
-      var lbl = document.querySelector('label[for="' + forId + '"]');
-      if (lbl) lbl.innerHTML = text + (req.indexOf(key) > -1 ? ' <span class="req">*</span>' : "");
+    var labels = ui.contact.labels;
+    var required = ui.contact.required || [];
+    function setLabel(inputId, value, key) {
+      var lbl = document.querySelector('label[for="' + inputId + '"]');
+      if (!lbl) return;
+      lbl.innerHTML =
+        esc(value) + (required.indexOf(key) > -1 ? ' <span class="req">*</span>' : "");
     }
-    setLabel("fName", L.name, "name");
-    setLabel("fPhone", L.phone, "phone");
-    setLabel("fCheckin", L.checkin, "checkin");
-    setLabel("fCheckout", L.checkout, "checkout");
-    setLabel("fAdults", L.adults, "adults");
-    setLabel("fChildren", L.children, "children");
-    setLabel("fPref", L.preference, "preference");
-    setLabel("fMessage", L.message, "message");
+    /* These ids must match the inputs in index.html exactly, capitals included. */
+    setLabel("fName", labels.name, "name");
+    setLabel("fPhone", labels.phone, "phone");
+    setLabel("fCheckIn", labels.checkin, "checkin");
+    setLabel("fCheckOut", labels.checkout, "checkout");
+    setLabel("fAdults", labels.adults, "adults");
+    setLabel("fChildren", labels.children, "children");
+    setLabel("fPref", labels.preference, "preference");
+    setLabel("fMessage", labels.message, "message");
 
     $("#fName").placeholder = ui.contact.placeholders.name;
     $("#fPhone").placeholder = ui.contact.placeholders.phone;
@@ -878,10 +1143,6 @@
       o.textContent = p;
       sel.appendChild(o);
     });
-
-    $("#footerQuickTitle").textContent = ui.footer.quickLinks;
-    $("#footerContactTitle").textContent = ui.footer.contact;
-    $("#footerWaBtn").textContent = ui.footer.wa;
   }
 
   /* ------------------------------ scroll behaviours ------------------------------ */
@@ -893,68 +1154,96 @@
     var navAnchors = $all(".nav-links a");
     var mouseX = 0;
     var mouseY = 0;
+    var queued = false;
 
     var sections = DATA.nav
       .map(function (n) { return document.getElementById(n.href.slice(1)); })
       .filter(Boolean);
 
-    function applyParallax() {
+    /* Reading offsetTop forces the browser to recalculate layout. Measure once
+       and refresh on resize instead of doing it on every scroll event. */
+    var offsets = [];
+    function measure() {
+      offsets = sections.map(function (s) { return { id: s.id, top: s.offsetTop }; });
+      docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    }
+    var docHeight = 0;
+
+    function applyParallax(y) {
       if (!particlesEl) return;
-      var offX = mouseX * 22;
-      var offY = mouseY * 14 + window.scrollY * 0.22;
-      particlesEl.style.transform = "translate3d(" + offX.toFixed(1) + "px, " + offY.toFixed(1) + "px, 0)";
+      particlesEl.style.transform =
+        "translate3d(" + (mouseX * 22).toFixed(1) + "px, " +
+        (mouseY * 14 + y * 0.22).toFixed(1) + "px, 0)";
     }
 
-    function onScroll() {
+    function render() {
+      queued = false;
       var y = window.scrollY;
+
       header.classList.toggle("scrolled", y > 40);
       backToTop.classList.toggle("show", y > 600);
-
-      var docH = document.documentElement.scrollHeight - window.innerHeight;
-      var pct = docH > 0 ? (y / docH) * 100 : 0;
-      progress.style.width = pct + "%";
-
-      applyParallax();
+      progress.style.width = (docHeight > 0 ? (y / docHeight) * 100 : 0) + "%";
+      applyParallax(y);
 
       var current = "";
       var mid = y + window.innerHeight * 0.35;
-      sections.forEach(function (s) {
-        if (s.offsetTop <= mid) current = s.id;
-      });
+      for (var i = 0; i < offsets.length; i++) {
+        if (offsets[i].top <= mid) current = offsets[i].id;
+      }
       navAnchors.forEach(function (a) {
         a.classList.toggle("active", a.dataset.target === current);
       });
     }
 
-    if (window.matchMedia && window.matchMedia("(pointer: fine)").matches) {
+    /* Coalesce bursts of scroll/mousemove events into one paint per frame. */
+    function schedule() {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(render);
+    }
+
+    measure();
+    render();
+
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", function () { measure(); schedule(); });
+    window.addEventListener("load", measure);
+
+    if (!REDUCED_MOTION && window.matchMedia && window.matchMedia("(pointer: fine)").matches) {
       document.addEventListener("mousemove", function (e) {
         mouseX = e.clientX / window.innerWidth - 0.5;
         mouseY = e.clientY / window.innerHeight - 0.5;
-        applyParallax();
-        document.documentElement.style.setProperty("--mx", (e.clientX / window.innerWidth) * 100 + "%");
-        document.documentElement.style.setProperty("--my", (e.clientY / window.innerHeight) * 100 + "%");
-      });
+        document.documentElement.style.setProperty("--mx", (mouseX + 0.5) * 100 + "%");
+        document.documentElement.style.setProperty("--my", (mouseY + 0.5) * 100 + "%");
+        schedule();
+      }, { passive: true });
     }
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-
     backToTop.addEventListener("click", function () {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: REDUCED_MOTION ? "auto" : "smooth" });
     });
   }
 
   /* ------------------------------ reveal animations ------------------------------ */
   function initReveal() {
+    var targets = $all(".reveal");
+    if (REDUCED_MOTION || !("IntersectionObserver" in window)) {
+      targets.forEach(function (el) { el.classList.add("in"); });
+      return;
+    }
+    /* Reveal once and stop watching — re-hiding content on scroll-up is
+       distracting and keeps the observer running for the life of the page. */
     var observer = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
-          entry.target.classList.toggle("in", entry.isIntersecting);
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("in");
+          observer.unobserve(entry.target);
         });
       },
       { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
     );
-    $all(".reveal").forEach(function (el) { observer.observe(el); });
+    targets.forEach(function (el) { observer.observe(el); });
   }
 
   /* ------------------------------ init ------------------------------ */
@@ -982,6 +1271,7 @@
     buildFooter();
     initScroll();
     initReveal();
+    document.documentElement.classList.add("js-ready");
   }
 
   if (document.readyState === "loading") {

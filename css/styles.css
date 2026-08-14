@@ -18,16 +18,19 @@
   --beige-300: #e6d7bd;
   --sand: #d6c19b;
   --earth: #a9713f;
-  --ink: #28302a;
-  --muted: #5d655b;
+  --ink: #1c2a23;
+  --muted: #46514a;
   --white: #ffffff;
   --wa-green: #25d366;
+
+  --gold: #d9a441;
+  --gold-soft: #f2c879;
 
   --shadow-sm: 0 2px 10px rgba(40, 48, 42, 0.08);
   --shadow-md: 0 10px 30px rgba(40, 48, 42, 0.12);
   --shadow-lg: 0 18px 50px rgba(28, 61, 41, 0.18);
+  --glow-green: 0 12px 30px rgba(31, 122, 82, 0.42);
 
-  --radius-sm: 8px;
   --radius: 16px;
   --radius-lg: 24px;
 
@@ -36,7 +39,15 @@
 
   --header-h: 76px;
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* Position of the cursor, used by the warm light in .bg-mouse */
+  --mx: 50%;
+  --my: 50%;
 }
+
+/* The `hidden` attribute must win over the display rules further down, so a
+   section with no content to show (e.g. no photos yet) really disappears. */
+[hidden] { display: none !important; }
 
 /* ------------------------------ reset/base ------------------------------ */
 *,
@@ -59,9 +70,27 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ============ full-page animated gradient background ============ */
-:root { --mx: 50%; --my: 50%; }
+/* ------------------------------ no-JS / boot failure ------------------------------ */
+.noscript-banner,
+.boot-error {
+  position: relative;
+  z-index: 200;
+  max-width: 720px;
+  margin: 96px auto 24px;
+  padding: 28px 32px;
+  background: var(--white);
+  border: 1px solid rgba(63, 125, 78, 0.25);
+  border-left: 5px solid var(--forest-600);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+}
+.noscript-banner h2 { font-size: 1.5rem; margin-bottom: 10px; }
+.noscript-banner p { color: var(--muted); margin-bottom: 16px; }
+.noscript-banner li { padding: 5px 0; font-size: 0.98rem; }
+.noscript-banner a { font-weight: 600; }
+.boot-error { font-weight: 600; }
 
+/* ============ full-page animated gradient background ============ */
 .bg-anim {
   position: fixed;
   inset: 0;
@@ -148,7 +177,9 @@ section[id] { scroll-margin-top: var(--header-h); }
 }
 
 .section { padding: 96px 0; }
-.section-tinted { background: transparent; }
+/* Alternating sections get a faint wash so they read as separate bands over
+   the animated background. */
+.section-tinted { background: rgba(255, 255, 255, 0.24); }
 
 .section-head {
   text-align: center;
@@ -383,10 +414,20 @@ section[id] { scroll-margin-top: var(--header-h); }
   padding: 12px 24px 24px;
   transform: translateY(-16px);
   opacity: 0;
+  /* visibility (not just opacity) keeps the closed menu's links out of the
+     keyboard tab order. js/main.js also sets `inert` for good measure. */
+  visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease),
+    visibility 0s linear 0.35s;
 }
-.mobile-menu.open { opacity: 1; transform: none; pointer-events: auto; }
+.mobile-menu.open {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  pointer-events: auto;
+  transition-delay: 0s;
+}
 .mobile-menu a {
   display: block;
   padding: 13px 14px;
@@ -419,6 +460,15 @@ section[id] { scroll-margin-top: var(--header-h); }
   inset: 0;
   background: var(--forest-900);
 }
+/* Shown when assets/images/hero/ is empty or the photo fails to load, so the
+   headline always sits on a designed backdrop rather than a flat slab. */
+.hero-media.no-photo {
+  background:
+    radial-gradient(60% 60% at 25% 20%, rgba(63, 125, 78, 0.9), transparent 70%),
+    radial-gradient(55% 55% at 80% 70%, rgba(47, 143, 174, 0.85), transparent 70%),
+    linear-gradient(160deg, #0d2b1d, #123f37);
+}
+.hero-media.no-photo picture { display: none; }
 .hero-media picture,
 .hero-media img {
   width: 100%;
@@ -1339,6 +1389,26 @@ body.lb-open { overflow: hidden; }
 .back-to-top.show { opacity: 1; transform: none; pointer-events: auto; }
 .back-to-top:hover { background: var(--forest-700); }
 
+/* ------------------------------ keyboard focus ------------------------------ */
+/* Every interactive element needs a visible focus ring for keyboard users.
+   :focus-visible keeps it away from mouse clicks. */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--forest-500);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.site-header a:focus-visible,
+.hero a:focus-visible,
+.lightbox button:focus-visible,
+.site-footer a:focus-visible {
+  outline-color: var(--gold-soft);
+}
+
 /* ------------------------------ reveal animations ------------------------------ */
 .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.75s var(--ease), transform 0.75s var(--ease); }
 .reveal.in { opacity: 1; transform: none; }
@@ -1346,26 +1416,31 @@ body.lb-open { overflow: hidden; }
 .reveal-d2 { transition-delay: 0.16s; }
 .reveal-d3 { transition-delay: 0.24s; }
 
+/* About section with no photos yet: let the text use the full width. */
+.about-grid.no-media { grid-template-columns: 1fr; }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
-  .hero-scroll-dot, .skeleton::after { animation: none; }
   * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+
+  /* Collapsing the durations is not enough on its own: the spinning blurred
+     blobs and the hue-rotate filter stay expensive to composite even when
+     frozen. Drop the decoration entirely and keep a plain background. */
+  .bg-anim { animation: none; filter: none; background-size: auto; }
+  .bg-blob,
+  .bg-mouse,
+  .hero-particles,
+  .hero-orb { display: none; }
+  .hero-scroll-dot, .skeleton::after { animation: none; }
+  .hero-media img { transform: none; }
 }
 
-/* ============================== RICH THEME UPGRADE ============================== */
-:root {
-  --emerald: #062b1c;
-  --gold: #d9a441;
-  --gold-soft: #f2c879;
-  --muted: #46514a;
-  --ink: #1c2a23;
-  --grad-brand: linear-gradient(120deg, #1f7a52, #2f8fae);
-  --grad-head: linear-gradient(115deg, #1c5c3e, #2f8fae 45%, #d9a441);
-  --grad-gold: linear-gradient(120deg, #d9a441, #f2c879);
-  --glow-green: 0 12px 30px rgba(31, 122, 82, 0.42);
-  --glow-gold: 0 10px 28px rgba(217, 164, 65, 0.4);
-}
+/* ============================== RICH THEME LAYER ==============================
+   Colour and depth refinements applied on top of the base rules above. The
+   custom properties these use are declared once, in the :root block at the
+   top of this file.
+   ============================================================================ */
 
 /* ---------- headings: solid, high-contrast ---------- */
 .section-title,

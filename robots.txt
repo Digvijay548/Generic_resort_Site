@@ -1,0 +1,8 @@
+# Allow every search engine to index the whole site.
+User-agent: *
+Allow: /
+
+# Generated image copies are not useful on their own.
+Disallow: /assets/images/_optimized/
+
+Sitemap: https://www.theriverfrontresort.in/sitemap.xml

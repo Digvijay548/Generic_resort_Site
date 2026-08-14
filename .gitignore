@@ -1,0 +1,12 @@
+# Python bytecode from the image scripts
+__pycache__/
+*.pyc
+
+# OS / editor cruft
+Thumbs.db
+.DS_Store
+.vscode/
+
+# NOTE: assets/images/_optimized/ is intentionally NOT ignored.
+# Those generated WebP copies are part of the live site and must be
+# committed and uploaded along with everything else.

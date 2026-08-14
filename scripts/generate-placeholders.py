@@ -1,10 +1,35 @@
+#!/usr/bin/env python3
+"""
+OPTIONAL — generates simple illustrated stand-in photos.
+
+Only useful when starting a brand-new site with no real photos yet. Once you
+have real photos in assets/images/ you never need this again.
+
+It will NOT overwrite anything: any file that already exists is skipped, so
+running it by accident cannot destroy your photos. Use --overwrite if you
+really do want to replace the generated placeholders.
+
+Usage:
+    python scripts/generate-placeholders.py
+    python scripts/generate-placeholders.py --overwrite
+
+Afterwards, rebuild the image list:
+    python scripts/generate-images.py
+"""
+
+import argparse
 import os
+
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
-BASE = r"C:\Users\DigvijayPatilLM\Downloads\deepseek\assets\images"
+# Resolved from this file's location, so the script works on any machine.
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE = os.path.join(ROOT, "assets", "images")
 
-FONT = r"C:\Windows\Fonts\arialbd.ttf"
-FONT_LIGHT = r"C:\Windows\Fonts\arial.ttf"
+# Falls back to Pillow's built-in font wherever Arial is not installed.
+FONT_LIGHT = os.path.join(os.environ.get("WINDIR", r"C:\Windows"), "Fonts", "arial.ttf")
+
+OVERWRITE = False
 
 def lerp(a, b, t):
     return tuple(int(a[i] + (b[i] - a[i]) * t) for i in range(3))
@@ -61,13 +86,23 @@ def label(img, text):
     return img
 
 def save_photo(rel, label_text, top, bottom, sun, hill1, hill2, river, variant=0, sizes=None):
+    path = os.path.join(BASE, *rel.split("\\"))
+    if os.path.exists(path) and not OVERWRITE:
+        print("skipped (already exists)", rel)
+        return
     img = scene(top, bottom, sun, hill1, hill2, river, variant)
     img = label(img, label_text)
-    path = os.path.join(BASE, rel)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     img.save(path, "JPEG", quality=86, optimize=True, progressive=True)
-    img.save(os.path.splitext(path)[0] + ".webp", "WEBP", quality=84, method=6)
     print("saved", rel)
+
+_parser = argparse.ArgumentParser(description="Generate stand-in photos for a new site.")
+_parser.add_argument("--overwrite", action="store_true",
+                     help="replace files that already exist (default: skip them)")
+OVERWRITE = _parser.parse_args().overwrite
+
+if not OVERWRITE:
+    print("Existing files will be skipped. Pass --overwrite to replace them.\n")
 
 GREEN = (56, 122, 74)
 DEEP_TEAL = (18, 74, 84)
@@ -147,11 +182,12 @@ def make_logo(size):
 
     return img
 
-logo = make_logo(512)
-logo.save(os.path.join(BASE, r"branding\resort-logo.png"))
-print("saved resort-logo.png")
-fav = make_logo(192).resize((64, 64), Image.LANCZOS)
-fav.save(os.path.join(BASE, r"branding\resort-favicon.png"))
-print("saved resort-favicon.png")
+logo_path = os.path.join(BASE, "branding", "resort-logo.png")
+if os.path.exists(logo_path) and not OVERWRITE:
+    print("skipped (already exists) branding/resort-logo.png")
+else:
+    os.makedirs(os.path.dirname(logo_path), exist_ok=True)
+    make_logo(512).save(logo_path)
+    print("saved branding/resort-logo.png")
 
-print("ALL DONE")
+print("\nALL DONE — now run:  python scripts/generate-images.py")

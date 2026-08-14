@@ -6,15 +6,30 @@
   <meta name="description" id="metaDescription" content="The Riverfront Resort — a peaceful riverside resort in Pimpri-Chinchwad for families, couples, groups and pet owners. Rooms, amenities and a welcoming atmosphere." />
   <title>The Riverfront Resort | Relax by nature</title>
 
-  <!-- Social share preview (values updated from js/data.js) -->
+  <meta name="theme-color" content="#1c3d29" />
+  <link rel="canonical" id="canonicalLink" href="https://www.theriverfrontresort.in/" />
+
+  <!--
+    Social share preview. These values are refreshed from js/data.js at run
+    time, but they are written out here too so that link-preview bots which do
+    not run JavaScript still get a title, description and image.
+    The image must be a FULL https:// address — set `seo.siteUrl` in js/data.js.
+  -->
   <meta property="og:type" content="website" />
+  <meta property="og:site_name" id="ogSiteName" content="The Riverfront Resort" />
+  <meta property="og:url" id="ogUrl" content="https://www.theriverfrontresort.in/" />
   <meta property="og:title" id="ogTitle" content="The Riverfront Resort | Relax by nature" />
-  <meta property="og:description" id="ogDescription" content="The Riverfront Resort — a peaceful riverside resort in Pimpri-Chinchwad." />
-  <meta property="og:image" id="ogImage" content="assets/images/branding/resort-logo.png" />
+  <meta property="og:description" id="ogDescription" content="The Riverfront Resort — a peaceful riverside resort in Pimpri-Chinchwad for families, couples, groups and pet owners." />
+  <meta property="og:image" id="ogImage" content="https://www.theriverfrontresort.in/assets/images/hero/Gemini_Generated_Image_fxf8qvfxf8qvfxf8.png" />
+  <meta property="og:image:alt" id="ogImageAlt" content="Riverside view of The Riverfront Resort" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" id="twitterTitle" content="The Riverfront Resort | Relax by nature" />
+  <meta name="twitter:description" id="twitterDescription" content="A peaceful riverside resort in Pimpri-Chinchwad for families, couples, groups and pet owners." />
+  <meta name="twitter:image" id="twitterImage" content="https://www.theriverfrontresort.in/assets/images/hero/Gemini_Generated_Image_fxf8qvfxf8qvfxf8.png" />
 
   <!-- Favicon (assets/images/branding/resort-logo.png) -->
   <link rel="icon" type="image/png" href="assets/images/branding/resort-logo.png" />
+  <link rel="apple-touch-icon" href="assets/images/branding/resort-logo.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -33,6 +48,30 @@
 
   <!-- Scroll progress bar -->
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <!--
+    Most of this page is built by js/main.js. If scripts are blocked, show the
+    details a visitor actually needs rather than a page of empty sections.
+  -->
+  <noscript>
+    <div class="noscript-banner">
+      <h2>The Riverfront Resort</h2>
+      <p>
+        A peaceful riverside resort in Pimpri-Chinchwad for families, couples,
+        groups and pet owners. This page needs JavaScript for photos and the
+        enquiry form — please get in touch directly:
+      </p>
+      <ul>
+        <li><strong>Phone:</strong> <a href="tel:+917277775060">072777 75060</a></li>
+        <li><strong>WhatsApp:</strong> <a href="https://wa.me/917277775060">072777 75060</a></li>
+        <li>
+          <strong>Address:</strong> Solu, Alandi-Markal Road, behind Dosti Hotel,
+          Pimpri-Chinchwad, Maharashtra 412105
+        </li>
+        <li><strong>Check-in:</strong> 1:00 PM &nbsp;·&nbsp; <strong>Check-out:</strong> 10:00 AM</li>
+      </ul>
+    </div>
+  </noscript>
 
   <!-- ============================ HEADER ============================ -->
   <header class="site-header" id="siteHeader">
@@ -174,7 +213,11 @@
           <h2 class="section-title" id="testimTitle">What our guests say</h2>
           <p class="section-sub" id="testimSub">Real experiences from happy guests who relaxed by the river.</p>
         </header>
-        <div class="testim-slider reveal" id="testimSlider" aria-live="polite">
+        <!--
+          No aria-live here: the slider advances on a timer, and a live region
+          would make screen readers read out a new review every few seconds.
+        -->
+        <div class="testim-slider reveal" id="testimSlider" aria-roledescription="carousel" aria-label="Guest reviews">
           <div class="testim-track" id="testimTrack"><!-- slides populated from data.js --></div>
           <div class="testim-nav" id="testimNav" aria-label="Testimonial controls">
             <button type="button" class="ts-btn" id="tsPrev" aria-label="Previous testimonial">&#10094;</button>

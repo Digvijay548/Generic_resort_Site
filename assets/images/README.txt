@@ -1,27 +1,62 @@
 PUT YOUR PHOTOS HERE
 ====================
 
-This folder is for the main website photos. Replace the existing .jpg files with
-your own photos, KEEPING THE SAME FILENAME. The website reads the filenames from
-js/data.js, so as long as the name matches, your photo is used automatically.
+Drop photos into the folder that matches what they show. That is the whole job.
 
-Example: to change the first room photo, put your image in
-  assets/images/rooms/room-01.jpg
-  (and, for best speed, also assets/images/rooms/room-01.webp)
+  * Filenames DO NOT MATTER. "IMG_4821.jpg" works exactly as well as
+    "pool-sunset.jpg". You never have to rename anything.
+  * HOW MANY DO NOT MATTER. Five photos in a folder shows five. Add three
+    more and it shows eight. Delete some and it shows fewer.
+  * You do not need to resize or convert anything. Small copies for phones
+    are made for you.
 
-Folders:
-  branding/       resort logo + favicon
-  hero/           big hero background images (main + mobile)
-  resort/         exterior & riverfront photos
-  rooms/          room photos
-  camping/        camping photos
-  pool/           swimming pool photos
-  food/           breakfast / buffet / dinner photos
-  activities/     family & group activity photos
+AFTER ADDING OR REMOVING PHOTOS
+-------------------------------
+Run this once so the website notices them:
+
+    Windows:  double-click  scripts\update-images.bat
+    Anywhere: python scripts/generate-images.py
+
+Then refresh the page in your browser.
+
+FOLDERS
+-------
+  branding/       resort logo (also used as the browser-tab icon)
+  hero/           big background photo at the top
+                  (1st photo = desktop, 2nd = mobile)
+  resort/         exterior & riverfront — used by the About section
+  rooms/          room photos — used by the Stay cards
+  pool/           swimming pool
+  food/           breakfast / buffet / dinner
+  activities/     family & group activities
   surroundings/   nature around the resort
-  gallery/        extra gallery photos
+  gallery/        anything else you want in the gallery
 
-Rules: lowercase filenames, hyphens not spaces, two-digit numbers (room-01.jpg).
-Images auto-fit to any size, so you do not need to resize them.
+Everything except branding/, hero/ and surroundings/ also appears in the
+photo gallery, each folder as its own filter tab.
+
+WANT A NEW GALLERY TAB?
+-----------------------
+Make a new folder here, put photos in it, and re-run the script. A tab named
+after the folder appears by itself. For example, a folder called "spa"
+becomes a "Spa" tab. To control the exact wording, add the folder to the
+FOLDERS list at the top of scripts/generate-images.py.
+
+DESCRIBING A PHOTO (optional)
+-----------------------------
+Screen readers and Google read each photo's description. One is written for
+you from the folder name. To write your own, create a file called _alt.json
+inside the folder:
+
+    {
+      "IMG_4821.jpg": "Sunset over the river from the lawn",
+      "pool-02.jpg":  "Children playing in the swimming pool"
+    }
+
+WHAT IS THE _optimized FOLDER?
+------------------------------
+Small, fast copies of your photos, made automatically. Do not edit it and do
+not put your own photos in it — it is rebuilt every time you run the script.
+Your originals are never modified or moved.
 
 See README.md at the project root for the full guide.
