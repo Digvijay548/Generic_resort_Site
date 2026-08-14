@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" id="metaDescription" content="The Riverfront Resort & Camping — a peaceful riverside resort in Pimpri-Chinchwad for families, couples, groups and pet owners. Rooms, camping, amenities and a welcoming atmosphere." />
+  <title>The Riverfront Resort & Camping | Relax by nature</title>
+
+  <!-- Social share preview (values updated from js/data.js) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" id="ogTitle" content="The Riverfront Resort & Camping | Relax by nature" />
+  <meta property="og:description" id="ogDescription" content="The Riverfront Resort & Camping — a peaceful riverside resort in Pimpri-Chinchwad." />
+  <meta property="og:image" id="ogImage" content="assets/images/hero/hero-main.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Favicon (assets/images/branding/resort-favicon.png) -->
+  <link rel="icon" type="image/png" href="assets/images/branding/resort-favicon.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- Full-page animated gradient background -->
+  <div class="bg-anim" aria-hidden="true">
+    <div class="bg-blob bg-blob-1"></div>
+    <div class="bg-blob bg-blob-2"></div>
+    <div class="bg-blob bg-blob-3"></div>
+    <div class="bg-mouse"></div>
+  </div>
+
+  <!-- Scroll progress bar -->
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <!-- ============================ HEADER ============================ -->
+  <header class="site-header" id="siteHeader">
+    <nav class="nav container" aria-label="Main navigation">
+      <a href="#home" class="brand">
+        <img id="navLogo" src="assets/images/branding/resort-logo.png" alt="The Riverfront Resort & Camping logo" width="42" height="42" />
+        <span class="brand-name">
+          <span class="brand-name-text" id="brandName">The Riverfront</span>
+          <em id="brandSub">Resort &amp; Camping</em>
+        </span>
+      </a>
+
+      <ul class="nav-links" id="navLinks"><!-- populated from data.js --></ul>
+
+      <div class="nav-actions">
+        <a id="navBookBtn" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Book Now</a>
+        <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Mobile menu -->
+  <nav class="mobile-menu" id="mobileMenu" aria-label="Mobile navigation">
+    <ul id="mobileLinks"><!-- populated from data.js --></ul>
+    <a id="mobileBookBtn" class="btn btn-primary" target="_blank" rel="noopener">Book Now</a>
+  </nav>
+
+  <main>
+    <!-- ============================ HERO ============================ -->
+    <section class="hero" id="home">
+      <div class="hero-media" id="heroMedia"><!-- skeleton shown until image loads --></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
+      <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
+      <div class="hero-orb hero-orb-3" aria-hidden="true"></div>
+      <div class="hero-orb hero-orb-4" aria-hidden="true"></div>
+      <div class="hero-content container">
+        <h1 class="hero-title" id="heroHeading">The Riverfront Resort &amp; Camping</h1>
+        <p class="hero-subtitle" id="heroSubtitle">Relax by nature. Stay in comfort. Create unforgettable memories.</p>
+        <div class="hero-actions">
+          <a id="heroBookBtn" class="btn btn-primary btn-lg" target="_blank" rel="noopener">Book Your Stay</a>
+          <a id="heroCallBtn" class="btn btn-outline-light btn-lg" href="tel:+917277775060">Call Now</a>
+        </div>
+      </div>
+      <a class="hero-scroll" href="#about" aria-label="Scroll down to the about section">
+        <span class="hero-scroll-dot"></span>
+      </a>
+    </section>
+
+    <!-- ============================ ABOUT ============================ -->
+    <section class="section" id="about">
+      <div class="container about-grid">
+        <div class="about-media reveal" id="aboutMedia"><!-- populated from data.js --></div>
+        <div class="about-text reveal">
+          <p class="eyebrow" id="aboutEyebrow">About the Resort</p>
+          <h2 class="section-title" id="aboutHeading">A peaceful escape on the riverfront</h2>
+          <p id="aboutText"></p>
+          <div class="about-actions">
+            <a href="#stay" class="btn btn-secondary" id="aboutExploreBtn">Explore Stays</a>
+            <a id="aboutWaBtn" class="btn btn-whatsapp" target="_blank" rel="noopener">Enquire on WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ STAY & CAMPING ============================ -->
+    <section class="section section-tinted" id="stay">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="eyebrow" id="stayEyebrow">Stay &amp; Camping</p>
+          <h2 class="section-title" id="stayTitle">Choose your stay</h2>
+          <p class="section-sub" id="staySub">Comfortable rooms and a true camping experience by the river — perfect for families, couples, groups and pets.</p>
+        </header>
+        <div class="stay-grid" id="stayGrid"><!-- cards populated from data.js --></div>
+        <p class="stay-note reveal" id="stayNote"></p>
+      </div>
+    </section>
+
+    <!-- ============================ AMENITIES ============================ -->
+    <section class="section" id="amenities">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="eyebrow" id="amenEyebrow">Amenities</p>
+          <h2 class="section-title" id="amenTitle">Everything you need for a comfortable stay</h2>
+          <p class="section-sub" id="amenSub">From the swimming pool to pet-friendly facilities — enjoy a relaxed, easy getaway.</p>
+        </header>
+        <div class="amenity-cats" id="amenityCats"><!-- populated from data.js --></div>
+      </div>
+    </section>
+
+    <!-- ============================ GALLERY ============================ -->
+    <section class="section section-tinted" id="gallery">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="eyebrow" id="galEyebrow">Gallery</p>
+          <h2 class="section-title" id="galTitle">Moments at The Riverfront</h2>
+          <p class="section-sub" id="galSub">A glimpse of the resort, rooms, camping, pool, food and surroundings.</p>
+        </header>
+        <div class="gallery-filters reveal" id="galleryFilters"><!-- populated from data.js --></div>
+        <div class="gallery-grid" id="galleryGrid"><!-- populated from data.js --></div>
+        <div class="gallery-nav" id="galleryNav" aria-label="Gallery scroll controls">
+          <button type="button" class="gs-btn" id="gsPrev" aria-label="Scroll gallery left">&#10094;</button>
+          <button type="button" class="gs-btn" id="gsNext" aria-label="Scroll gallery right">&#10095;</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ IMPORTANT INFO ============================ -->
+    <section class="section info-section" id="info">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="eyebrow" id="infoEyebrow">Good to Know</p>
+          <h2 class="section-title" id="infoTitle">Important information</h2>
+        </header>
+        <div class="info-card reveal" id="infoCard"><!-- populated from data.js --></div>
+      </div>
+    </section>
+
+    <!-- ============================ LOCATION ============================ -->
+    <section class="section" id="location">
+      <div class="container location-grid">
+        <div class="location-text reveal">
+          <p class="eyebrow" id="locEyebrow">Location</p>
+          <h2 class="section-title" id="locHeading">Find Us</h2>
+          <address class="location-address" id="locAddress"></address>
+          <div class="location-actions">
+            <a id="directionsBtn" class="btn btn-primary" target="_blank" rel="noopener">Get Directions</a>
+            <a id="locCallBtn" class="btn btn-outline" href="tel:+917277775060">Call Resort</a>
+            <a id="locWaBtn" class="btn btn-whatsapp" target="_blank" rel="noopener">WhatsApp</a>
+          </div>
+        </div>
+        <div class="location-map reveal" id="locationMap">
+          <!-- iframe populated from data.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ CONTACT ============================ -->
+    <section class="section section-tinted" id="contact">
+      <div class="container contact-grid">
+        <div class="contact-info reveal">
+          <p class="eyebrow" id="conEyebrow">Contact</p>
+          <h2 class="section-title" id="conTitle">Send us an enquiry</h2>
+          <p id="conIntro">Tell us about your stay and we will get back to you on WhatsApp with availability.</p>
+          <ul class="contact-list">
+            <li>
+              <span class="ci-icon" aria-hidden="true"></span>
+              <div><strong>Phone</strong><a id="contactPhone" href="tel:+917277775060"></a></div>
+            </li>
+            <li>
+              <span class="ci-icon" aria-hidden="true"></span>
+              <div><strong>WhatsApp</strong><a id="contactWa" href="#" target="_blank" rel="noopener"></a></div>
+            </li>
+            <li>
+              <span class="ci-icon" aria-hidden="true"></span>
+              <div><strong>Address</strong><span id="contactAddress"></span></div>
+            </li>
+          </ul>
+        </div>
+
+        <form class="enquiry-form reveal" id="enquiryForm" novalidate>
+          <h3 class="form-title" id="formTitle">Enquiry Form</h3>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label for="fName">Full name <span class="req">*</span></label>
+              <input type="text" id="fName" name="name" autocomplete="name" placeholder="Your full name" />
+              <small class="form-error" id="errName"></small>
+            </div>
+            <div class="form-field">
+              <label for="fPhone">Phone number <span class="req">*</span></label>
+              <input type="tel" id="fPhone" name="phone" autocomplete="tel" placeholder="e.g. 98200 00000" />
+              <small class="form-error" id="errPhone"></small>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label for="fCheckIn">Check-in date</label>
+              <input type="date" id="fCheckIn" name="checkin" />
+              <small class="form-error" id="errCheckIn"></small>
+            </div>
+            <div class="form-field">
+              <label for="fCheckOut">Check-out date</label>
+              <input type="date" id="fCheckOut" name="checkout" />
+              <small class="form-error" id="errCheckOut"></small>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label for="fAdults">Number of adults</label>
+              <input type="number" id="fAdults" name="adults" min="1" max="50" value="2" />
+            </div>
+            <div class="form-field">
+              <label for="fChildren">Number of children</label>
+              <input type="number" id="fChildren" name="children" min="0" max="50" value="0" />
+            </div>
+            <div class="form-field">
+              <label for="fPref">Stay preference</label>
+              <select id="fPref" name="preference">
+                <option value="Room">Room</option>
+                <option value="Camping">Camping</option>
+                <option value="Group Outing">Group Outing</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="fMessage">Message</label>
+            <textarea id="fMessage" name="message" rows="4" placeholder="Tell us about your planned stay…"></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg btn-block" id="sendBtn">Send Enquiry</button>
+          <p class="form-hint" id="formHint">Your enquiry opens in WhatsApp — no account or backend needed.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================ FOOTER ============================ -->
+  <footer class="site-footer" id="siteFooter">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <img id="footerLogo" src="assets/images/branding/resort-logo.png" alt="The Riverfront Resort & Camping logo" width="48" height="48" />
+        <p class="footer-name" id="footerName"></p>
+        <p class="footer-note" id="footerNote"></p>
+        <div class="footer-social" id="footerSocial"><!-- populated from data.js --></div>
+      </div>
+      <div class="footer-col">
+        <h4 id="footerQuickTitle">Quick Links</h4>
+        <ul class="footer-links" id="footerLinks"><!-- populated from data.js --></ul>
+      </div>
+      <div class="footer-col">
+        <h4 id="footerContactTitle">Contact</h4>
+        <address class="footer-address" id="footerAddress"></address>
+        <a class="footer-phone" id="footerPhone" href="tel:+917277775060"></a>
+        <a id="footerWaBtn" class="btn btn-whatsapp btn-sm" target="_blank" rel="noopener">WhatsApp Us</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p id="copyright"></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================ LIGHTBOX ============================ -->
+  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Image viewer">
+    <button class="lb-btn lb-close" id="lbClose" aria-label="Close">&#10005;</button>
+    <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous image">&#10094;</button>
+    <figure class="lb-media">
+      <img id="lbImage" src="" alt="" />
+      <figcaption class="lb-caption" id="lbCaption"></figcaption>
+      <span class="lb-counter" id="lbCounter"></span>
+    </figure>
+    <button class="lb-btn lb-next" id="lbNext" aria-label="Next image">&#10095;</button>
+  </div>
+
+  <!-- Back to top -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</button>
+
+  <script src="js/images.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
