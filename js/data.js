@@ -26,13 +26,15 @@
  * ============================================================================
  */
 
-(function () {
+/* This file is a factory: js/main.js calls it once the photo list is ready
+   (see js/autoscan.js). You still only ever edit the values below. */
+window.buildResortData = function (manifest) {
   "use strict";
 
   /* ------------------------------------------------------------------ */
-  /*  IMAGE PLUMBING — reads js/images.js. No need to edit this block.   */
+  /*  IMAGE PLUMBING — no need to edit this block.                       */
   /* ------------------------------------------------------------------ */
-  var IMG = window.IMAGE_MANIFEST || { version: 2, order: [], folders: {} };
+  var IMG = manifest || window.IMAGE_MANIFEST || { version: 2, order: [], folders: {} };
 
   function folderImages(name) {
     var folder = IMG.folders && IMG.folders[name];
@@ -135,6 +137,12 @@
       tel: "+917277775060",
     },
 
+    // ==========================================================
+    //  ⭐ EMAIL — shown in Contact and the footer, and given to
+    //  Google. Set to "" to hide it everywhere.
+    // ==========================================================
+    email: "stay@theriverfrontresort.in",
+
     whatsapp: {
       // ==========================================================
       //  ⭐ SINGLE WHATSAPP NUMBER USED EVERYWHERE:
@@ -175,6 +183,16 @@
       nameSub: "Resort",
       navBook: "Book Now",
       hero: { book: "Book Your Stay", call: "Call Now" },
+      // Floating availability bar at the bottom of the hero
+      availability: {
+        checkIn: "Check-in",
+        checkOut: "Check-out",
+        guests: "Guests",
+        suite: "Suite type",
+        submit: "Check Availability",
+        anySuite: "Any suite",
+        errorDates: "Please choose a check-out date after your check-in date.",
+      },
       about: {
         eyebrow: "About the Resort",
         title: "A peaceful escape on the riverfront",
@@ -230,6 +248,9 @@
         directions: "Get Directions",
         call: "Call Resort",
         wa: "WhatsApp",
+        mapTitle: "View us on the map",
+        mapNote: "The map is loaded from Google only when you choose to open it.",
+        mapLoad: "Load map",
       },
       contact: {
         eyebrow: "Contact",
@@ -269,9 +290,26 @@
     /*  folder? It is used for both.                                        */
     /* ------------------------------------------------------------------ */
     hero: {
-      heading: "The Riverfront Resort",
-      subtitle:
-        "Relax by nature. Stay in comfort. Create unforgettable memories.",
+      heading: "Where Luxury Meets Sanctuary",
+      subtitle: "An exclusive retreat designed for serene indulgence.",
+
+      // ==========================================================
+      //  ⭐ AMBIENT BACKGROUND VIDEO (optional)
+      //  Drop a short, muted, looping clip at the path below and the
+      //  hero plays it instead of the photo slideshow. 5–15 seconds,
+      //  ideally under 4 MB. See assets/video/README.txt.
+      //
+      //  Phones and reduced-motion visitors always get the photos —
+      //  a background video is not worth their data or battery.
+      //
+      //  While no file exists here, desktop visits make one failed
+      //  request (~0.5 KB) and fall back to the photos. That is the
+      //  price of "drop the file in and it works". Set both values to
+      //  "" if you would rather have no request at all.
+      // ==========================================================
+      video: "assets/video/hero.mp4",
+      videoWebm: "assets/video/hero.webm", // optional, smaller where supported
+
       images: (function () {
         var desktop = nextPhoto("hero", "resort", "gallery");
         var mobile = nextPhoto("hero", "resort", "gallery") || desktop;
@@ -560,6 +598,9 @@
       // ==========================================================
       fullAddress:
         "The Riverfront Resort, Solu, Alandi-Markal Road, behind Dosti Hotel, Pimpri-Chinchwad, Maharashtra 412105",
+      // Backdrop shown before the Google map is loaded. Uses the first photo
+      // in assets/images/surroundings/.
+      image: nextPhoto("surroundings", "resort", "gallery"),
     },
 
     /* ------------------------------------------------------------------ */
@@ -570,9 +611,14 @@
     /* ------------------------------------------------------------------ */
     footer: {
       note: "Escape the noise of the city and enjoy a peaceful riverside stay.",
+      // ==========================================================
+      //  ⭐ SOCIAL — paste your real page addresses. An entry with a
+      //  blank href is hidden, so an unused network shows no icon
+      //  and never becomes a dead link.
+      // ==========================================================
       social: [
+        { icon: "instagram", label: "Instagram", href: "https://www.instagram.com/theriverfrontresort/" },
         { icon: "facebook", label: "Facebook", href: "" },
-        { icon: "instagram", label: "Instagram", href: "" },
         { icon: "youtube", label: "YouTube", href: "" },
       ],
       copyrightHolder: "The Riverfront Resort",
@@ -609,5 +655,5 @@
     ]);
   });
 
-  window.RESORT_DATA = RESORT_DATA;
-})();
+  return RESORT_DATA;
+};

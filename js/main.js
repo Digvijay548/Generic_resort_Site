@@ -1,14 +1,14 @@
 (function () {
   "use strict";
 
-  var DATA = window.RESORT_DATA;
+  var DATA = null;
 
   function $(sel, ctx) { return (ctx || document).querySelector(sel); }
   function $all(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
 
   /* If js/data.js failed to load there is nothing to render. Say so plainly
      instead of throwing on the first property access and leaving a blank page. */
-  if (!DATA) {
+  function showBootError() {
     document.documentElement.classList.add("data-missing");
     var warning = document.createElement("p");
     warning.className = "boot-error";
@@ -16,7 +16,6 @@
       "This page could not load its content (js/data.js is missing). " +
       "Please call 072777 75060.";
     document.body.insertBefore(warning, document.body.firstChild);
-    return;
   }
 
   var REDUCED_MOTION =
@@ -98,6 +97,8 @@
       '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 2a8 8 0 1 1-4 14.9l-.4-.2-3 .8.8-2.9-.2-.4A8 8 0 0 1 12 4zm-3.2 4.6c-.2 0-.5 0-.7.3-.2.3-.8.8-.8 2s.8 2 1 2.3c.1.3 1.6 2.5 4 3.4 2 .8 2.4.6 2.8.6.5 0 1.4-.6 1.6-1.2.2-.6.2-1.1.1-1.2-.1-.1-.3-.2-.7-.4l-1.4-.7c-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1-.8-.4-1.6-.9-2.2-1.7-.4-.5-.7-1-.8-1.2 0-.2 0-.3.1-.4l.5-.6c.1-.2.2-.3.1-.5l-.6-1.5c-.2-.4-.4-.4-.6-.4z"/></svg>',
     pin:
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+    mail:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6 8.5-6"/></svg>',
     facebook:
       '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h3l.5-3H13V9.2c0-.9.3-1.7 1.7-1.7H16.6V4.9c-.3 0-1.3-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4.1V11H7v3h3v8h3z"/></svg>',
     instagram:
@@ -122,12 +123,18 @@
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16c4-2 7-5 8-10 2 4 5 7 9 8-4 0-7 1-9 4-1-1-3-2-8-2z"/></svg>',
   };
 
-  /* Hero ambient particles — add icon names here to grow the pool */
+  /* Ambient motes drifting over the hero — soft points of light rather than
+     illustrations, so they read as atmosphere instead of decoration. */
   var HERO_EFFECTS = {
-    particles: 16,
-    colors: ["#ffffff", "#f5c878", "#8cd2be", "#ffeeb0", "#a9e0f0"],
-    icons: ["leaf", "drop", "sparkle", "sun", "wave", "tree", "flower", "bird"],
+    count: 10,
+    colors: ["#d4af37", "#f2e6c4", "#ffffff"],
+    minSize: 2,
+    maxSize: 6,
   };
+
+  /* How long each hero photo is held before cross-fading to the next.
+     Must be longer than the 2.4s CSS fade. */
+  var KEN_BURNS_HOLD_MS = 9000;
 
   /* ------------------------------ images ------------------------------ */
   /**
@@ -260,44 +267,188 @@
     $("#heroCallBtn").textContent = DATA.ui.hero.call;
 
     var media = $("#heroMedia");
-    var desktop = hero.images[0];
-    if (!desktop) {
+    var photos = (hero.images || []).filter(Boolean);
+    if (!photos.length) {
       media.classList.add("is-loaded", "no-photo");
       return;
     }
-    var mobile = hero.images[1] || desktop;
 
-    var pic = document.createElement("picture");
-    var html = "";
-    if (mobile.srcset) {
-      html += '<source media="(max-width: 992px)" type="image/webp" srcset="' +
-        esc(mobile.srcset) + '" sizes="100vw">';
-    }
-    html += '<source media="(max-width: 992px)" srcset="' + esc(mobile.src) + '">';
-    if (desktop.srcset) {
-      html += '<source type="image/webp" srcset="' + esc(desktop.srcset) + '" sizes="100vw">';
-    }
-    html +=
-      '<img src="' + esc(desktop.src) + '" alt="' + esc(desktop.alt) + '"' +
-      (desktop.w ? ' width="' + desktop.w + '"' : "") +
-      (desktop.h ? ' height="' + desktop.h + '"' : "") +
-      ' loading="eager" decoding="async" fetchpriority="high">';
-    pic.innerHTML = html;
-
-    var img = pic.querySelector("img");
     /* Mark the hero ready on success AND on failure — otherwise a missing
        photo leaves the image permanently transparent over a dark panel. */
     function reveal(ok) {
       media.classList.add("is-loaded");
       if (!ok) media.classList.add("no-photo");
     }
-    if (img.complete) {
-      reveal(img.naturalWidth > 0);
-    } else {
-      img.addEventListener("load", function () { reveal(true); });
-      img.addEventListener("error", function () { reveal(false); });
+
+    /* An ambient video takes over when one exists — but never on a phone and
+       never for reduced-motion visitors, who get the photos instead. */
+    if (hero.video && !REDUCED_MOTION && window.matchMedia &&
+        window.matchMedia("(min-width: 993px)").matches) {
+      tryHeroVideo(media, hero, photos, reveal);
+      return;
     }
-    media.appendChild(pic);
+
+    /* One photo: a single still with a slow settle. */
+    if (photos.length === 1 || REDUCED_MOTION) {
+      var only = photos[0];
+      var pic = document.createElement("picture");
+      pic.innerHTML =
+        (only.srcset
+          ? '<source type="image/webp" srcset="' + esc(only.srcset) + '" sizes="100vw">'
+          : "") +
+        '<img src="' + esc(only.src) + '" alt="' + esc(only.alt) + '"' +
+        (only.w ? ' width="' + only.w + '"' : "") +
+        (only.h ? ' height="' + only.h + '"' : "") +
+        ' loading="eager" decoding="async" fetchpriority="high">';
+      var single = pic.querySelector("img");
+      if (single.complete) {
+        reveal(single.naturalWidth > 0);
+      } else {
+        single.addEventListener("load", function () { reveal(true); });
+        single.addEventListener("error", function () { reveal(false); });
+      }
+      media.appendChild(pic);
+      return;
+    }
+
+    buildKenBurns(media, photos, reveal);
+  }
+
+  /**
+   * Attempt the ambient video loop, falling back to the photo slideshow.
+   *
+   * There is no way to know a video exists without asking for it, so the
+   * photos are laid down first and the video only replaces them once it is
+   * actually playing. A missing file, an unsupported codec or a browser that
+   * blocks autoplay all end up showing the photos — never a black rectangle.
+   */
+  function tryHeroVideo(media, hero, photos, reveal) {
+    buildKenBurns(media, photos, reveal);
+
+    var video = document.createElement("video");
+    video.className = "hero-video";
+    video.muted = true;
+    video.defaultMuted = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.setAttribute("muted", "");
+    video.setAttribute("playsinline", "");
+    video.setAttribute("aria-hidden", "true");
+    video.preload = "auto";
+    video.tabIndex = -1;
+
+    if (hero.videoWebm) {
+      var webm = document.createElement("source");
+      webm.src = hero.videoWebm;
+      webm.type = "video/webm";
+      video.appendChild(webm);
+    }
+    var mp4 = document.createElement("source");
+    mp4.src = hero.video;
+    mp4.type = "video/mp4";
+    video.appendChild(mp4);
+
+    var settled = false;
+    function giveUp() {
+      if (settled) return;
+      settled = true;
+      if (video.parentNode) video.parentNode.removeChild(video);
+    }
+
+    video.addEventListener("error", giveUp);
+    video.addEventListener("stalled", giveUp);
+    video.addEventListener("playing", function () {
+      if (settled) return;
+      settled = true;
+      /* Only now is it safe to hide the photos underneath. */
+      media.classList.add("has-video");
+      video.classList.add("is-playing");
+    });
+
+    media.appendChild(video);
+
+    var attempt = video.play();
+    if (attempt && typeof attempt.catch === "function") {
+      attempt.catch(giveUp); // autoplay refused — keep the photos
+    }
+    /* If nothing is playing within a few seconds, assume it never will. */
+    setTimeout(function () { if (!settled) giveUp(); }, 6000);
+
+    document.addEventListener("visibilitychange", function () {
+      if (!settled || !video.parentNode) return;
+      if (document.hidden) video.pause();
+      else video.play().catch(function () {});
+    });
+  }
+
+  /**
+   * Slow zoom-and-drift across the hero photos, cross-fading between them.
+   * Every photo in assets/images/hero/ becomes one layer, so adding another
+   * photo simply lengthens the loop.
+   */
+  function buildKenBurns(media, photos, reveal) {
+    var layers = photos.map(function (photo, i) {
+      var layer = document.createElement("div");
+      layer.className = "kb-layer";
+      var pic = document.createElement("picture");
+      pic.innerHTML =
+        (photo.srcset
+          ? '<source type="image/webp" srcset="' + esc(photo.srcset) + '" sizes="100vw">'
+          : "") +
+        '<img src="' + esc(photo.src) + '"' +
+        /* Only the first layer is described; the rest are the same view and
+           would just be noise for a screen reader. */
+        ' alt="' + (i === 0 ? esc(photo.alt) : "") + '"' +
+        (photo.w ? ' width="' + photo.w + '"' : "") +
+        (photo.h ? ' height="' + photo.h + '"' : "") +
+        (i === 0
+          ? ' loading="eager" decoding="async" fetchpriority="high"'
+          : ' loading="lazy" decoding="async"') +
+        ">";
+      layer.appendChild(pic);
+      media.appendChild(layer);
+      return layer;
+    });
+
+    var first = layers[0].querySelector("img");
+    if (first.complete) {
+      reveal(first.naturalWidth > 0);
+    } else {
+      first.addEventListener("load", function () { reveal(true); });
+      first.addEventListener("error", function () { reveal(false); });
+    }
+
+    var index = 0;
+    var timer = null;
+
+    function show(next) {
+      layers[index].classList.remove("is-active");
+      index = next % layers.length;
+      var layer = layers[index];
+      /* Re-trigger the drift animation from the start on every appearance. */
+      var img = layer.querySelector("img");
+      img.style.animation = "none";
+      void img.offsetWidth;
+      img.style.animation = "";
+      layer.classList.add("is-active");
+    }
+
+    layers[0].classList.add("is-active");
+
+    function start() {
+      if (timer) return;
+      timer = setInterval(function () { show(index + 1); }, KEN_BURNS_HOLD_MS);
+    }
+    function stop() {
+      if (!timer) return;
+      clearInterval(timer);
+      timer = null;
+    }
+    /* No point animating a hero nobody is looking at. */
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) stop(); else start();
+    });
+    start();
   }
 
   function buildHeroParticles() {
@@ -312,23 +463,133 @@
     wrap.setAttribute("aria-hidden", "true");
     hero.insertBefore(wrap, hero.querySelector(".hero-content"));
 
-    for (var i = 0; i < cfg.particles; i++) {
+    for (var i = 0; i < cfg.count; i++) {
       var p = document.createElement("span");
       p.className = "hero-particle";
-      p.innerHTML = ICONS[cfg.icons[i % cfg.icons.length]] || ICONS.sparkle;
-      var size = 14 + Math.random() * 30;
+      var size = cfg.minSize + Math.random() * (cfg.maxSize - cfg.minSize);
       p.style.width = size.toFixed(1) + "px";
       p.style.height = size.toFixed(1) + "px";
       p.style.left = (Math.random() * 100).toFixed(2) + "%";
-      p.style.top = (8 + Math.random() * 82).toFixed(2) + "%";
+      p.style.top = (10 + Math.random() * 78).toFixed(2) + "%";
       p.style.color = cfg.colors[i % cfg.colors.length];
-      p.style.setProperty("--dur", (6 + Math.random() * 8).toFixed(1) + "s");
-      p.style.setProperty("--amp", (-(16 + Math.random() * 32)).toFixed(1) + "px");
-      p.style.setProperty("--sway", ((Math.random() * 26) - 13).toFixed(1) + "px");
-      p.style.setProperty("--op", (0.4 + Math.random() * 0.45).toFixed(2));
-      p.style.animationDelay = (-Math.random() * 10).toFixed(1) + "s";
+      p.style.setProperty("--dur", (14 + Math.random() * 12).toFixed(1) + "s");
+      p.style.setProperty("--amp", (-(30 + Math.random() * 50)).toFixed(1) + "px");
+      p.style.setProperty("--sway", ((Math.random() * 30) - 15).toFixed(1) + "px");
+      p.style.setProperty("--op", (0.10 + Math.random() * 0.14).toFixed(2));
+      p.style.animationDelay = (-Math.random() * 20).toFixed(1) + "s";
       wrap.appendChild(p);
     }
+  }
+
+  /* ------------------------------ magnetic buttons ------------------------------ */
+  /**
+   * Buttons lean a few pixels toward the cursor while it is over them, then
+   * ease back. Pointer devices only, and never under reduced motion.
+   */
+  function initMagneticButtons() {
+    if (REDUCED_MOTION) return;
+    if (!window.matchMedia || !window.matchMedia("(pointer: fine)").matches) return;
+
+    var STRENGTH = 0.28;   // fraction of the cursor's offset the button follows
+    var MAX = 9;           // px, so a wide button does not slide too far
+
+    function clamp(value) { return Math.max(-MAX, Math.min(MAX, value)); }
+
+    document.addEventListener("pointerover", function (e) {
+      var btn = e.target.closest && e.target.closest(".btn");
+      if (!btn || btn.dataset.magnetic) return;
+      btn.dataset.magnetic = "1";
+
+      var frame = null;
+      function move(ev) {
+        if (frame) return;
+        frame = requestAnimationFrame(function () {
+          frame = null;
+          var box = btn.getBoundingClientRect();
+          var dx = ev.clientX - (box.left + box.width / 2);
+          var dy = ev.clientY - (box.top + box.height / 2);
+          btn.style.setProperty("--mag-x", clamp(dx * STRENGTH).toFixed(1) + "px");
+          btn.style.setProperty("--mag-y", clamp(dy * STRENGTH).toFixed(1) + "px");
+        });
+      }
+      function reset() {
+        if (frame) { cancelAnimationFrame(frame); frame = null; }
+        btn.style.setProperty("--mag-x", "0px");
+        btn.style.setProperty("--mag-y", "0px");
+      }
+      btn.addEventListener("pointermove", move);
+      btn.addEventListener("pointerleave", reset);
+      btn.addEventListener("blur", reset);
+      btn.addEventListener("click", reset);
+    });
+  }
+
+  /* ------------------------------ availability bar ------------------------------ */
+  /**
+   * The floating bar across the bottom of the hero. There is no booking
+   * backend, so "Check Availability" hands the request to WhatsApp with the
+   * dates, party size and suite already written out — the same channel every
+   * other button on the page uses.
+   */
+  function initAvailabilityBar() {
+    var form = $("#availBar");
+    if (!form) return;
+
+    var labels = DATA.ui.availability;
+    var checkIn = $("#aCheckIn");
+    var checkOut = $("#aCheckOut");
+    var guests = $("#aGuests");
+    var suite = $("#aSuite");
+    var error = $("#availError");
+
+    $("#aCheckInLabel").textContent = labels.checkIn;
+    $("#aCheckOutLabel").textContent = labels.checkOut;
+    $("#aGuestsLabel").textContent = labels.guests;
+    $("#aSuiteLabel").textContent = labels.suite;
+    $("#availSubmit").textContent = labels.submit;
+
+    /* Suite options follow the Stay cards, so adding a stay adds an option. */
+    var options = [labels.anySuite].concat(
+      DATA.stays.map(function (stay) { return stay.title; })
+    );
+    options.forEach(function (name) {
+      var option = document.createElement("option");
+      option.value = name;
+      option.textContent = name;
+      suite.appendChild(option);
+    });
+
+    var today = new Date().toISOString().slice(0, 10);
+    checkIn.min = today;
+    checkOut.min = today;
+
+    /* Check-out can never precede check-in. */
+    checkIn.addEventListener("change", function () {
+      checkOut.min = checkIn.value || today;
+      if (checkOut.value && checkOut.value <= checkIn.value) checkOut.value = "";
+      error.textContent = "";
+    });
+    checkOut.addEventListener("change", function () { error.textContent = ""; });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (checkIn.value && checkOut.value && checkOut.value <= checkIn.value) {
+        error.textContent = labels.errorDates;
+        checkOut.focus();
+        return;
+      }
+      error.textContent = "";
+
+      var lines = [
+        "Hello, I would like to check availability at " + DATA.name + ".",
+        "",
+        labels.checkIn + ": " + (checkIn.value || "Not specified"),
+        labels.checkOut + ": " + (checkOut.value || "Not specified"),
+        labels.guests + ": " + (guests.value || "2"),
+        labels.suite + ": " + suite.value,
+      ];
+      window.open(waHref(lines.join("\n")), "_blank", "noopener");
+    });
   }
 
   /* ------------------------------ about ------------------------------ */
@@ -747,15 +1008,27 @@
   }
 
   /* ------------------------------ important info ------------------------------ */
+  /* Set a trailing AM/PM smaller and raised, so "1:00 PM" reads as a time
+     rather than a run of same-size characters. Values without one (say
+     "13:00") are left exactly as written. */
+  function formatTime(value) {
+    var parts = String(value).match(/^(.*?)\s*([AaPp]\.?[Mm]\.?)$/);
+    if (!parts) return esc(value);
+    return (
+      esc(parts[1]) +
+      '<span class="it-meridiem">' + esc(parts[2].toUpperCase()) + "</span>"
+    );
+  }
+
   function buildInfo() {
     var info = DATA.importantInfo;
     var items = info.items.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("");
     $("#infoCard").innerHTML =
       '<div class="info-times">' +
       '<div class="info-time"><p class="it-label">' + esc(DATA.ui.info.checkIn) +
-      '</p><p class="it-value">' + esc(info.checkIn) + "</p></div>" +
+      '</p><p class="it-value">' + formatTime(info.checkIn) + "</p></div>" +
       '<div class="info-time"><p class="it-label">' + esc(DATA.ui.info.checkOut) +
-      '</p><p class="it-value">' + esc(info.checkOut) + "</p></div>" +
+      '</p><p class="it-value">' + formatTime(info.checkOut) + "</p></div>" +
       "</div>" +
       '<ul class="info-list">' + items + "</ul>";
   }
@@ -769,14 +1042,35 @@
     $("#locCallBtn").href = "tel:" + DATA.phone.tel;
     $("#locWaBtn").href = waHref();
 
-    var iframe = document.createElement("iframe");
-    iframe.src = loc.mapEmbedSrc;
-    iframe.title = "Google Map showing the location of " + DATA.name;
-    iframe.loading = "lazy";
-    iframe.allowFullscreen = true;
-    iframe.referrerPolicy = "no-referrer-when-downgrade";
-    iframe.setAttribute("allow", "fullscreen");
-    $("#locationMap").appendChild(iframe);
+    $("#mapFacadeTitle").textContent = DATA.ui.location.mapTitle;
+    $("#mapFacadeNote").textContent = DATA.ui.location.mapNote;
+    $("#mapLoadBtn").textContent = DATA.ui.location.mapLoad;
+
+    /* Backdrop for the facade: a photo of the surroundings if there is one. */
+    if (loc.image) {
+      $("#mapFacadeMedia").appendChild(
+        createPicture(loc.image, { sizes: "(max-width: 900px) 100vw, 640px" })
+      );
+    }
+
+    /* The embed is fetched only on request, so a visitor who never opens the
+       map is never announced to Google. */
+    $("#mapLoadBtn").addEventListener("click", function () {
+      var iframe = document.createElement("iframe");
+      iframe.src = loc.mapEmbedSrc;
+      iframe.title = "Google Map showing the location of " + DATA.name;
+      iframe.loading = "lazy";
+      iframe.allowFullscreen = true;
+      iframe.referrerPolicy = "no-referrer-when-downgrade";
+      iframe.setAttribute("allow", "fullscreen");
+      var wrap = $("#locationMap");
+      wrap.dataset.label = DATA.name;
+      wrap.appendChild(iframe);
+      wrap.classList.add("map-loaded");
+      var facade = $("#mapFacade");
+      if (facade) facade.remove();
+      iframe.focus();
+    });
   }
 
   /* ------------------------------ contact ------------------------------ */
@@ -789,11 +1083,21 @@
     waLink.href = waHref();
     waLink.textContent = DATA.phone.display;
 
+    /* No email configured means no empty Email row. */
+    if (DATA.email) {
+      var mail = $("#contactEmail");
+      mail.href = "mailto:" + DATA.email;
+      mail.textContent = DATA.email;
+    } else {
+      $("#contactEmailRow").hidden = true;
+    }
+
     $("#contactAddress").textContent = DATA.location.addressLines.join(", ");
 
-    var icons = ["phone", "whatsapp", "pin"];
-    $all(".contact-info .ci-icon").forEach(function (el, i) {
-      el.innerHTML = ICONS[icons[i]] || ICONS.generic;
+    /* Icons come from each row's data-icon, so reordering the list in the
+       HTML can no longer shuffle the icons out of step with the labels. */
+    $all(".contact-info .ci-icon").forEach(function (el) {
+      el.innerHTML = ICONS[el.dataset.icon] || ICONS.generic;
     });
   }
 
@@ -933,6 +1237,15 @@
     var fp = $("#footerPhone");
     fp.href = "tel:" + DATA.phone.tel;
     fp.textContent = DATA.phone.display;
+
+    var fe = $("#footerEmail");
+    if (DATA.email) {
+      fe.href = "mailto:" + DATA.email;
+      fe.textContent = DATA.email;
+    } else {
+      fe.hidden = true;
+    }
+
     $("#footerWaBtn").href = waHref();
 
     $("#copyright").textContent =
@@ -1018,6 +1331,7 @@
       }, []),
     };
 
+    if (DATA.email) schema.email = DATA.email;
     if (shareUrl) schema.image = [shareUrl];
 
     var social = DATA.footer.social
@@ -1254,6 +1568,7 @@
     initNav();
     buildHero();
     buildHeroParticles();
+    initAvailabilityBar();
     buildAbout();
     buildStays();
     buildOffers();
@@ -1271,12 +1586,48 @@
     buildFooter();
     initScroll();
     initReveal();
+    initMagneticButtons();
     document.documentElement.classList.add("js-ready");
   }
 
+  /**
+   * Boot order:
+   *   1. wait for the DOM
+   *   2. work out the photo list — js/autoscan.js reads the folders live so
+   *      newly dropped images appear without running anything; if the server
+   *      cannot list folders it falls back to the generated js/images.js
+   *   3. build the content from js/data.js using that list
+   *   4. render
+   */
+  function boot() {
+    if (typeof window.buildResortData !== "function") {
+      showBootError();
+      return;
+    }
+
+    function render(manifest) {
+      try {
+        DATA = window.buildResortData(manifest);
+        window.RESORT_DATA = DATA;
+        init();
+      } catch (err) {
+        showBootError();
+        throw err;
+      }
+    }
+
+    if (window.ImageAutoScan && window.ImageAutoScan.discover) {
+      window.ImageAutoScan.discover().then(render, function () {
+        render(window.IMAGE_MANIFEST || null);
+      });
+    } else {
+      render(window.IMAGE_MANIFEST || null);
+    }
+  }
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener("DOMContentLoaded", boot);
   } else {
-    init();
+    boot();
   }
 })();

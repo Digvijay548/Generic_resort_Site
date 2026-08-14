@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page not found | The Riverfront Resort</title>
+  <meta name="description" content="That page could not be found. Return to The Riverfront Resort, or call us on 072777 75060." />
+  <!-- A missing page should never be indexed. -->
+  <meta name="robots" content="noindex, follow" />
+  <meta name="theme-color" content="#0f2a22" />
+
+  <link rel="icon" type="image/png" href="assets/images/branding/resort-logo.png" />
+  <link rel="apple-touch-icon" href="assets/images/branding/resort-logo.png" />
+
+  <link rel="preload" href="assets/fonts/cormorant-garamond-500-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/fonts.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <style>
+    /*
+      Self-contained, so a 404 renders even if the main page's scripts are
+      unavailable. It borrows the palette tokens from css/styles.css.
+    */
+    .nf {
+      min-height: 100vh;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 48px 24px;
+      text-align: center;
+    }
+    .nf-inner { max-width: 620px; }
+    .nf-logo {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      margin: 0 auto 40px;
+      border: 1px solid rgba(212, 175, 55, 0.5);
+    }
+    .nf-code {
+      font-family: var(--font-head);
+      font-size: clamp(5rem, 18vw, 9rem);
+      font-weight: 300;
+      line-height: 0.9;
+      color: var(--gold);
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    .nf-rule {
+      width: 44px;
+      height: 1px;
+      background: var(--gold);
+      margin: 34px auto;
+    }
+    .nf h1 {
+      font-size: clamp(1.9rem, 4.4vw, 2.9rem);
+      margin-bottom: 18px;
+    }
+    .nf p {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.85;
+      margin-bottom: 40px;
+    }
+    .nf-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+      margin-bottom: 48px;
+    }
+    .nf-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 28px;
+      justify-content: center;
+      padding-top: 32px;
+      border-top: 1px solid rgba(15, 42, 34, 0.1);
+    }
+    .nf-links a {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: var(--tracking-mid);
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.3s var(--ease);
+    }
+    .nf-links a:hover { color: var(--gold-text); }
+  </style>
+</head>
+<body>
+  <div class="bg-anim" aria-hidden="true">
+    <div class="bg-blob bg-blob-1"></div>
+    <div class="bg-blob bg-blob-2"></div>
+    <div class="bg-blob bg-blob-3"></div>
+  </div>
+
+  <main class="nf">
+    <div class="nf-inner">
+      <img class="nf-logo" src="assets/images/branding/resort-logo.png"
+           alt="The Riverfront Resort logo" width="76" height="76" />
+
+      <p class="nf-code">404</p>
+      <div class="nf-rule"></div>
+
+      <h1>This path leads nowhere</h1>
+      <p>
+        The page you were looking for has moved or never existed. The river,
+        happily, is exactly where you left it.
+      </p>
+
+      <div class="nf-actions">
+        <a class="btn btn-primary btn-lg" href="/">Return home</a>
+        <a class="btn btn-outline btn-lg" href="tel:+917277775060">Call 072777 75060</a>
+      </div>
+
+      <nav class="nf-links" aria-label="Site sections">
+        <a href="/#stay">Stay</a>
+        <a href="/#packages">Packages</a>
+        <a href="/#gallery">Gallery</a>
+        <a href="/#location">Location</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </div>
+  </main>
+</body>
+</html>

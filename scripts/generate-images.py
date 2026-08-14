@@ -59,29 +59,41 @@ JPEG_QUALITY = 82
 FALLBACK_BYTES = 300 * 1024
 
 # ---------------------------------------------------------------------------
-#  FOLDER SETTINGS — edit this if you add a folder and want a specific label.
-#  Any folder NOT listed here still works: it is added to the gallery with its
-#  folder name as the tab label. Nothing breaks, nothing needs registering.
+#  FOLDER SETTINGS
+#  These live in assets/images/folders.json, NOT here, so that this script and
+#  js/autoscan.js (which reads the folders live in the browser) can never
+#  disagree about a folder's tab name or whether it belongs in the gallery.
+#
+#  A folder NOT listed there still works: it joins the gallery with its own
+#  name as the tab label. Nothing needs registering.
 # ---------------------------------------------------------------------------
-SITE_NAME = "The Riverfront Resort"
+CONFIG_FILE = os.path.join(IMAGES_DIR, "folders.json")
 
-FOLDERS = {
-    # folder name  label shown on the gallery tab   in gallery?  alt-text phrase
-    "branding":     ("",               False, "{site} logo"),
-    "hero":         ("",               False, "Riverside view of {site}"),
-    "gallery":      ("Resort",         True,  "The grounds at {site}"),
-    "resort":       ("Resort",         True,  "The riverside grounds at {site}"),
-    "rooms":        ("Rooms",          True,  "A guest room at {site}"),
-    "pool":         ("Swimming Pool",  True,  "The swimming pool at {site}"),
-    "food":         ("Food",           True,  "Food served at {site}"),
-    "activities":   ("Activities",     True,  "Guests enjoying activities at {site}"),
-    "camping":      ("Camping",        True,  "Camping by the river at {site}"),
-    "surroundings": ("Surroundings",   False, "Nature surrounding {site}"),
+DEFAULT_CONFIG = {
+    "siteName": "the resort",
+    "galleryOrder": [],
+    "folders": {},
 }
 
-# Folders are shown in the gallery in this order. Any folder not listed is
-# appended alphabetically after these, so new folders appear without edits.
-GALLERY_ORDER = ["gallery", "resort", "rooms", "pool", "food", "activities", "camping"]
+
+def load_config():
+    if not os.path.isfile(CONFIG_FILE):
+        print("Note: assets/images/folders.json not found — using defaults.\n")
+        return dict(DEFAULT_CONFIG)
+    try:
+        with open(CONFIG_FILE, "r", encoding="utf-8") as fh:
+            loaded = json.load(fh)
+    except (ValueError, OSError) as exc:
+        raise SystemExit("Could not read %s\n  %s" % (CONFIG_FILE, exc))
+    config = dict(DEFAULT_CONFIG)
+    # Keys starting with _ are notes for whoever opens the file.
+    config.update({k: v for k, v in loaded.items() if not k.startswith("_")})
+    return config
+
+
+CONFIG = load_config()
+SITE_NAME = CONFIG.get("siteName") or "the resort"
+GALLERY_ORDER = CONFIG.get("galleryOrder") or []
 
 # Filename words that carry no meaning, used to decide whether a filename is
 # descriptive enough to become alt text.
@@ -118,8 +130,12 @@ def titleize(text):
 
 
 def folder_settings(folder):
-    if folder in FOLDERS:
-        return FOLDERS[folder]
+    entry = CONFIG.get("folders", {}).get(folder)
+    if entry:
+        label = entry.get("label", titleize(folder))
+        in_gallery = entry.get("gallery", True) is not False and bool(label)
+        alt = entry.get("alt") or (titleize(folder) + " at {site}")
+        return (label, in_gallery, alt)
     # Unknown folder: show it, label it after itself, describe it generically.
     label = titleize(folder)
     return (label, True, label + " at {site}")

@@ -6,7 +6,7 @@
   <meta name="description" id="metaDescription" content="The Riverfront Resort — a peaceful riverside resort in Pimpri-Chinchwad for families, couples, groups and pet owners. Rooms, amenities and a welcoming atmosphere." />
   <title>The Riverfront Resort | Relax by nature</title>
 
-  <meta name="theme-color" content="#1c3d29" />
+  <meta name="theme-color" content="#0f2a22" />
   <link rel="canonical" id="canonicalLink" href="https://www.theriverfrontresort.in/" />
 
   <!--
@@ -31,13 +31,20 @@
   <link rel="icon" type="image/png" href="assets/images/branding/resort-logo.png" />
   <link rel="apple-touch-icon" href="assets/images/branding/resort-logo.png" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
-
+  <!--
+    Fonts are self-hosted (see scripts/fetch-fonts.py), so the page contacts
+    no third party before the visitor interacts with it and text paints
+    without an extra DNS + TLS round trip.
+    Headings: Cormorant Garamond. UI: Plus Jakarta Sans.
+  -->
+  <link rel="preload" href="assets/fonts/plus-jakarta-sans-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/cormorant-garamond-500-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/fonts.css" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
+  <!-- Lets keyboard and screen-reader users jump past the navigation. -->
+  <a class="skip-link" href="#main">Skip to content</a>
   <!-- Full-page animated gradient background -->
   <div class="bg-anim" aria-hidden="true">
     <div class="bg-blob bg-blob-1"></div>
@@ -101,26 +108,49 @@
     <a id="mobileBookBtn" class="btn btn-primary" target="_blank" rel="noopener">Book Now</a>
   </nav>
 
-  <main>
+  <main id="main">
     <!-- ============================ HERO ============================ -->
     <section class="hero" id="home">
-      <div class="hero-media" id="heroMedia"><!-- skeleton shown until image loads --></div>
+      <!--
+        Background is built by js/main.js. It uses an ambient video loop when
+        one exists at the path in `hero.video` (js/data.js); otherwise it
+        cross-fades the photos in assets/images/hero/ with a slow zoom.
+      -->
+      <div class="hero-media" id="heroMedia"></div>
       <div class="hero-overlay"></div>
-      <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
-      <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
-      <div class="hero-orb hero-orb-3" aria-hidden="true"></div>
-      <div class="hero-orb hero-orb-4" aria-hidden="true"></div>
+
       <div class="hero-content container">
-        <h1 class="hero-title" id="heroHeading">The Riverfront Resort</h1>
-        <p class="hero-subtitle" id="heroSubtitle">Relax by nature. Stay in comfort. Create unforgettable memories.</p>
+        <h1 class="hero-title" id="heroHeading">Where Luxury Meets Sanctuary</h1>
+        <p class="hero-subtitle" id="heroSubtitle">An exclusive retreat designed for serene indulgence.</p>
         <div class="hero-actions">
           <a id="heroBookBtn" class="btn btn-primary btn-lg" target="_blank" rel="noopener">Book Your Stay</a>
           <a id="heroCallBtn" class="btn btn-outline-light btn-lg" href="tel:+917277775060">Call Now</a>
         </div>
       </div>
-      <a class="hero-scroll" href="#about" aria-label="Scroll down to the about section">
-        <span class="hero-scroll-dot"></span>
-      </a>
+
+      <!-- Floating availability bar -->
+      <form class="avail-bar" id="availBar" novalidate>
+        <div class="avail-inner container">
+          <div class="avail-field">
+            <label for="aCheckIn" id="aCheckInLabel">Check-in</label>
+            <input type="date" id="aCheckIn" name="checkin" />
+          </div>
+          <div class="avail-field">
+            <label for="aCheckOut" id="aCheckOutLabel">Check-out</label>
+            <input type="date" id="aCheckOut" name="checkout" />
+          </div>
+          <div class="avail-field">
+            <label for="aGuests" id="aGuestsLabel">Guests</label>
+            <input type="number" id="aGuests" name="guests" min="1" max="60" value="2" inputmode="numeric" />
+          </div>
+          <div class="avail-field">
+            <label for="aSuite" id="aSuiteLabel">Suite type</label>
+            <select id="aSuite" name="suite"><!-- populated from data.js --></select>
+          </div>
+          <button type="submit" class="btn btn-primary avail-submit" id="availSubmit">Check Availability</button>
+        </div>
+        <p class="avail-error" id="availError" role="alert"></p>
+      </form>
     </section>
 
     <!-- ============================ ABOUT ============================ -->
@@ -264,8 +294,20 @@
             <a id="locWaBtn" class="btn btn-whatsapp" target="_blank" rel="noopener">WhatsApp</a>
           </div>
         </div>
+        <!--
+          The Google Maps embed is not loaded until the visitor asks for it.
+          Until then this shows a photo of the surroundings, so no visitor
+          data reaches Google on page load and the map costs nothing.
+        -->
         <div class="location-map reveal" id="locationMap">
-          <!-- iframe populated from data.js -->
+          <div class="map-facade" id="mapFacade">
+            <div class="map-facade-media" id="mapFacadeMedia"></div>
+            <div class="map-facade-body">
+              <p class="map-facade-title" id="mapFacadeTitle">View us on the map</p>
+              <p class="map-facade-note" id="mapFacadeNote">The map is loaded from Google only when you choose to open it.</p>
+              <button type="button" class="btn btn-primary btn-sm" id="mapLoadBtn">Load map</button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -277,17 +319,22 @@
           <p class="eyebrow" id="conEyebrow">Contact</p>
           <h2 class="section-title" id="conTitle">Send us an enquiry</h2>
           <p id="conIntro">Tell us about your stay and we will get back to you on WhatsApp with availability.</p>
+          <!-- data-icon names map to the ICONS table in js/main.js. -->
           <ul class="contact-list">
             <li>
-              <span class="ci-icon" aria-hidden="true"></span>
+              <span class="ci-icon" data-icon="phone" aria-hidden="true"></span>
               <div><strong>Phone</strong><a id="contactPhone" href="tel:+917277775060"></a></div>
             </li>
             <li>
-              <span class="ci-icon" aria-hidden="true"></span>
+              <span class="ci-icon" data-icon="whatsapp" aria-hidden="true"></span>
               <div><strong>WhatsApp</strong><a id="contactWa" href="#" target="_blank" rel="noopener"></a></div>
             </li>
+            <li id="contactEmailRow">
+              <span class="ci-icon" data-icon="mail" aria-hidden="true"></span>
+              <div><strong>Email</strong><a id="contactEmail" href="#"></a></div>
+            </li>
             <li>
-              <span class="ci-icon" aria-hidden="true"></span>
+              <span class="ci-icon" data-icon="pin" aria-hidden="true"></span>
               <div><strong>Address</strong><span id="contactAddress"></span></div>
             </li>
           </ul>
@@ -369,6 +416,7 @@
         <h4 id="footerContactTitle">Contact</h4>
         <address class="footer-address" id="footerAddress"></address>
         <a class="footer-phone" id="footerPhone" href="tel:+917277775060"></a>
+        <a class="footer-email" id="footerEmail" href="#"></a>
         <a id="footerWaBtn" class="btn btn-whatsapp btn-sm" target="_blank" rel="noopener">WhatsApp Us</a>
       </div>
     </div>
@@ -394,7 +442,16 @@
   <!-- Back to top -->
   <button class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</button>
 
+  <!--
+    images.js  - photo list written by scripts/generate-images.py (optimised)
+    autoscan.js- reads assets/images/ live at page load, so photos you drop in
+                 show up without running anything. Falls back to images.js on
+                 hosts that do not list folders.
+    data.js    - all the site's text and settings
+    main.js    - builds the page
+  -->
   <script src="js/images.js"></script>
+  <script src="js/autoscan.js"></script>
   <script src="js/data.js"></script>
   <script src="js/main.js"></script>
 </body>

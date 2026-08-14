@@ -133,26 +133,74 @@ name falls back to a plain circle rather than breaking.
 
 ---
 
-## 4. Before going live
+## 4. Hero background video (optional)
+
+The hero cross-fades the photos in `assets/images/hero/` with a slow zoom. To
+replace that with an ambient video loop, drop a clip at:
+
+```
+assets/video/hero.mp4     (required)
+assets/video/hero.webm    (optional, smaller where supported)
+```
+
+No configuration needed — the hero picks it up. Guidance and an ffmpeg recipe
+are in `assets/video/README.txt`. Keep it under 4 MB, 5–15 seconds, and with
+**no audio track** (browsers block autoplay with sound).
+
+Phones and visitors who ask for reduced motion always get the photos, never
+the video. If the file is missing, unplayable or autoplay is refused, the
+photos simply stay — the page never shows a black rectangle.
+
+---
+
+## 5. Fonts
+
+Fonts are **self-hosted** in `assets/fonts/`, so the page contacts no third
+party before a visitor interacts with it, and text paints without an extra
+round trip to Google.
+
+You only need this if you change the fonts:
+
+```
+python scripts/fetch-fonts.py
+```
+
+It downloads the woff2 files and rewrites `css/fonts.css`. Both are committed
+to the repo and must be uploaded with the site.
+
+---
+
+## 6. Before going live
 
 1. Set **`seo.siteUrl`** in `js/data.js` to your real address, e.g.
    `https://www.theriverfrontresort.in`. WhatsApp and Facebook link previews
    need the full address — without it the preview image is blank.
 2. Update the same address in **`robots.txt`** and **`sitemap.xml`**.
-3. Fill in **`footer.social`** hrefs, or leave them blank to hide those icons.
-4. Run `python scripts/generate-images.py` one last time and commit
+3. Set **`email`** in `js/data.js` to a mailbox you actually read, or `""` to
+   hide it from the Contact list, the footer and the search-engine data.
+4. Fill in **`footer.social`** hrefs. A blank one hides that icon, so an
+   unused network never becomes a dead link.
+5. **Check `seo.ratingValue`.** It publishes a star rating to Google. Google's
+   review-snippet policy forbids a business marking up reviews of itself, so
+   unless these are verifiable reviews, set `ratingValue: null` and let your
+   Google Business Profile carry the stars instead.
+6. Point your host's **404 handler** at `404.html` (GitHub Pages and Netlify
+   pick it up automatically; Apache needs `ErrorDocument 404 /404.html`).
+7. Run `python scripts/generate-images.py` one last time and commit
    `assets/images/_optimized/` — those files are part of the live site.
 
 ---
 
-## 5. Folder structure
+## 7. Folder structure
 
 ```
 Generic_resort_Site/
 ├── index.html                     ← the page itself
+├── 404.html                       ← shown for a missing address
 ├── robots.txt, sitemap.xml        ← for search engines (update the domain)
 ├── css/
-│   └── styles.css                 ← colours, layout, animations
+│   ├── styles.css                 ← colours, layout, animations
+│   └── fonts.css                  ← AUTO-GENERATED font declarations
 ├── js/
 │   ├── images.js                  ← ⭐ AUTO-GENERATED photo list — do not edit
 │   ├── data.js                    ← ⭐ all text, phone, links
@@ -160,8 +208,11 @@ Generic_resort_Site/
 ├── scripts/
 │   ├── generate-images.py         ← ⭐ scans photo folders → writes js/images.js
 │   ├── update-images.bat          ← ⭐ double-click version of the above
+│   ├── fetch-fonts.py             ← re-downloads the self-hosted fonts
 │   └── generate-placeholders.py   ← optional stand-in art for a brand-new site
 └── assets/
+    ├── fonts/                     ← self-hosted woff2 files
+    ├── video/                     ← optional hero.mp4 (see its README)
     └── images/                    ← ⭐ your photos, in folders
         ├── branding/  hero/  resort/  rooms/
         ├── pool/  food/  activities/  surroundings/  gallery/

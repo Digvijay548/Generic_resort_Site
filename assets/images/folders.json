@@ -1,0 +1,43 @@
+{
+  "_comment": [
+    "Shared folder settings. Read by BOTH scripts/generate-images.py and",
+    "js/autoscan.js, so the two can never disagree about a folder's name or",
+    "whether it belongs in the gallery.",
+    "",
+    "A folder NOT listed here still works: it joins the gallery with its own",
+    "name as the tab label. You only need an entry to override that.",
+    "",
+    "  label   - gallery tab wording. \"\" keeps the folder out of the gallery.",
+    "  gallery - false keeps it out even if it has a label.",
+    "  alt     - fallback photo description. {site} becomes the resort name.",
+    "",
+    "galleryOrder lists the tab order. Folders not named here go last,",
+    "alphabetically."
+  ],
+
+  "siteName": "The Riverfront Resort",
+
+  "galleryOrder": [
+    "gallery",
+    "resort",
+    "rooms",
+    "pool",
+    "food",
+    "activities",
+    "camping"
+  ],
+
+  "folders": {
+    "branding":     { "label": "",              "gallery": false, "alt": "{site} logo" },
+    "hero":         { "label": "",              "gallery": false, "alt": "Riverside view of {site}" },
+    "surroundings": { "label": "Surroundings",  "gallery": false, "alt": "Nature surrounding {site}" },
+
+    "gallery":      { "label": "Resort",        "gallery": true,  "alt": "The grounds at {site}" },
+    "resort":       { "label": "Resort",        "gallery": true,  "alt": "The riverside grounds at {site}" },
+    "rooms":        { "label": "Rooms",         "gallery": true,  "alt": "A guest room at {site}" },
+    "pool":         { "label": "Swimming Pool", "gallery": true,  "alt": "The swimming pool at {site}" },
+    "food":         { "label": "Food",          "gallery": true,  "alt": "Food served at {site}" },
+    "activities":   { "label": "Activities",    "gallery": true,  "alt": "Guests enjoying activities at {site}" },
+    "camping":      { "label": "Camping",       "gallery": true,  "alt": "Camping by the river at {site}" }
+  }
+}
