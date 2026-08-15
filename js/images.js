@@ -200,20 +200,12 @@ window.IMAGE_MANIFEST = {
       "gallery": false,
       "images": [
         {
-          "src": "assets/images/hero/Gemini_Generated_Image_fxf8qvfxf8qvfxf8.png",
-          "original": "assets/images/hero/Gemini_Generated_Image_fxf8qvfxf8qvfxf8.png",
-          "srcset": "assets/images/_optimized/hero/Gemini_Generated_Image_fxf8qvfxf8qvfxf8-480.webp 480w, assets/images/_optimized/hero/Gemini_Generated_Image_fxf8qvfxf8qvfxf8-960.webp 960w, assets/images/_optimized/hero/Gemini_Generated_Image_fxf8qvfxf8qvfxf8-1376.webp 1376w",
-          "alt": "The villa and grounds at Bade Farms (1 of 2)",
-          "w": 1376,
-          "h": 768
-        },
-        {
-          "src": "assets/images/hero/Gemini_Generated_Image_yl0414yl0414yl04.png",
-          "original": "assets/images/hero/Gemini_Generated_Image_yl0414yl0414yl04.png",
-          "srcset": "assets/images/_optimized/hero/Gemini_Generated_Image_yl0414yl0414yl04-480.webp 480w, assets/images/_optimized/hero/Gemini_Generated_Image_yl0414yl0414yl04-960.webp 960w, assets/images/_optimized/hero/Gemini_Generated_Image_yl0414yl0414yl04-1376.webp 1376w",
-          "alt": "The villa and grounds at Bade Farms (2 of 2)",
-          "w": 1376,
-          "h": 768
+          "src": "assets/images/hero/Bade.png",
+          "original": "assets/images/hero/Bade.png",
+          "srcset": "assets/images/_optimized/hero/Bade-480.webp 480w, assets/images/_optimized/hero/Bade-960.webp 960w, assets/images/_optimized/hero/Bade-1018.webp 1018w",
+          "alt": "The villa and swimming pool at Bade Farms, Kolhapur",
+          "w": 1018,
+          "h": 449
         }
       ]
     },
