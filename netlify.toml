@@ -22,8 +22,15 @@
   publish = "."
   command = "bash scripts/netlify-build.sh"
 
-[build.environment]
-  PYTHON_VERSION = "3.11"
+#  Do NOT pin PYTHON_VERSION here. Netlify reads that variable during its
+#  "install dependencies" stage, before the build command runs, and hands it to
+#  pyenv. A partial version like "3.11" is not something pyenv can resolve, and
+#  older build images do not carry 3.11 at all — either way the deploy fails
+#  before scripts/netlify-build.sh (and its exit-0 safety net) is ever reached.
+#
+#  Unpinned, the build image's own Python is used, which is all the script
+#  needs. If a future image ships without one, netlify-build.sh says so and
+#  exits 0, and the committed js/images.js is served instead.
 
 # 404.html is picked up automatically by Netlify — no redirect needed.
 

@@ -128,9 +128,17 @@
         </div>
       </div>
 
-      <!-- Floating availability bar -->
+    </section>
+
+    <!--
+      The availability bar sits OUTSIDE the hero on purpose. The hero is a
+      flex container, so a static child here would line up beside the hero
+      text instead of below it, and the hero's overflow:hidden would clip it.
+      As its own block it simply pulls up over the hero's bottom edge.
+    -->
+    <div class="avail-wrap">
       <form class="avail-bar" id="availBar" novalidate>
-        <div class="avail-inner container">
+        <div class="avail-inner">
           <div class="avail-field">
             <label for="aCheckIn" id="aCheckInLabel">Check-in</label>
             <input type="date" id="aCheckIn" name="checkin" />
@@ -151,7 +159,7 @@
         </div>
         <p class="avail-error" id="availError" role="alert"></p>
       </form>
-    </section>
+    </div>
 
     <!-- ============================ ABOUT ============================ -->
     <section class="section" id="about">
