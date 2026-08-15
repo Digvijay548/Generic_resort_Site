@@ -184,10 +184,33 @@
       settle(img.naturalWidth > 0);
     } else {
       img.addEventListener("load", function () { settle(true); });
-      img.addEventListener("error", function () { settle(false); });
+      img.addEventListener("error", function () {
+        if (!fallBackToOriginal(pic, img, photo)) settle(false);
+      });
     }
     wrapper.appendChild(pic);
     return wrapper;
+  }
+
+  /**
+   * Last-ditch retry with the untouched original photo.
+   *
+   * The generated copies under assets/images/_optimized/ can go missing for
+   * reasons that have nothing to do with the photo itself — a host that
+   * strips underscore-prefixed folders, a part-finished image build, a bad
+   * upload. When that happens the <source> elements have to go too, because
+   * a <picture> does NOT fall back to its <img> when the source it picked
+   * fails. Returns false when there is nothing left to try.
+   */
+  function fallBackToOriginal(pic, img, photo) {
+    if (!photo || !photo.original || img.dataset.triedOriginal) return false;
+    if (photo.original === photo.src && !pic.querySelector("source")) return false;
+    img.dataset.triedOriginal = "1";
+    $all("source", pic).forEach(function (s) { s.parentNode.removeChild(s); });
+    img.removeAttribute("srcset");
+    img.removeAttribute("sizes");
+    img.src = photo.original;
+    return true;
   }
 
   /* ------------------------------ header / nav ------------------------------ */
@@ -305,7 +328,9 @@
         reveal(single.naturalWidth > 0);
       } else {
         single.addEventListener("load", function () { reveal(true); });
-        single.addEventListener("error", function () { reveal(false); });
+        single.addEventListener("error", function () {
+          if (!fallBackToOriginal(pic, single, only)) reveal(false);
+        });
       }
       media.appendChild(pic);
       return;
@@ -415,8 +440,18 @@
       reveal(first.naturalWidth > 0);
     } else {
       first.addEventListener("load", function () { reveal(true); });
-      first.addEventListener("error", function () { reveal(false); });
+      first.addEventListener("error", function () {
+        if (!fallBackToOriginal(first.parentNode, first, photos[0])) reveal(false);
+      });
     }
+
+    /* Every other layer gets the same retry, quietly. */
+    layers.slice(1).forEach(function (layer, i) {
+      var img = layer.querySelector("img");
+      img.addEventListener("error", function () {
+        fallBackToOriginal(layer.querySelector("picture") || layer, img, photos[i + 1]);
+      });
+    });
 
     var index = 0;
     var timer = null;

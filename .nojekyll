@@ -1,0 +1,14 @@
+Do not delete this file.
+
+GitHub Pages runs every site through Jekyll unless this file exists, and
+Jekyll silently DELETES anything whose name starts with an underscore. All
+the optimised photos live in assets/images/_optimized/, so without this file
+98 of the site's 127 image URLs return 404 and the pages load with no photos
+at all — locally everything looks fine, which makes it a confusing one.
+
+The file only has to exist; its contents are ignored. It is written out
+rather than left empty so nobody deletes it during a tidy-up.
+
+The underscore on _optimized is deliberate: js/autoscan.js skips folders
+starting with _ so it never mistakes generated copies for your photos.
+Renaming the folder would fix Pages but break that, so keep both.
