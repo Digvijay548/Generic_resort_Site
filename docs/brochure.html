@@ -1,0 +1,1101 @@
+<title>Resort Websites by Digvijay</title>
+
+<style>
+  /* ==========================================================================
+     Typeset in the same two faces as the website it documents: Cormorant
+     Garamond for display, Plus Jakarta Sans for everything read at speed.
+     The files are the site's own self-hosted subsets.
+     ====================================================================== */
+  @font-face {
+    font-family: "Cormorant Garamond";
+    src: url(../assets/fonts/cormorant-garamond-500-latin.woff2) format("woff2");
+    font-weight: 300 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Cormorant Garamond";
+    src: url(../assets/fonts/cormorant-garamond-400-italic-latin.woff2) format("woff2");
+    font-weight: 300 700;
+    font-style: italic;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Jakarta";
+    src: url(../assets/fonts/plus-jakarta-sans-400-latin.woff2) format("woff2");
+    font-weight: 300 800;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  /* ---- light palette: warm ivory ground, deep emerald ink ---------------- */
+  :root {
+    --ground: #faf7f1;
+    --panel: #ffffff;
+    --panel-2: #f2ece1;
+    --ink: #16241e;
+    --muted: #55625a;
+    --faint: #8a958d;
+    --line: rgba(22, 36, 30, 0.13);
+    --line-soft: rgba(22, 36, 30, 0.07);
+    --emerald: #0f2a22;
+    --emerald-mid: #1f5240;
+    --gold: #c39a2f;
+    --gold-text: #856418;
+    --shadow: 0 1px 2px rgba(15, 42, 34, 0.05), 0 18px 44px rgba(15, 42, 34, 0.13);
+    --shadow-sm: 0 1px 2px rgba(15, 42, 34, 0.05), 0 8px 20px rgba(15, 42, 34, 0.08);
+
+    --display: "Cormorant Garamond", Garamond, Georgia, serif;
+    --body: "Jakarta", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --wide: 0.2em;
+  }
+  /* System-dark (no explicit choice stamped) */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0d1512;
+      --panel: #16201b;
+      --panel-2: #1c2822;
+      --ink: #ecece3;
+      --muted: #a7b3aa;
+      --faint: #7d8a82;
+      --line: rgba(236, 236, 227, 0.16);
+      --line-soft: rgba(236, 236, 227, 0.08);
+      --emerald: #081310;
+      --emerald-mid: #2c7259;
+      --gold: #d9b45c;
+      --gold-text: #e0c176;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 18px 44px rgba(0, 0, 0, 0.5);
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(0, 0, 0, 0.35);
+    }
+  }
+  /* Explicit dark choice */
+  :root[data-theme="dark"] {
+    --ground: #0d1512;
+    --panel: #16201b;
+    --panel-2: #1c2822;
+    --ink: #ecece3;
+    --muted: #a7b3aa;
+    --faint: #7d8a82;
+    --line: rgba(236, 236, 227, 0.16);
+    --line-soft: rgba(236, 236, 227, 0.08);
+    --emerald: #081310;
+    --emerald-mid: #2c7259;
+    --gold: #d9b45c;
+    --gold-text: #e0c176;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 18px 44px rgba(0, 0, 0, 0.5);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(0, 0, 0, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    width: min(1120px, 100% - 3rem);
+    margin-inline: auto;
+  }
+  .narrow { width: min(680px, 100%); }
+
+  /* ---- type ------------------------------------------------------------- */
+  h1, h2, h3, h4 {
+    font-family: var(--display);
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.005em;
+    text-wrap: balance;
+    margin: 0;
+  }
+  h1 { font-size: clamp(2.9rem, 7vw, 5.1rem); }
+  h2 { font-size: clamp(2.1rem, 4.4vw, 3.1rem); }
+  h3 { font-size: clamp(1.45rem, 2.4vw, 1.85rem); }
+  h4 { font-size: 1.2rem; }
+  p { margin: 0 0 1.05em; max-width: 68ch; }
+  p:last-child { margin-bottom: 0; }
+  a { color: var(--gold-text); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  strong { font-weight: 600; }
+
+  .eyebrow {
+    font-family: var(--body);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: var(--wide);
+    text-transform: uppercase;
+    color: var(--gold-text);
+    margin: 0 0 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+  .eyebrow::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+    max-width: 5rem;
+  }
+  .lede {
+    font-size: clamp(1.12rem, 1.7vw, 1.32rem);
+    line-height: 1.55;
+    color: var(--muted);
+  }
+
+  /* ---- bands ------------------------------------------------------------ */
+  section { padding: clamp(3.75rem, 8vw, 7rem) 0; }
+  .band-tint { background: var(--panel-2); }
+  .band-dark {
+    background: var(--emerald);
+    color: #f0ece2;
+  }
+  .band-dark h1, .band-dark h2, .band-dark h3 { color: #fbf8f1; }
+  .band-dark .lede, .band-dark p { color: #c4cfc6; }
+  .band-dark .eyebrow { color: var(--gold); }
+  .band-dark .eyebrow::after { background: rgba(212, 175, 55, 0.4); }
+  .band-dark a { color: var(--gold); }
+
+  /* ---- cover ------------------------------------------------------------ */
+  .cover {
+    padding-top: clamp(3.5rem, 8vw, 6.5rem);
+    padding-bottom: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover-inner { position: relative; z-index: 1; }
+  .cover h1 { margin: 0 0 1.4rem; }
+  .cover h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .cover .lede { max-width: 46ch; }
+  .cover-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.75rem;
+    align-items: center;
+    margin-top: 2.25rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+  }
+  .url-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1.15rem;
+    border: 1px solid rgba(212, 175, 55, 0.45);
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+  }
+  .url-chip::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.2);
+  }
+  .url-chip:hover { border-color: var(--gold); background: rgba(212, 175, 55, 0.08); }
+  .cover-shot {
+    margin-top: clamp(2.75rem, 6vw, 4.5rem);
+    border-radius: 4px 4px 0 0;
+    overflow: hidden;
+    box-shadow: 0 -1px 0 rgba(212, 175, 55, 0.35), 0 -24px 60px rgba(0, 0, 0, 0.35);
+  }
+  .cover-shot img { display: block; width: 100%; height: auto; }
+
+  /* ---- stat row --------------------------------------------------------- */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border-block: 1px solid var(--line);
+  }
+  .stat {
+    background: var(--ground);
+    padding: 1.75rem 1.35rem;
+  }
+  .stat b {
+    display: block;
+    font-family: var(--display);
+    font-size: 2.55rem;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--emerald-mid);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 0.5rem;
+  }
+  .stat span {
+    font-size: 0.75rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--faint);
+    font-weight: 600;
+  }
+
+  /* ---- screenshot frames ------------------------------------------------ */
+  figure { margin: 0; }
+  .shot {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .shot-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    background: var(--panel-2);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .shot-bar i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--line);
+    flex: none;
+  }
+  .shot-bar span {
+    margin-left: 0.6rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    color: var(--faint);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .shot img { display: block; width: 100%; height: auto; }
+  figcaption {
+    margin-top: 0.85rem;
+    font-size: 0.83rem;
+    line-height: 1.5;
+    color: var(--faint);
+    max-width: 62ch;
+  }
+
+  /* ---- walkthrough ------------------------------------------------------ */
+  .feature {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.32fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+    padding-block: clamp(2.5rem, 5vw, 4rem);
+    border-top: 1px solid var(--line-soft);
+  }
+  .feature:first-of-type { border-top: 0; padding-top: 0; }
+  .feature.flip > figure { order: -1; }
+  .feature h3 { margin-bottom: 0.85rem; }
+  .feature p { font-size: 0.97rem; color: var(--muted); }
+  .gain {
+    margin-top: 1.15rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--gold);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+  .gain b {
+    display: block;
+    font-size: 0.68rem;
+    letter-spacing: var(--wide);
+    text-transform: uppercase;
+    color: var(--gold-text);
+    margin-bottom: 0.3rem;
+  }
+
+  /* ---- page-at-a-glance ------------------------------------------------- */
+  .glance {
+    display: grid;
+    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: start;
+  }
+  .page-strip {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    background: var(--panel);
+  }
+  .page-strip img { display: block; width: 100%; height: auto; }
+  .flow {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: s;
+  }
+  .flow li {
+    display: grid;
+    grid-template-columns: 2.6rem minmax(0, 1fr);
+    gap: 0.35rem 1rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--line-soft);
+    counter-increment: s;
+  }
+  .flow li:first-child { border-top: 0; padding-top: 0; }
+  .flow li::before {
+    content: counter(s, decimal-leading-zero);
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--gold-text);
+    letter-spacing: 0.05em;
+    padding-top: 0.22rem;
+  }
+  .flow b { font-size: 1rem; font-weight: 600; }
+  .flow span {
+    grid-column: 2;
+    font-size: 0.89rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ---- phones ----------------------------------------------------------- */
+  .phones {
+    display: flex;
+    gap: clamp(1rem, 3vw, 2.25rem);
+    overflow-x: auto;
+    padding-block: 0.5rem 1.5rem;
+    scroll-snap-type: x mandatory;
+  }
+  .phone {
+    flex: 0 0 auto;
+    width: 232px;
+    scroll-snap-align: center;
+  }
+  .phone-screen {
+    border: 8px solid var(--emerald);
+    border-radius: 26px;
+    overflow: hidden;
+    background: var(--emerald);
+    box-shadow: var(--shadow);
+    height: 460px;
+  }
+  .phone-screen img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .phone p {
+    margin: 0.85rem 0 0;
+    font-size: 0.8rem;
+    color: var(--faint);
+    text-align: center;
+  }
+
+  /* ---- benefit cards ---------------------------------------------------- */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(258px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .card {
+    background: var(--ground);
+    padding: 1.85rem 1.6rem;
+  }
+  .card h4 { margin-bottom: 0.6rem; }
+  .card p { font-size: 0.9rem; color: var(--muted); margin: 0; }
+  .card .tag {
+    display: block;
+    font-size: 0.68rem;
+    letter-spacing: var(--wide);
+    text-transform: uppercase;
+    color: var(--gold-text);
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+  }
+
+  /* ---- steps ------------------------------------------------------------ */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: clamp(1.25rem, 3vw, 2.5rem);
+    margin-top: 2.5rem;
+  }
+  .step h4 { margin-bottom: 0.5rem; }
+  .step p { font-size: 0.9rem; color: var(--muted); }
+  .step .n {
+    font-family: var(--display);
+    font-size: 3.1rem;
+    line-height: 1;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 0.6rem;
+  }
+  code, .mono {
+    font-family: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, monospace;
+    font-size: 0.85em;
+    background: var(--panel-2);
+    padding: 0.14em 0.42em;
+    border-radius: 3px;
+    border: 1px solid var(--line-soft);
+  }
+  .band-dark code { background: rgba(255, 255, 255, 0.09); border-color: rgba(255, 255, 255, 0.12); }
+
+  /* ---- checklist -------------------------------------------------------- */
+  .checks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 0.9rem 2.5rem;
+  }
+  .checks li {
+    display: grid;
+    grid-template-columns: 1.4rem 1fr;
+    gap: 0.75rem;
+    font-size: 0.93rem;
+    line-height: 1.5;
+    align-items: start;
+  }
+  .checks li::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    margin-top: 0.5rem;
+    border: 1px solid var(--gold);
+    background: var(--gold);
+    transform: rotate(45deg);
+  }
+  .checks b { font-weight: 600; }
+
+  /* ---- spec table ------------------------------------------------------- */
+  .table-scroll { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    min-width: 480px;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.85rem 1rem 0.85rem 0;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+  th {
+    font-size: 0.7rem;
+    letter-spacing: var(--wide);
+    text-transform: uppercase;
+    color: var(--faint);
+    font-weight: 600;
+    border-bottom: 1px solid var(--line);
+  }
+  td:first-child { font-weight: 600; width: 34%; }
+  td:last-child { color: var(--muted); }
+
+  /* ---- closing ---------------------------------------------------------- */
+  .close-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 2rem;
+    margin-top: 2.75rem;
+    padding-top: 2.25rem;
+    border-top: 1px solid rgba(212, 175, 55, 0.28);
+  }
+  .close-grid h4 {
+    font-family: var(--body);
+    font-size: 0.7rem;
+    letter-spacing: var(--wide);
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.7rem;
+    font-weight: 600;
+  }
+  .close-grid p { font-size: 0.94rem; }
+
+  hr.rule {
+    border: 0;
+    border-top: 1px solid var(--line);
+    margin: 0;
+  }
+
+  @media (max-width: 820px) {
+    .feature, .glance { grid-template-columns: minmax(0, 1fr); }
+    .feature.flip > figure { order: 0; }
+    .glance { gap: 2.25rem; }
+    .page-strip { max-width: 300px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+
+<!-- ============================== COVER ============================== -->
+<section class="cover band-dark">
+  <div class="wrap cover-inner">
+    <p class="eyebrow">Live project · Resort &amp; villa websites</p>
+    <h1>A resort website that takes <em>bookings directly</em></h1>
+    <p class="lede">
+      One page, twelve sections, every photo the property has — and a booking
+      button that lands in the owner's WhatsApp. No booking portal in the
+      middle, no commission, nothing to renew.
+    </p>
+    <div class="cover-meta">
+      <a class="url-chip" href="https://resortbydigvijay.netlify.app/">resortbydigvijay.netlify.app</a>
+      <span>Live and public · built and hosted end to end</span>
+    </div>
+    <figure class="cover-shot">
+      <img src="screenshots/cover-hero.jpg" alt="The website's opening screen: a full-width photograph of the resort at dusk, the name and navigation across the top, and Book Your Stay and Call Now buttons." />
+    </figure>
+  </div>
+</section>
+
+<!-- ============================== STATS ============================== -->
+<div class="wrap">
+  <div class="stats">
+    <div class="stat"><b>12</b><span>Page sections</span></div>
+    <div class="stat"><b>24</b><span>Photos, filterable</span></div>
+    <div class="stat"><b>50 KB</b><span>Total page code</span></div>
+    <div class="stat"><b>₹0</b><span>Monthly hosting</span></div>
+    <div class="stat"><b>0%</b><span>Booking commission</span></div>
+  </div>
+</div>
+
+<!-- ============================== GLANCE ============================== -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow">The whole page</p>
+    <h2>Everything a guest asks, in the order they ask it</h2>
+    <p class="lede" style="margin-top: 1.1rem; margin-bottom: 3rem;">
+      A guest deciding where to spend a weekend has a fixed set of questions.
+      The page answers them in that order and finishes with a way to book — so
+      nobody has to hunt, and nobody leaves halfway.
+    </p>
+    <div class="glance">
+      <figure class="page-strip">
+        <img src="screenshots/full-desktop.jpg" alt="The entire web page shrunk to a single tall strip, showing all twelve sections in sequence from the hero photograph down to the footer." />
+      </figure>
+      <ol class="flow">
+        <li><b>Opening view</b><span>Photograph, name, and two buttons — book, or call.</span></li>
+        <li><b>Availability bar</b><span>Dates, guests and occasion, ready to send.</span></li>
+        <li><b>About</b><span>What the property actually is, in plain words.</span></li>
+        <li><b>Stay options</b><span>Each way to book it, with photo and facilities.</span></li>
+        <li><b>Why choose us</b><span>The three reasons people pick this over a hotel.</span></li>
+        <li><b>Rates</b><span>Prices and what is included, side by side.</span></li>
+        <li><b>Amenities</b><span>Grouped so a guest can scan for the one they need.</span></li>
+        <li><b>Gallery</b><span>Every photo, filterable, opening full-screen.</span></li>
+        <li><b>Reviews</b><span>Guest quotes with ratings — hidden until there are real ones.</span></li>
+        <li><b>FAQ</b><span>The questions the phone rings about, answered.</span></li>
+        <li><b>Good to know</b><span>Check-in, check-out, deposits, house rules.</span></li>
+        <li><b>Find us &amp; enquire</b><span>Map, directions, and the enquiry form.</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== WALKTHROUGH ============================== -->
+<section class="band-tint">
+  <div class="wrap">
+    <p class="eyebrow">Section by section</p>
+    <h2>What each part of the page does</h2>
+    <p class="lede" style="margin-top: 1.1rem; margin-bottom: 3rem;">
+      Every screen below is the live site, captured as it is today.
+    </p>
+
+    <div class="feature">
+      <div>
+        <h3>The opening screen</h3>
+        <p>
+          The property's best photographs cross-fade slowly behind the name, with
+          a booking button and a call button placed before any scrolling is
+          needed. Underneath sits an availability bar: dates, number of guests
+          and the occasion.
+        </p>
+        <p>
+          Filling it in and pressing <em>Check Availability</em> opens WhatsApp
+          with the enquiry already written out.
+        </p>
+        <div class="gain">
+          <b>Why it matters</b>
+          A guest who arrives on a phone can send a real enquiry in about ten
+          seconds, without scrolling, typing an address, or finding a form.
+        </div>
+      </div>
+      <figure>
+        <div class="shot">
+          <div class="shot-bar"><i></i><i></i><i></i><span>resortbydigvijay.netlify.app</span></div>
+          <img src="screenshots/d-hero.jpg" alt="Opening screen with the resort photographed at dusk, navigation across the top, headline, and the availability bar beginning at the bottom edge." />
+        </div>
+        <figcaption>The opening screen, with the availability bar anchored beneath it.</figcaption>
+      </figure>
+    </div>
+
+    <div class="feature flip">
+      <div>
+        <h3>Ways to stay</h3>
+        <p>
+          Each way of booking the property gets a card: a photograph, a short
+          description, the facilities included, and its own
+          <em>Enquire Now</em> button that opens WhatsApp.
+        </p>
+        <p>
+          Cards are not fixed in the design — they are a list in one settings
+          file. Three today, five next season, and the layout arranges itself.
+        </p>
+        <div class="gain">
+          <b>Why it matters</b>
+          Each card is a separate enquiry route, so the owner knows what the
+          guest was looking at before the conversation starts.
+        </div>
+      </div>
+      <figure>
+        <div class="shot">
+          <div class="shot-bar"><i></i><i></i><i></i><span>resortbydigvijay.netlify.app/#stay</span></div>
+          <img src="screenshots/d-stay.jpg" alt="Three large stay cards, each with a photograph, description, list of facilities and an Enquire Now button." />
+        </div>
+        <figcaption>Stay cards. Add or remove one by editing a list — nothing else changes.</figcaption>
+      </figure>
+    </div>
+
+    <div class="feature">
+      <div>
+        <h3>Rates, stated plainly</h3>
+        <p>
+          Prices sit in the open with everything they include listed underneath,
+          and one plan can be marked as the recommended one. Check-in and
+          check-out times are written once in the settings and appear on every
+          card and in the FAQ answer.
+        </p>
+        <div class="gain">
+          <b>Why it matters</b>
+          Published prices filter out the enquiries that were never going to
+          book, and a single source for the timings means they can never
+          contradict each other.
+        </div>
+      </div>
+      <figure>
+        <div class="shot">
+          <div class="shot-bar"><i></i><i></i><i></i><span>resortbydigvijay.netlify.app/#packages</span></div>
+          <img src="screenshots/d-packages.jpg" alt="Two pricing cards side by side, each listing a rate, what it covers, and check-in and check-out times." />
+        </div>
+        <figcaption>Rate cards, with the highlighted plan drawn forward.</figcaption>
+      </figure>
+    </div>
+
+    <div class="feature flip">
+      <div>
+        <h3>The gallery</h3>
+        <p>
+          Photographs are laid out as a mosaic — some large, some small — rather
+          than identical squares, and grouped into tabs that come from the photo
+          folders themselves. Add a folder of spa photos and a <em>Spa</em> tab
+          appears on its own.
+        </p>
+        <p>
+          Tapping any photo opens it full-screen with its description, a counter,
+          and arrow-key navigation.
+        </p>
+        <div class="gain">
+          <b>Why it matters</b>
+          Photographs sell a property. This is the part of the page guests spend
+          longest on, so it takes every photo the property has without anyone
+          resizing or renaming a file.
+        </div>
+      </div>
+      <figure>
+        <div class="shot">
+          <div class="shot-bar"><i></i><i></i><i></i><span>resortbydigvijay.netlify.app/#gallery</span></div>
+          <img src="screenshots/d-gallery.jpg" alt="Gallery section with filter tabs reading All, Resort, Rooms, Swimming Pool, Food and Activities, above a mosaic of photographs of different sizes." />
+        </div>
+        <figcaption>Filter tabs are built from the photo folders — never hand-written.</figcaption>
+      </figure>
+    </div>
+
+    <div class="feature">
+      <div>
+        <h3>Full-screen viewer</h3>
+        <p>
+          The viewer dims the page, shows the photo's description and its
+          position in the set, and can be driven with arrow keys or swipes.
+          Pressing Escape closes it and returns focus to the photo that was
+          opened.
+        </p>
+        <div class="gain">
+          <b>Why it matters</b>
+          Guests browse a gallery the way they browse a phone camera roll. This
+          behaves the way they already expect, including for keyboard and
+          screen-reader users.
+        </div>
+      </div>
+      <figure>
+        <div class="shot">
+          <div class="shot-bar"><i></i><i></i><i></i><span>resortbydigvijay.netlify.app/#gallery</span></div>
+          <img src="screenshots/d-lightbox.jpg" alt="A photograph displayed full-screen over a dimmed page, with previous and next arrows, a close button, a caption and a one-of-twenty-four counter." />
+        </div>
+        <figcaption>Caption and counter under every photo, arrows either side.</figcaption>
+      </figure>
+    </div>
+
+    <div class="feature flip">
+      <div>
+        <h3>Amenities and questions</h3>
+        <p>
+          Amenities are grouped — the property, events, overnight stays,
+          languages spoken — so a guest scanning for one thing finds it. The FAQ
+          below folds open one answer at a time.
+        </p>
+        <div class="gain">
+          <b>Why it matters</b>
+          Both sections are the phone calls the owner takes every week, written
+          down once. Google also reads the FAQ and can show those answers
+          directly in search results.
+        </div>
+      </div>
+      <figure>
+        <div class="shot">
+          <div class="shot-bar"><i></i><i></i><i></i><span>resortbydigvijay.netlify.app/#amenities</span></div>
+          <img src="screenshots/d-amenities.jpg" alt="Amenities laid out in labelled groups with a small line icon beside each item." />
+        </div>
+        <figcaption>Grouped amenities, each with its own icon.</figcaption>
+      </figure>
+    </div>
+
+    <div class="feature">
+      <div>
+        <h3>Finding the place</h3>
+        <p>
+          The map does not load until a visitor asks for it. Until then they see
+          a photograph of the surroundings and a <em>Load map</em> button; the
+          address, a <em>Get Directions</em> link, a call button and a WhatsApp
+          button are all there without it.
+        </p>
+        <div class="gain">
+          <b>Why it matters</b>
+          Nobody is handed to Google before they choose to be, and the page
+          stays fast for the many visitors who only wanted the phone number.
+        </div>
+      </div>
+      <figure>
+        <div class="shot">
+          <div class="shot-bar"><i></i><i></i><i></i><span>resortbydigvijay.netlify.app/#location</span></div>
+          <img src="screenshots/d-location.jpg" alt="Location section showing the postal address, direction, call and WhatsApp buttons, and a photograph standing in for the map with a Load map button over it." />
+        </div>
+        <figcaption>The map placeholder. One tap swaps in the real Google map.</figcaption>
+      </figure>
+    </div>
+
+    <div class="feature flip">
+      <div>
+        <h3>The enquiry form</h3>
+        <p>
+          Name, phone, dates, how many adults and children, what kind of stay,
+          and a message. It checks the phone number, refuses a check-out before
+          check-in, and will not offer dates in the past.
+        </p>
+        <p>
+          On submit it opens WhatsApp with the whole enquiry composed as a
+          message. There is no inbox to watch and no form service to pay for.
+        </p>
+        <div class="gain">
+          <b>Why it matters</b>
+          Enquiries arrive where the owner already is. The reply is a WhatsApp
+          reply — no missed email, no spam folder, no login.
+        </div>
+      </div>
+      <figure>
+        <div class="shot">
+          <div class="shot-bar"><i></i><i></i><i></i><span>resortbydigvijay.netlify.app/#contact</span></div>
+          <img src="screenshots/d-contact.jpg" alt="Contact section with phone, WhatsApp, email and address on the left and the enquiry form on the right." />
+        </div>
+        <figcaption>Contact details beside the form. Both routes end in WhatsApp.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== MOBILE ============================== -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow">On a phone</p>
+    <h2>Where most guests will actually see it</h2>
+    <p class="lede" style="margin-top: 1.1rem; margin-bottom: 2.75rem;">
+      The layout is not a shrunken desktop page. Every section is rebuilt for a
+      narrow screen: the mosaic becomes a single column, the navigation becomes
+      a full-screen menu, and buttons are sized for thumbs.
+    </p>
+    <div class="phones">
+      <figure class="phone">
+        <div class="phone-screen"><img src="screenshots/m-hero.jpg" alt="The site on a phone: full-height photograph, headline, booking buttons and the start of the availability form." /></div>
+        <p>Opening screen</p>
+      </figure>
+      <figure class="phone">
+        <div class="phone-screen"><img src="screenshots/m-menu.jpg" alt="The mobile navigation menu open over the page, listing every section." /></div>
+        <p>Menu</p>
+      </figure>
+      <figure class="phone">
+        <div class="phone-screen"><img src="screenshots/m-stay.jpg" alt="Stay cards stacked in a single column on a phone." /></div>
+        <p>Stay options</p>
+      </figure>
+      <figure class="phone">
+        <div class="phone-screen"><img src="screenshots/m-gallery.jpg" alt="The gallery on a phone, with filter tabs above a single column of photographs." /></div>
+        <p>Gallery</p>
+      </figure>
+      <figure class="phone">
+        <div class="phone-screen"><img src="screenshots/m-packages.jpg" alt="Rate cards stacked vertically on a phone." /></div>
+        <p>Rates</p>
+      </figure>
+      <figure class="phone">
+        <div class="phone-screen"><img src="screenshots/m-contact.jpg" alt="The enquiry form on a phone with full-width fields." /></div>
+        <p>Enquiry form</p>
+      </figure>
+    </div>
+    <figcaption>Captured at 414 × 896 — the size of a common Android and iPhone screen. Scroll sideways for more.</figcaption>
+  </div>
+</section>
+
+<!-- ============================== BENEFITS ============================== -->
+<section class="band-dark">
+  <div class="wrap">
+    <p class="eyebrow">What the owner gets</p>
+    <h2>Six things this does for the business</h2>
+    <p class="lede" style="margin-top: 1.1rem; margin-bottom: 3rem; max-width: 60ch;">
+      A website is only worth building if it changes something. Here is what
+      changes.
+    </p>
+    <div class="cards" style="--ground: rgba(255,255,255,0.045); --line: rgba(255,255,255,0.14);">
+      <div class="card">
+        <span class="tag">Direct bookings</span>
+        <h4 style="color: #fbf8f1;">No commission on any enquiry</h4>
+        <p style="color: #c4cfc6;">
+          Every button on the page opens a WhatsApp conversation with the owner.
+          Listing portals typically keep 15–25% of a booking; enquiries that
+          arrive here keep all of it.
+        </p>
+      </div>
+      <div class="card">
+        <span class="tag">Running cost</span>
+        <h4 style="color: #fbf8f1;">Nothing to pay each month</h4>
+        <p style="color: #c4cfc6;">
+          The site is plain files. It runs on free static hosting, needs no
+          database, no plugin licences and no form service. Only the domain name
+          is renewed each year.
+        </p>
+      </div>
+      <div class="card">
+        <span class="tag">Speed</span>
+        <h4 style="color: #fbf8f1;">Loads on a weak 4G signal</h4>
+        <p style="color: #c4cfc6;">
+          The whole page — markup, styling and behaviour — is about 50 KB
+          compressed. Photographs are cut into four sizes so a phone downloads a
+          phone-sized copy, not the original.
+        </p>
+      </div>
+      <div class="card">
+        <span class="tag">Search</span>
+        <h4 style="color: #fbf8f1;">Built to be found</h4>
+        <p style="color: #c4cfc6;">
+          The page tells Google it is a resort, where it is, what it costs and
+          what the FAQ answers are — in the structured format Google reads. That
+          is what earns the expanded search result.
+        </p>
+      </div>
+      <div class="card">
+        <span class="tag">Upkeep</span>
+        <h4 style="color: #fbf8f1;">Staff can update it</h4>
+        <p style="color: #c4cfc6;">
+          New photos are dropped into a folder — any filename, any number. Text,
+          prices and the phone number live in one clearly marked file. No admin
+          panel to learn or lose the password to.
+        </p>
+      </div>
+      <div class="card">
+        <span class="tag">Security</span>
+        <h4 style="color: #fbf8f1;">Nothing to break into</h4>
+        <p style="color: #c4cfc6;">
+          No login, no database, no plugins going out of date. The most common
+          way small business sites get hacked simply does not exist here.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== UPDATES ============================== -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Keeping it current</p>
+    <h2>Adding this season's photos takes three steps</h2>
+    <p class="lede" style="margin-top: 1.1rem;">
+      This is the whole process. There is no fourth step and no software to open.
+    </p>
+    <div class="steps">
+      <div class="step">
+        <span class="n">1</span>
+        <h4>Drop the photos in</h4>
+        <p>
+          Put them in the folder for that part of the site — <code>pool</code>,
+          <code>rooms</code>, <code>food</code>. Filenames do not matter. Five
+          photos shows five; add three more and it shows eight.
+        </p>
+      </div>
+      <div class="step">
+        <span class="n">2</span>
+        <h4>Push the change</h4>
+        <p>
+          The host picks it up and rebuilds the fast copies of every new photo
+          by itself — four sizes each, in the modern format, with the
+          dimensions recorded.
+        </p>
+      </div>
+      <div class="step">
+        <span class="n">3</span>
+        <h4>It is live</h4>
+        <p>
+          The gallery, its filter tabs and every section that uses those photos
+          rearrange themselves around what is now there. Nothing to configure.
+        </p>
+      </div>
+    </div>
+    <p style="margin-top: 2.75rem;">
+      Words, prices, the phone number and the address are the same idea: one
+      settings file, plainly commented. The WhatsApp number is written in
+      <strong>one place</strong> and every button on the page follows it — so it
+      can never be right in one spot and wrong in another.
+    </p>
+  </div>
+</section>
+
+<!-- ============================== RESILIENCE ============================== -->
+<section class="band-tint">
+  <div class="wrap">
+    <p class="eyebrow">Built to hold</p>
+    <h2>What happens when something goes wrong</h2>
+    <p class="lede" style="margin-top: 1.1rem; margin-bottom: 2.5rem;">
+      Small business sites usually fail quietly — a broken image here, a blank
+      section there. Each of these was designed for rather than hoped about.
+    </p>
+    <ul class="checks">
+      <li><span><b>A visitor blocks JavaScript.</b> They still get the name, phone number, WhatsApp link and address, not an empty page.</span></li>
+      <li><span><b>A photo fails to load.</b> The page quietly retries with the untouched original before giving up.</span></li>
+      <li><span><b>A section has no content yet.</b> It hides itself instead of leaving a heading over blank space.</span></li>
+      <li><span><b>The photo build fails.</b> The last good version is already committed and gets served — a failed build cannot take the site down.</span></li>
+      <li><span><b>A guest asks for reduced motion.</b> The cross-fades and reveals switch off; the content is unaffected.</span></li>
+      <li><span><b>Someone visits a wrong address.</b> A proper 404 page in the site's own design points them back.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================== SPECS ============================== -->
+<section>
+  <div class="wrap">
+    <div class="glance" style="grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);">
+      <div>
+        <p class="eyebrow">Specification</p>
+        <h2>The technical short version</h2>
+        <p class="lede" style="margin-top: 1.1rem;">
+          For anyone who wants to know what is actually running — or to hand it
+          to another developer later.
+        </p>
+        <p style="margin-top: 1.5rem; font-size: 0.95rem; color: var(--muted);">
+          There is no framework and no lock-in. The site is HTML, CSS and
+          JavaScript in a folder; any web developer can pick it up, and it will
+          still open in ten years.
+        </p>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <tr><th>Item</th><th>Detail</th></tr>
+          <tr><td>Built with</td><td>Hand-written HTML, CSS and JavaScript. No framework, no dependencies to install.</td></tr>
+          <tr><td>Page code</td><td>~50 KB compressed for markup, styling and behaviour combined.</td></tr>
+          <tr><td>Photographs</td><td>WebP at four widths plus a fallback, generated automatically; roughly 10 MB of originals served as about 1 MB.</td></tr>
+          <tr><td>Typefaces</td><td>Cormorant Garamond and Plus Jakarta Sans, self-hosted — no request to Google before a visitor interacts.</td></tr>
+          <tr><td>Enquiries</td><td>Validated in the browser, delivered as a pre-written WhatsApp message. No server, no stored data.</td></tr>
+          <tr><td>Search engines</td><td>Resort and FAQ structured data, canonical link, sitemap, robots file, social link previews.</td></tr>
+          <tr><td>Accessibility</td><td>Skip link, labelled controls, visible focus, keyboard-driven gallery, contrast-checked palette, reduced-motion support.</td></tr>
+          <tr><td>Security headers</td><td>Framing blocked, content-type sniffing off, referrer trimmed, camera, microphone and location switched off.</td></tr>
+          <tr><td>Hosting</td><td>Netlify. Every push republishes; the build is written so it cannot fail the deploy.</td></tr>
+          <tr><td>Browser support</td><td>Every current browser on desktop, Android and iOS.</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== REUSE ============================== -->
+<section class="band-tint">
+  <div class="wrap">
+    <div class="glance" style="grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);">
+      <div>
+        <p class="eyebrow">One build, many properties</p>
+        <h2>The same site, rebranded for the next client in a day</h2>
+        <p style="margin-top: 1.3rem;">
+          Because every word, price, colour and photograph is a setting rather
+          than something typed into the layout, the whole site can be pointed at
+          a different property without touching the design work.
+        </p>
+        <p>
+          That has already been done once. A second version of this site is
+          fully rebranded for <strong>Bade Farms</strong>, a private
+          five-bedroom villa on two acres in Kolhapur — new name, new colours,
+          new copy, new rates, new structure for the stay options (a whole
+          villa, pool parties, weddings) and a new address and WhatsApp number.
+        </p>
+        <p>
+          It also ships with an honest record of what is verified and what is
+          not: the phone number came from the property's own Instagram, the rate
+          from wedding directories. Invented reviews and self-published star
+          ratings were left out on purpose — Google's own policy forbids a
+          business marking up reviews of itself.
+        </p>
+      </div>
+      <div>
+        <div class="table-scroll">
+          <table>
+            <tr><th>Changed per client</th><th>Where</th></tr>
+            <tr><td>Name, tagline, all copy</td><td>One settings file</td></tr>
+            <tr><td>Phone &amp; WhatsApp number</td><td>One line</td></tr>
+            <tr><td>Address &amp; map</td><td>One line — map and directions follow</td></tr>
+            <tr><td>Rates &amp; what they include</td><td>A list</td></tr>
+            <tr><td>Stay options</td><td>A list — any number of cards</td></tr>
+            <tr><td>Amenities, FAQ, offers</td><td>Lists</td></tr>
+            <tr><td>Colours &amp; typefaces</td><td>One block of design tokens</td></tr>
+            <tr><td>Photographs</td><td>Drop into folders</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== CLOSE ============================== -->
+<section class="band-dark">
+  <div class="wrap narrow" style="width: min(760px, 100%);">
+    <p class="eyebrow">See it yourself</p>
+    <h2>Open it on your phone</h2>
+    <p class="lede" style="margin-top: 1.2rem;">
+      Everything in this brochure is live right now. Tap a booking button and
+      watch the WhatsApp message compose itself.
+    </p>
+    <p style="margin-top: 1.75rem;">
+      <a class="url-chip" href="https://resortbydigvijay.netlify.app/">resortbydigvijay.netlify.app</a>
+    </p>
+    <div class="close-grid">
+      <div>
+        <h4>What is included</h4>
+        <p>Design, build, photo pipeline, search-engine setup, hosting configuration and the handbook that documents all of it.</p>
+      </div>
+      <div>
+        <h4>What you own</h4>
+        <p>The whole thing. Plain files in a repository, no licence, no platform to stay subscribed to.</p>
+      </div>
+      <div>
+        <h4>What it costs to run</h4>
+        <p>Your domain name each year. Hosting at this size is free.</p>
+      </div>
+    </div>
+  </div>
+</section>
