@@ -51,10 +51,11 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install Pillow
-        # Pillow makes the WebP copies. If it cannot install, the next step
-        # still writes the photo list, just without optimised versions.
-        run: python -m pip install --quiet --disable-pip-version-check Pillow
+      - name: Install Pillow (+ HEIC support)
+        # Pillow makes the WebP copies. pillow-heif lets it read .heic photos
+        # straight off an iPhone. If either fails to install the next step
+        # still writes the photo list, just with less optimisation.
+        run: python -m pip install --quiet --disable-pip-version-check Pillow pillow-heif || python -m pip install --quiet Pillow || true
 
       - name: Rebuild the photo list and WebP copies
         # Never fail the deploy over an image. A bad photo falls back to the

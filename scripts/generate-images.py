@@ -4,10 +4,17 @@ Scan assets/images/<folder>/ and write js/images.js.
 
 DROP-IN WORKFLOW
 ----------------
-1. Put any .jpg / .jpeg / .png / .webp file into a folder inside assets/images/.
-   Filenames do not matter. Counts do not matter. New folders do not matter.
+1. Put photos into a folder inside assets/images/. Filenames do not matter,
+   counts do not matter, new folders do not matter, and the format does not
+   matter — jpg, jpeg, jfif, png, webp, gif, avif, bmp, tif, tiff, heic.
 2. Run this script (or double-click scripts/update-images.bat on Windows).
+   Deploying to Netlify or GitHub Pages? They run it for you on every push.
 3. Refresh the page.
+
+   Formats no browser can render (.heic off a phone, .tif from a
+   photographer) are converted to JPEG and the converted copy is what the
+   page loads. HEIC needs the pillow-heif package; without it those files are
+   skipped with a message rather than silently breaking.
 
 The site reads js/images.js and lays itself out around whatever it finds:
 5 photos in a folder shows 5, add 3 more and it shows 8, add a brand-new
@@ -46,7 +53,14 @@ OPT_DIRNAME = "_optimized"
 OPT_DIR = os.path.join(IMAGES_DIR, OPT_DIRNAME)
 OPT_REL = "assets/images/" + OPT_DIRNAME
 
-SOURCE_EXTS = (".jpg", ".jpeg", ".png", ".webp")
+# Overridden by assets/images/folders.json; these are only the fallbacks used
+# when that file is missing.
+DEFAULT_SOURCE_EXTS = ("jpg", "jpeg", "jfif", "png", "webp", "gif", "avif",
+                       "bmp", "tif", "tiff", "heic", "heif")
+DEFAULT_BROWSER_EXTS = ("jpg", "jpeg", "jfif", "png", "webp", "gif", "avif")
+
+# Resizing an animated GIF flattens it to a single frame, so leave them alone.
+NO_DERIVATIVES = (".gif",)
 
 # Responsive widths generated for every photo. Widths wider than the original
 # are skipped, so a small image never gets upscaled.
@@ -95,6 +109,21 @@ CONFIG = load_config()
 SITE_NAME = CONFIG.get("siteName") or "the resort"
 GALLERY_ORDER = CONFIG.get("galleryOrder") or []
 
+_fmt = CONFIG.get("formats") or {}
+SOURCE_EXTS = tuple(
+    "." + e.lower().lstrip(".")
+    for e in (_fmt.get("source") or DEFAULT_SOURCE_EXTS)
+)
+BROWSER_EXTS = tuple(
+    "." + e.lower().lstrip(".")
+    for e in (_fmt.get("browserSafe") or DEFAULT_BROWSER_EXTS)
+)
+
+
+def browser_can_show(filename):
+    """A .heic or .tif is a perfectly good photo that no browser will render."""
+    return filename.lower().endswith(BROWSER_EXTS)
+
 # Filename words that carry no meaning, used to decide whether a filename is
 # descriptive enough to become alt text.
 NOISE_WORDS = {
@@ -109,6 +138,16 @@ try:
     HAVE_PILLOW = True
 except ImportError:  # pragma: no cover - depends on the machine
     HAVE_PILLOW = False
+
+# Photos straight off an iPhone are .heic, which Pillow cannot read on its own.
+HAVE_HEIC = False
+if HAVE_PILLOW:
+    try:
+        import pillow_heif
+        pillow_heif.register_heif_opener()
+        HAVE_HEIC = True
+    except ImportError:
+        pass
 
 
 # ---------------------------------------------------------------------------
@@ -216,6 +255,10 @@ def make_derivatives(src_path, folder, stem, force, stats):
             out_dir = os.path.join(OPT_DIR, folder)
             os.makedirs(out_dir, exist_ok=True)
 
+            if src_path.lower().endswith(NO_DERIVATIVES):
+                # Animated GIF: resizing flattens it, so serve it untouched.
+                return (width, height, "", "")
+
             targets = [w for w in WIDTHS if w < width] + [width]
             targets = sorted(set(targets))
 
@@ -232,6 +275,25 @@ def make_derivatives(src_path, folder, stem, force, stats):
                 entries.append("%s/%s/%s-%d.webp %dw" % (OPT_REL, folder, stem, target, target))
 
             fallback_rel = ""
+            # A format no browser can render (.heic off a phone, .tif from a
+            # photographer) MUST get a JPEG copy — that copy becomes what the
+            # page loads, not the original.
+            if not browser_can_show(src_path):
+                cap = min(width, 1920)
+                dest = os.path.join(out_dir, "%s-%d.jpg" % (stem, cap))
+                if needs_rebuild(src_path, dest, force):
+                    flat = rgb.convert("RGB") if has_alpha else rgb
+                    resized = flat if cap == width else flat.resize(
+                        (cap, max(1, round(height * cap / width))), Image.LANCZOS
+                    )
+                    resized.save(dest, "JPEG", quality=JPEG_QUALITY,
+                                 optimize=True, progressive=True)
+                    stats["written"] += 1
+                    stats["converted"] += 1
+                return (width, height,
+                        ", ".join(entries),
+                        "%s/%s/%s-%d.jpg" % (OPT_REL, folder, stem, cap))
+
             if not has_alpha and os.path.getsize(src_path) > FALLBACK_BYTES:
                 cap = min(width, 1920)
                 dest = os.path.join(out_dir, "%s-%d.jpg" % (stem, cap))
@@ -284,6 +346,13 @@ def scan_folder(folder, force, stats):
     images = []
     for index, filename in enumerate(files):
         src_path = os.path.join(folder_path, filename)
+        # A HEIC we cannot decode would produce a link no browser can show, so
+        # leave it out and say why rather than shipping a broken image.
+        if filename.lower().endswith((".heic", ".heif")) and not HAVE_HEIC:
+            print("  ! skipping %s — install pillow-heif to use HEIC photos"
+                  % filename)
+            stats["skipped"] += 1
+            continue
         stem = os.path.splitext(filename)[0]
         width, height, srcset, fallback = make_derivatives(
             src_path, folder, stem, force, stats
@@ -328,7 +397,7 @@ def main():
         print("      Install it with:  python -m pip install Pillow")
         print()
 
-    stats = {"images": 0, "written": 0, "failed": 0}
+    stats = {"images": 0, "written": 0, "failed": 0, "converted": 0, "skipped": 0}
     folders = {}
 
     names = sorted(
@@ -365,6 +434,11 @@ def main():
     print("  %d image(s) across %d folder(s)" % (stats["images"], len(folders)))
     if stats["written"]:
         print("  %d optimised file(s) created in %s" % (stats["written"], OPT_REL))
+    if stats["converted"]:
+        print("  %d file(s) converted to JPEG so browsers can display them"
+              % stats["converted"])
+    if stats["skipped"]:
+        print("  %d file(s) skipped — see the messages above" % stats["skipped"])
     if stats["failed"]:
         print("  %d file(s) could not be read and were skipped" % stats["failed"])
     print()

@@ -40,7 +40,7 @@
   publish = "."
   # Kept on one line on purpose: a multi-line command would stop at the first
   # non-zero step on build images that run the shell with `set -e`.
-  command = "echo '--- build starting ---'; ls -1 scripts 2>/dev/null || echo 'note: no scripts/ directory in this clone'; python3 -m pip install --quiet --disable-pip-version-check Pillow 2>/dev/null || echo 'note: Pillow unavailable, skipping image optimisation'; python3 scripts/generate-images.py || echo 'note: image build skipped, serving the committed js/images.js'; echo '--- build done ---'; true"
+  command = "echo '--- build starting ---'; ls -1 scripts 2>/dev/null || echo 'note: no scripts/ directory in this clone'; python3 -m pip install --quiet --disable-pip-version-check Pillow pillow-heif 2>/dev/null || python3 -m pip install --quiet Pillow 2>/dev/null || echo 'note: Pillow unavailable, skipping image optimisation'; python3 scripts/generate-images.py || echo 'note: image build skipped, serving the committed js/images.js'; echo '--- build done ---'; true"
 
 #  Do NOT pin PYTHON_VERSION here. Netlify reads that variable during its
 #  "install dependencies" stage, before the build command runs, and hands it to
