@@ -235,6 +235,52 @@ section — then push again.
 
 ---
 
+## 6b. Deploying to GitHub Pages
+
+It works, but there is one trap.
+
+### `.nojekyll` must stay in the repo root
+
+GitHub Pages runs every site through Jekyll, and **Jekyll deletes anything
+whose name starts with an underscore**. All the optimised photos live in
+`assets/images/_optimized/`, so without `.nojekyll` the site publishes with
+**98 of its 127 image URLs returning 404** — no hero, no gallery, no card
+photos. Locally it all looks perfect, which makes it a confusing one to chase.
+
+The `.nojekyll` file in the repo root switches Jekyll off. Do not delete it.
+
+> Why not just rename the folder? The underscore is what tells
+> `js/autoscan.js` to skip it, so renaming would fix Pages and break the
+> photo scanner. Keep the underscore and keep `.nojekyll`.
+
+### No build step
+
+Pages cannot run the Python script, so it serves whatever is committed. That
+is fine — `js/images.js` and `assets/images/_optimized/` are both in the repo.
+Just remember to run the script yourself after adding photos:
+
+```
+python scripts/generate-images.py
+```
+
+then commit the changes. (Netlify does this for you; Pages does not.)
+
+### Project sites live under a sub-path
+
+A project site is served from `https://<user>.github.io/<repo>/`. Every asset
+path in the site is relative, so that works as-is. Two things do not:
+
+- `seo.siteUrl` in `js/data.js`, plus `robots.txt` and `sitemap.xml`, still
+  name the real domain. Link previews will point at the real domain rather
+  than the Pages URL until it is live.
+- The links on `404.html` start with `/`, so on a project site they land on
+  the user's root site instead of the project. On a custom domain they are
+  correct.
+
+Neither affects the pages themselves. A custom domain clears both.
+
+---
+
 ## 7. Before going live
 
 1. Set **`seo.siteUrl`** in `js/data.js` to your real address, e.g.
