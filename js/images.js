@@ -87,7 +87,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/food/SaveClip.App_630009485_17909303118337753_1059438545162966691_n.jpg",
           "original": "assets/images/food/SaveClip.App_630009485_17909303118337753_1059438545162966691_n.jpg",
           "srcset": "assets/images/_optimized/food/SaveClip.App_630009485_17909303118337753_1059438545162966691_n-480.webp 480w, assets/images/_optimized/food/SaveClip.App_630009485_17909303118337753_1059438545162966691_n-960.webp 960w, assets/images/_optimized/food/SaveClip.App_630009485_17909303118337753_1059438545162966691_n-1440.webp 1440w",
-          "alt": "Food served at The Riverfront Resort (1 of 6)",
+          "alt": "Food served at Bade Farms (1 of 6)",
           "w": 1440,
           "h": 1800
         },
@@ -95,7 +95,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/food/SaveClip.App_630108451_17909303145337753_8987344963266750178_n.jpg",
           "original": "assets/images/food/SaveClip.App_630108451_17909303145337753_8987344963266750178_n.jpg",
           "srcset": "assets/images/_optimized/food/SaveClip.App_630108451_17909303145337753_8987344963266750178_n-480.webp 480w, assets/images/_optimized/food/SaveClip.App_630108451_17909303145337753_8987344963266750178_n-960.webp 960w, assets/images/_optimized/food/SaveClip.App_630108451_17909303145337753_8987344963266750178_n-1440.webp 1440w",
-          "alt": "Food served at The Riverfront Resort (2 of 6)",
+          "alt": "Food served at Bade Farms (2 of 6)",
           "w": 1440,
           "h": 1800
         },
@@ -103,7 +103,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/food/SaveClip.App_630184206_17909303136337753_5257966624234150124_n.jpg",
           "original": "assets/images/food/SaveClip.App_630184206_17909303136337753_5257966624234150124_n.jpg",
           "srcset": "assets/images/_optimized/food/SaveClip.App_630184206_17909303136337753_5257966624234150124_n-480.webp 480w, assets/images/_optimized/food/SaveClip.App_630184206_17909303136337753_5257966624234150124_n-960.webp 960w, assets/images/_optimized/food/SaveClip.App_630184206_17909303136337753_5257966624234150124_n-1440.webp 1440w",
-          "alt": "Food served at The Riverfront Resort (3 of 6)",
+          "alt": "Food served at Bade Farms (3 of 6)",
           "w": 1440,
           "h": 1800
         },
@@ -111,7 +111,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/food/SaveClip.App_630206121_17909303127337753_4776752966663419988_n.jpg",
           "original": "assets/images/food/SaveClip.App_630206121_17909303127337753_4776752966663419988_n.jpg",
           "srcset": "assets/images/_optimized/food/SaveClip.App_630206121_17909303127337753_4776752966663419988_n-480.webp 480w, assets/images/_optimized/food/SaveClip.App_630206121_17909303127337753_4776752966663419988_n-960.webp 960w, assets/images/_optimized/food/SaveClip.App_630206121_17909303127337753_4776752966663419988_n-1440.webp 1440w",
-          "alt": "Food served at The Riverfront Resort (4 of 6)",
+          "alt": "Food served at Bade Farms (4 of 6)",
           "w": 1440,
           "h": 1800
         },
@@ -119,7 +119,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/food/SaveClip.App_696296505_969248349411165_3586370953481485829_n.jpg",
           "original": "assets/images/food/SaveClip.App_696296505_969248349411165_3586370953481485829_n.jpg",
           "srcset": "assets/images/_optimized/food/SaveClip.App_696296505_969248349411165_3586370953481485829_n-480.webp 480w, assets/images/_optimized/food/SaveClip.App_696296505_969248349411165_3586370953481485829_n-640.webp 640w",
-          "alt": "Food served at The Riverfront Resort (5 of 6)",
+          "alt": "Food served at Bade Farms (5 of 6)",
           "w": 640,
           "h": 800
         },
@@ -127,7 +127,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/food/SaveClip.App_707393633_17926417797337753_2143520799247043779_n.jpg",
           "original": "assets/images/food/SaveClip.App_707393633_17926417797337753_2143520799247043779_n.jpg",
           "srcset": "assets/images/_optimized/food/SaveClip.App_707393633_17926417797337753_2143520799247043779_n-480.webp 480w, assets/images/_optimized/food/SaveClip.App_707393633_17926417797337753_2143520799247043779_n-960.webp 960w, assets/images/_optimized/food/SaveClip.App_707393633_17926417797337753_2143520799247043779_n-1440.webp 1440w",
-          "alt": "Food served at The Riverfront Resort (6 of 6)",
+          "alt": "Food served at Bade Farms (6 of 6)",
           "w": 1440,
           "h": 1800
         }
@@ -141,7 +141,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/gallery/SaveClip.App_529855907_17887488453337753_5068259327826850295_n.jpg",
           "original": "assets/images/gallery/SaveClip.App_529855907_17887488453337753_5068259327826850295_n.jpg",
           "srcset": "assets/images/_optimized/gallery/SaveClip.App_529855907_17887488453337753_5068259327826850295_n-480.webp 480w, assets/images/_optimized/gallery/SaveClip.App_529855907_17887488453337753_5068259327826850295_n-960.webp 960w, assets/images/_optimized/gallery/SaveClip.App_529855907_17887488453337753_5068259327826850295_n-1440.webp 1440w",
-          "alt": "The grounds at The Riverfront Resort (1 of 7)",
+          "alt": "The grounds at Bade Farms (1 of 7)",
           "w": 1440,
           "h": 1800
         },
@@ -149,7 +149,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/gallery/SaveClip.App_530543311_17887488498337753_9037298146911317242_n.jpg",
           "original": "assets/images/gallery/SaveClip.App_530543311_17887488498337753_9037298146911317242_n.jpg",
           "srcset": "assets/images/_optimized/gallery/SaveClip.App_530543311_17887488498337753_9037298146911317242_n-480.webp 480w, assets/images/_optimized/gallery/SaveClip.App_530543311_17887488498337753_9037298146911317242_n-960.webp 960w, assets/images/_optimized/gallery/SaveClip.App_530543311_17887488498337753_9037298146911317242_n-1440.webp 1440w",
-          "alt": "The grounds at The Riverfront Resort (2 of 7)",
+          "alt": "The grounds at Bade Farms (2 of 7)",
           "w": 1440,
           "h": 1800
         },
@@ -157,7 +157,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/gallery/SaveClip.App_531211298_17887488489337753_3733645661466837347_n.jpg",
           "original": "assets/images/gallery/SaveClip.App_531211298_17887488489337753_3733645661466837347_n.jpg",
           "srcset": "assets/images/_optimized/gallery/SaveClip.App_531211298_17887488489337753_3733645661466837347_n-480.webp 480w, assets/images/_optimized/gallery/SaveClip.App_531211298_17887488489337753_3733645661466837347_n-960.webp 960w, assets/images/_optimized/gallery/SaveClip.App_531211298_17887488489337753_3733645661466837347_n-1440.webp 1440w",
-          "alt": "The grounds at The Riverfront Resort (3 of 7)",
+          "alt": "The grounds at Bade Farms (3 of 7)",
           "w": 1440,
           "h": 1800
         },
@@ -165,7 +165,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/gallery/SaveClip.App_531408235_17887488444337753_197040834168579816_n.jpg",
           "original": "assets/images/gallery/SaveClip.App_531408235_17887488444337753_197040834168579816_n.jpg",
           "srcset": "assets/images/_optimized/gallery/SaveClip.App_531408235_17887488444337753_197040834168579816_n-480.webp 480w, assets/images/_optimized/gallery/SaveClip.App_531408235_17887488444337753_197040834168579816_n-960.webp 960w, assets/images/_optimized/gallery/SaveClip.App_531408235_17887488444337753_197040834168579816_n-1440.webp 1440w",
-          "alt": "The grounds at The Riverfront Resort (4 of 7)",
+          "alt": "The grounds at Bade Farms (4 of 7)",
           "w": 1440,
           "h": 1800
         },
@@ -173,7 +173,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/gallery/SaveClip.App_532248537_17887488516337753_1380408753307852513_n.jpg",
           "original": "assets/images/gallery/SaveClip.App_532248537_17887488516337753_1380408753307852513_n.jpg",
           "srcset": "assets/images/_optimized/gallery/SaveClip.App_532248537_17887488516337753_1380408753307852513_n-480.webp 480w, assets/images/_optimized/gallery/SaveClip.App_532248537_17887488516337753_1380408753307852513_n-960.webp 960w, assets/images/_optimized/gallery/SaveClip.App_532248537_17887488516337753_1380408753307852513_n-1440.webp 1440w",
-          "alt": "The grounds at The Riverfront Resort (5 of 7)",
+          "alt": "The grounds at Bade Farms (5 of 7)",
           "w": 1440,
           "h": 1800
         },
@@ -181,7 +181,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/_optimized/gallery/SaveClip.App_532660778_17887488462337753_8126991347647587568_n-1440.jpg",
           "original": "assets/images/gallery/SaveClip.App_532660778_17887488462337753_8126991347647587568_n.jpg",
           "srcset": "assets/images/_optimized/gallery/SaveClip.App_532660778_17887488462337753_8126991347647587568_n-480.webp 480w, assets/images/_optimized/gallery/SaveClip.App_532660778_17887488462337753_8126991347647587568_n-960.webp 960w, assets/images/_optimized/gallery/SaveClip.App_532660778_17887488462337753_8126991347647587568_n-1440.webp 1440w",
-          "alt": "The grounds at The Riverfront Resort (6 of 7)",
+          "alt": "The grounds at Bade Farms (6 of 7)",
           "w": 1440,
           "h": 1800
         },
@@ -189,7 +189,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/_optimized/gallery/SaveClip.App_565462126_17895074739337753_2930093498321574042_n-1080.jpg",
           "original": "assets/images/gallery/SaveClip.App_565462126_17895074739337753_2930093498321574042_n.jpg",
           "srcset": "assets/images/_optimized/gallery/SaveClip.App_565462126_17895074739337753_2930093498321574042_n-480.webp 480w, assets/images/_optimized/gallery/SaveClip.App_565462126_17895074739337753_2930093498321574042_n-960.webp 960w, assets/images/_optimized/gallery/SaveClip.App_565462126_17895074739337753_2930093498321574042_n-1080.webp 1080w",
-          "alt": "The grounds at The Riverfront Resort (7 of 7)",
+          "alt": "The grounds at Bade Farms (7 of 7)",
           "w": 1080,
           "h": 1350
         }
@@ -203,7 +203,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/hero/Gemini_Generated_Image_fxf8qvfxf8qvfxf8.png",
           "original": "assets/images/hero/Gemini_Generated_Image_fxf8qvfxf8qvfxf8.png",
           "srcset": "assets/images/_optimized/hero/Gemini_Generated_Image_fxf8qvfxf8qvfxf8-480.webp 480w, assets/images/_optimized/hero/Gemini_Generated_Image_fxf8qvfxf8qvfxf8-960.webp 960w, assets/images/_optimized/hero/Gemini_Generated_Image_fxf8qvfxf8qvfxf8-1376.webp 1376w",
-          "alt": "Riverside view of The Riverfront Resort (1 of 2)",
+          "alt": "The villa and grounds at Bade Farms (1 of 2)",
           "w": 1376,
           "h": 768
         },
@@ -211,7 +211,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/hero/Gemini_Generated_Image_yl0414yl0414yl04.png",
           "original": "assets/images/hero/Gemini_Generated_Image_yl0414yl0414yl04.png",
           "srcset": "assets/images/_optimized/hero/Gemini_Generated_Image_yl0414yl0414yl04-480.webp 480w, assets/images/_optimized/hero/Gemini_Generated_Image_yl0414yl0414yl04-960.webp 960w, assets/images/_optimized/hero/Gemini_Generated_Image_yl0414yl0414yl04-1376.webp 1376w",
-          "alt": "Riverside view of The Riverfront Resort (2 of 2)",
+          "alt": "The villa and grounds at Bade Farms (2 of 2)",
           "w": 1376,
           "h": 768
         }
@@ -225,7 +225,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/pool/SaveClip.App_532369698_17887488471337753_2515676446559289373_n.jpg",
           "original": "assets/images/pool/SaveClip.App_532369698_17887488471337753_2515676446559289373_n.jpg",
           "srcset": "assets/images/_optimized/pool/SaveClip.App_532369698_17887488471337753_2515676446559289373_n-480.webp 480w, assets/images/_optimized/pool/SaveClip.App_532369698_17887488471337753_2515676446559289373_n-960.webp 960w, assets/images/_optimized/pool/SaveClip.App_532369698_17887488471337753_2515676446559289373_n-1440.webp 1440w",
-          "alt": "The swimming pool at The Riverfront Resort (1 of 2)",
+          "alt": "The swimming pool at Bade Farms (1 of 2)",
           "w": 1440,
           "h": 1800
         },
@@ -233,7 +233,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/_optimized/pool/SaveClip.App_563813874_17895074760337753_6719465863272514228_n-1080.jpg",
           "original": "assets/images/pool/SaveClip.App_563813874_17895074760337753_6719465863272514228_n.jpg",
           "srcset": "assets/images/_optimized/pool/SaveClip.App_563813874_17895074760337753_6719465863272514228_n-480.webp 480w, assets/images/_optimized/pool/SaveClip.App_563813874_17895074760337753_6719465863272514228_n-960.webp 960w, assets/images/_optimized/pool/SaveClip.App_563813874_17895074760337753_6719465863272514228_n-1080.webp 1080w",
-          "alt": "The swimming pool at The Riverfront Resort (2 of 2)",
+          "alt": "The swimming pool at Bade Farms (2 of 2)",
           "w": 1080,
           "h": 1350
         }
@@ -247,7 +247,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/_optimized/resort/SaveClip.App_724230430_17929143597337753_196008195900583165_n-1920.jpg",
           "original": "assets/images/resort/SaveClip.App_724230430_17929143597337753_196008195900583165_n.jpg",
           "srcset": "assets/images/_optimized/resort/SaveClip.App_724230430_17929143597337753_196008195900583165_n-480.webp 480w, assets/images/_optimized/resort/SaveClip.App_724230430_17929143597337753_196008195900583165_n-960.webp 960w, assets/images/_optimized/resort/SaveClip.App_724230430_17929143597337753_196008195900583165_n-1440.webp 1440w, assets/images/_optimized/resort/SaveClip.App_724230430_17929143597337753_196008195900583165_n-1920.webp 1920w, assets/images/_optimized/resort/SaveClip.App_724230430_17929143597337753_196008195900583165_n-2025.webp 2025w",
-          "alt": "The riverside grounds at The Riverfront Resort",
+          "alt": "The villa at Bade Farms",
           "w": 2025,
           "h": 2531
         }
@@ -261,7 +261,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/rooms/SaveClip.App_530924145_17887488507337753_2216503104786821007_n.jpg",
           "original": "assets/images/rooms/SaveClip.App_530924145_17887488507337753_2216503104786821007_n.jpg",
           "srcset": "assets/images/_optimized/rooms/SaveClip.App_530924145_17887488507337753_2216503104786821007_n-480.webp 480w, assets/images/_optimized/rooms/SaveClip.App_530924145_17887488507337753_2216503104786821007_n-960.webp 960w, assets/images/_optimized/rooms/SaveClip.App_530924145_17887488507337753_2216503104786821007_n-1440.webp 1440w",
-          "alt": "A guest room at The Riverfront Resort (1 of 2)",
+          "alt": "A bedroom at Bade Farms (1 of 2)",
           "w": 1440,
           "h": 1800
         },
@@ -269,7 +269,7 @@ window.IMAGE_MANIFEST = {
           "src": "assets/images/rooms/SaveClip.App_565412821_17895074748337753_8244442311990717578_n.jpg",
           "original": "assets/images/rooms/SaveClip.App_565412821_17895074748337753_8244442311990717578_n.jpg",
           "srcset": "assets/images/_optimized/rooms/SaveClip.App_565412821_17895074748337753_8244442311990717578_n-480.webp 480w, assets/images/_optimized/rooms/SaveClip.App_565412821_17895074748337753_8244442311990717578_n-960.webp 960w, assets/images/_optimized/rooms/SaveClip.App_565412821_17895074748337753_8244442311990717578_n-1080.webp 1080w",
-          "alt": "A guest room at The Riverfront Resort (2 of 2)",
+          "alt": "A bedroom at Bade Farms (2 of 2)",
           "w": 1080,
           "h": 1350
         }

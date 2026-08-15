@@ -24,7 +24,7 @@ FOLDERS
   branding/       resort logo (also used as the browser-tab icon)
   hero/           big background photo at the top
                   (1st photo = desktop, 2nd = mobile)
-  resort/         exterior & riverfront — used by the About section
+  resort/         the villa exterior & grounds — used by the About section
   rooms/          room photos — used by the Stay cards
   pool/           swimming pool
   food/           breakfast / buffet / dinner

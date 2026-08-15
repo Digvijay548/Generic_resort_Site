@@ -5,4 +5,4 @@ Allow: /
 # Generated image copies are not useful on their own.
 Disallow: /assets/images/_optimized/
 
-Sitemap: https://www.theriverfrontresort.in/sitemap.xml
+Sitemap: https://www.badefarms.com/sitemap.xml

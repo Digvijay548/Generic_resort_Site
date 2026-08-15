@@ -15,7 +15,7 @@
     "alphabetically."
   ],
 
-  "siteName": "The Riverfront Resort",
+  "siteName": "Bade Farms",
 
   "galleryOrder": [
     "gallery",
@@ -29,15 +29,15 @@
 
   "folders": {
     "branding":     { "label": "",              "gallery": false, "alt": "{site} logo" },
-    "hero":         { "label": "",              "gallery": false, "alt": "Riverside view of {site}" },
+    "hero":         { "label": "",              "gallery": false, "alt": "The villa and grounds at {site}" },
     "surroundings": { "label": "Surroundings",  "gallery": false, "alt": "Nature surrounding {site}" },
 
     "gallery":      { "label": "Resort",        "gallery": true,  "alt": "The grounds at {site}" },
-    "resort":       { "label": "Resort",        "gallery": true,  "alt": "The riverside grounds at {site}" },
-    "rooms":        { "label": "Rooms",         "gallery": true,  "alt": "A guest room at {site}" },
+    "resort":       { "label": "Resort",        "gallery": true,  "alt": "The villa at {site}" },
+    "rooms":        { "label": "Rooms",         "gallery": true,  "alt": "A bedroom at {site}" },
     "pool":         { "label": "Swimming Pool", "gallery": true,  "alt": "The swimming pool at {site}" },
     "food":         { "label": "Food",          "gallery": true,  "alt": "Food served at {site}" },
     "activities":   { "label": "Activities",    "gallery": true,  "alt": "Guests enjoying activities at {site}" },
-    "camping":      { "label": "Camping",       "gallery": true,  "alt": "Camping by the river at {site}" }
+    "camping":      { "label": "Camping",       "gallery": true,  "alt": "Camping at {site}" }
   }
 }

@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- *  THE RIVERFRONT RESORT — CENTRAL SITE DATA
+ *  BADE FARMS — CENTRAL SITE DATA
  * ============================================================================
  *  This is the ONLY file you normally need to edit to update the website.
  *
@@ -107,41 +107,49 @@ window.buildResortData = function (manifest) {
     /* ------------------------------------------------------------------ */
     /*  BRANDING & CONTACT                                                  */
     /* ------------------------------------------------------------------ */
-    name: "The Riverfront Resort",
-    shortName: "The Riverfront",
+    name: "Bade Farms",
+    shortName: "Bade",
 
     /* ------------------------------------------------------------------ */
     /*  SEO — browser tab, Google results, WhatsApp/Facebook link previews. */
     /* ------------------------------------------------------------------ */
     seo: {
-      title: "The Riverfront Resort | Relax by nature",
+      title: "Bade Farms | Private 5BHK villa with pool, Kolhapur",
       description:
-        "The Riverfront Resort — a peaceful riverside resort in Pimpri-Chinchwad for families, couples, groups and pet owners. Rooms, amenities and a welcoming atmosphere.",
+        "Bade Farms — a private 5BHK villa on two acres in Kolhapur, with a crystal-clear swimming pool, lawns and parking for 50 cars. Book the whole property for family stays, pool parties, weddings and corporate days out.",
       // ==========================================================
       //  ⭐ PUT YOUR REAL WEBSITE ADDRESS HERE once the site is live.
       //  Link previews on WhatsApp/Facebook need the FULL address
       //  (they cannot resolve relative paths). Include https:// and
       //  no trailing slash.
       // ==========================================================
-      siteUrl: "https://www.theriverfrontresort.in",
-      // Star rating shown to search engines. Set to null to omit.
-      ratingValue: 4.8,
-      ratingCount: 6,
-      priceRange: "₹₹",
+      // badefarms.com is registered but currently parked (it serves an empty
+      // page that redirects to /lander). Point it at this site when ready.
+      siteUrl: "https://www.badefarms.com",
+      // Left null on purpose. Google's review-snippet policy forbids a
+      // business publishing star markup for reviews of itself, and no
+      // verified review feed is wired up. Let the Google Business Profile
+      // carry the stars instead.
+      ratingValue: null,
+      ratingCount: null,
+      priceRange: "₹₹₹",
     },
 
     logo: { image: "assets/images/branding/resort-logo.png" },
 
     phone: {
-      display: "072777 75060",
-      tel: "+917277775060",
+      // From the resort's own Instagram bio: "FOR BOOKING - 7249352979"
+      display: "72493 52979",
+      tel: "+917249352979",
     },
 
     // ==========================================================
     //  ⭐ EMAIL — shown in Contact and the footer, and given to
     //  Google. Set to "" to hide it everywhere.
     // ==========================================================
-    email: "stay@theriverfrontresort.in",
+    // TODO CONFIRM: listed on third-party directories, not on any page the
+    // business controls. Verify before publishing, or set to "" to hide it.
+    email: "badefarms79@gmail.com",
 
     whatsapp: {
       // ==========================================================
@@ -151,11 +159,11 @@ window.buildResortData = function (manifest) {
       //  - Location + Footer WhatsApp buttons
       //  - The enquiry form (opens WhatsApp with the form details)
       //  Format: country code + number, digits only (no +, no spaces).
-      //  e.g. 917277775060 for +91 72777 75060
+      //  e.g. 917249352979 for +91 72493 52979
       // ==========================================================
-      number: "917277775060",
+      number: "917249352979",
       message:
-        "Hello, I would like to enquire about availability at The Riverfront Resort.",
+        "Hello, I would like to enquire about availability at Bade Farms.",
     },
 
     /* ------------------------------------------------------------------ */
@@ -165,9 +173,9 @@ window.buildResortData = function (manifest) {
     nav: [
       { label: "Home", href: "#home" },
       { label: "About", href: "#about" },
-      { label: "Stay", href: "#stay" },
-      { label: "Offers", href: "#offers" },
-      { label: "Packages", href: "#packages" },
+      { label: "The Villa", href: "#stay" },
+      { label: "Why Us", href: "#offers" },
+      { label: "Rates", href: "#packages" },
       { label: "Amenities", href: "#amenities" },
       { label: "Gallery", href: "#gallery" },
       { label: "FAQ", href: "#faq" },
@@ -180,54 +188,54 @@ window.buildResortData = function (manifest) {
     /*  Change these to rebrand the whole site for any client.             */
     /* ------------------------------------------------------------------ */
     ui: {
-      nameSub: "Resort",
+      nameSub: "Farms · Kolhapur",
       navBook: "Book Now",
-      hero: { book: "Book Your Stay", call: "Call Now" },
+      hero: { book: "Check Dates", call: "Call Now" },
       // Floating availability bar at the bottom of the hero
       availability: {
-        checkIn: "Check-in",
-        checkOut: "Check-out",
+        checkIn: "From",
+        checkOut: "To",
         guests: "Guests",
-        suite: "Suite type",
+        suite: "Occasion",
         submit: "Check Availability",
-        anySuite: "Any suite",
+        anySuite: "Not sure yet",
         errorDates: "Please choose a check-out date after your check-in date.",
       },
       about: {
-        eyebrow: "About the Resort",
-        title: "A peaceful escape on the riverfront",
+        eyebrow: "About Bade Farms",
+        title: "A private villa, and the grounds around it",
         explore: "Explore Stays",
         wa: "Enquire on WhatsApp",
       },
       stay: {
-        eyebrow: "Stay",
-        title: "Choose your stay",
-        sub: "Comfortable rooms and a welcoming riverside stay — perfect for families, couples, groups and pets.",
+        eyebrow: "What We Host",
+        title: "One property, three ways to use it",
+        sub: "Stay the weekend, throw a pool party, or hand the whole two acres over to a wedding.",
         enquire: "Enquire Now",
       },
       amenities: {
         eyebrow: "Amenities",
-        title: "Everything you need for a comfortable stay",
-        sub: "From the swimming pool to pet-friendly facilities — enjoy a relaxed, easy getaway.",
+        title: "What comes with the property",
+        sub: "Pool, kitchen, lawns, lighting, sound and parking — all included when you book the whole place.",
       },
       gallery: {
         eyebrow: "Gallery",
-        title: "Moments at The Riverfront",
-        sub: "A glimpse of the resort, rooms, pool and food.",
+        title: "A look around Bade Farms",
+        sub: "The villa, the pool, the lawns and evenings on the property.",
         // {n} becomes the number of photos in the current filter
         viewAll: "View all {n} photos",
         viewLess: "Show fewer",
       },
       offers: {
-        eyebrow: "Our Offers",
-        title: "Special offers & discounts",
-        sub: "Enjoy exclusive deals on your stay — perfect for honeymoons, family holidays and group getaways.",
+        eyebrow: "Why Bade Farms",
+        title: "Booked whole, never shared",
+        sub: "The reasons people choose a private property over a hall or a hotel block.",
       },
       packages: {
-        eyebrow: "Stay Packages",
-        title: "Pricing plan for the best value",
-        sub: "Choose a package that fits your stay — every package includes meals and all amenities.",
-        book: "Book Now",
+        eyebrow: "Rates",
+        title: "What it costs",
+        sub: "The whole property, one booking at a time. Message us for dates and a firm quote.",
+        book: "Enquire Now",
       },
       testimonials: {
         eyebrow: "Testimonials",
@@ -258,7 +266,7 @@ window.buildResortData = function (manifest) {
       contact: {
         eyebrow: "Contact",
         title: "Send us an enquiry",
-        intro: "Tell us about your stay and we will get back to you on WhatsApp with availability.",
+        intro: "Tell us your dates and what you are planning, and we will come back on WhatsApp with availability and a quote.",
         formTitle: "Enquiry Form",
         labels: {
           name: "Full name",
@@ -278,7 +286,7 @@ window.buildResortData = function (manifest) {
         required: ["name", "phone"], // field keys that show a red *
         submit: "Send Enquiry",
         hint: "Your enquiry opens in WhatsApp — no account or backend needed.",
-        preferences: ["Room", "Group Outing"],
+        preferences: ["Villa stay", "Pool party", "Wedding", "Corporate event"],
       },
       footer: {
         quickLinks: "Quick Links",
@@ -293,8 +301,9 @@ window.buildResortData = function (manifest) {
     /*  folder? It is used for both.                                        */
     /* ------------------------------------------------------------------ */
     hero: {
-      heading: "Where Luxury Meets Sanctuary",
-      subtitle: "An exclusive retreat designed for serene indulgence.",
+      heading: "Two Acres, Entirely Yours",
+      subtitle:
+        "A private five-bedroom villa and pool in Kolhapur — booked whole, never shared.",
 
       // ==========================================================
       //  ⭐ AMBIENT BACKGROUND VIDEO (optional)
@@ -325,7 +334,7 @@ window.buildResortData = function (manifest) {
     /*  large image and the small inset are never the same picture.         */
     /* ------------------------------------------------------------------ */
     about: {
-      text: "Escape the noise of the city and enjoy a peaceful stay surrounded by nature at The Riverfront Resort. Whether you are planning a relaxing family holiday, a group outing, or a weekend getaway, the resort offers comfortable facilities, delicious food, and a welcoming atmosphere.",
+      text: "Bade Farms is a five-bedroom villa set in two acres of private green on the edge of Kolhapur, a few minutes from Ratnappa Kumbhar Nagar. You book the whole property — the house, the pool, the lawns and the parking — so there are no other guests, no shared spaces and no fixed schedule. It suits a family weekend as easily as a pool party, a wedding or a company day out.",
       image: nextPhoto("resort", "gallery", "surroundings"),
       imageB: nextPhoto("resort", "gallery", "surroundings"),
     },
@@ -336,44 +345,44 @@ window.buildResortData = function (manifest) {
     /* ------------------------------------------------------------------ */
     stays: [
       {
-        title: "Resort Rooms",
+        title: "The Whole Villa",
         description:
-          "Comfortable, well-furnished rooms designed for a relaxed riverside stay.",
+          "All five bedrooms, the living areas, the pool and both acres — yours for the booking, with nobody else on the property.",
         image: nextPhoto("rooms", "gallery"),
         facilities: [
+          "5 bedrooms",
           "Air conditioning",
-          "Private bathroom",
-          "Shower",
-          "Kitchen facilities",
+          "Private pool",
+          "Full kitchen",
         ],
       },
       {
-        title: "Family Stay",
+        title: "Pool Parties",
         description:
-          "A safe, friendly and spacious stay made for families travelling with children.",
-        image: nextPhoto("rooms", "gallery"),
+          "A crystal-clear pool, open lawn and covered seating — set up for birthdays, reunions and get-togethers that run into the evening.",
+        image: nextPhoto("pool", "gallery"),
         facilities: [
-          "Child friendly",
-          "Spacious rooms",
-          "Comfortable beds",
-          "Kitchen facilities",
+          "Swimming pool",
+          "Music and DJ setup",
+          "Evening lighting",
+          "Catering available",
         ],
       },
       {
-        title: "Group Outings",
+        title: "Weddings & Events",
         description:
-          "The perfect riverside venue for group trips, outings and memorable getaways together.",
+          "Two acres with room for 250 seated or 500 standing, a bridal suite, in-house catering and parking for fifty cars.",
         image: nextPhoto("activities", "gallery"),
         facilities: [
-          "Group friendly",
-          "Ample space",
-          "Food and drink",
-          "Activities",
+          "250 seated / 500 standing",
+          "Bridal suite",
+          "50 car parking",
+          "Power backup",
         ],
       },
     ],
     stayNote:
-      "Resort room facilities include air conditioning, private bathroom, shower and kitchen facilities. For rates and availability, use the Enquire Now button on any card above.",
+      "Bade Farms is only ever let as a whole property, so your group has the house, the pool and the grounds to itself. Message us for dates and a quote.",
 
     /* ------------------------------------------------------------------ */
     /*  OFFERS & DISCOUNTS                                                  */
@@ -381,19 +390,19 @@ window.buildResortData = function (manifest) {
     offers: {
       items: [
         {
-          badge: "25% off",
-          title: "Honeymoon",
-          text: "Enjoy an exclusive discount on your honeymoon stay at The Riverfront Resort.",
+          badge: "Whole villa",
+          title: "Nothing Shared",
+          text: "Five bedrooms, the pool and two acres go to one booking at a time. No other guests, no shared lawn, no fixed timings.",
         },
         {
-          badge: "10% off",
-          title: "Family Stay",
-          text: "A special discount for family holidays — more memories, less spend.",
+          badge: "500 guests",
+          title: "Room To Celebrate",
+          text: "250 seated or 500 standing across the grounds, with a bridal suite, power backup and parking for fifty cars.",
         },
         {
-          badge: "35% off",
-          title: "Group Outing",
-          text: "Exclusive group discounts for outings, corporate trips and reunions.",
+          badge: "Your caterer",
+          title: "Food Your Way",
+          text: "In-house catering does both veg and non-veg, or bring your own cook and decorators — outside vendors are welcome.",
         },
       ],
     },
@@ -406,31 +415,33 @@ window.buildResortData = function (manifest) {
     packages: {
       plans: [
         {
-          name: "Couple Package",
-          price: "INR 7999/-",
-          priceNote: "per couple per night",
-          featured: false,
+          name: "Event Day",
+          // Rate published on wedding-venue directories. TODO CONFIRM.
+          price: "INR 35,000/-",
+          priceNote: "per day, whole venue",
+          featured: true,
           features: [
-            "Extra person Rs. 2000/-",
-            "Child between 5-11 years Rs. 1500/-",
-            "Child between 3-5 years Rs. 800/-",
-            "Below 3 years FREE",
-            "All amenities and meals included",
-            "Stay / TV / hot water",
+            "Exclusive use of all two acres",
+            "250 seated / 500 standing",
+            "Bridal suite and changing rooms",
+            "Lighting, sound and DJ setup",
+            "Parking for 50 cars",
+            "Power backup",
+            "Outside decorators welcome",
           ],
         },
         {
-          name: "Group Package",
-          price: "INR 2999/-",
-          priceNote: "per person per night",
-          featured: true,
+          name: "Villa Stay",
+          price: "On request",
+          priceNote: "per night, whole villa",
+          featured: false,
           features: [
-            "Minimum 4 persons required",
-            "Child between 5-11 years Rs. 1500/-",
-            "Child between 3-5 years Rs. 800/-",
-            "Below 3 years FREE",
-            "All amenities and meals included",
-            "Stay / TV / hot water",
+            "All 5 bedrooms, air conditioned",
+            "Private swimming pool",
+            "Full kitchen and dining",
+            "Two acres of private grounds",
+            "In-house catering optional",
+            "Parking for 50 cars",
           ],
         },
       ],
@@ -440,44 +451,11 @@ window.buildResortData = function (manifest) {
     /*  TESTIMONIALS — guest reviews carousel                               */
     /* ------------------------------------------------------------------ */
     testimonials: {
-      items: [
-        {
-          name: "Rohan Deshmukh",
-          tag: "Family Stay",
-          rating: 5,
-          text: "Took my parents and kids here for a weekend and everyone loved it. The rooms were clean, the food was home-style and the river view from the lawn is beautiful. Staff treated us like family.",
-        },
-        {
-          name: "Priya Kulkarni",
-          tag: "Honeymoon",
-          rating: 5,
-          text: "We spent our honeymoon here and it was perfect — quiet, peaceful and so green. Mornings by the river with chai were the best part. The private feel made it special for us.",
-        },
-        {
-          name: "Amit Sharma",
-          tag: "Group Outing",
-          rating: 5,
-          text: "Organised our office outing here with 15 people. Great open space, good food and the pool kept everyone busy. Rates are very reasonable for what you get. Highly recommended.",
-        },
-        {
-          name: "Sneha Patil",
-          tag: "Weekend Getaway",
-          rating: 4,
-          text: "Lovely little getaway from the city. The property is well maintained and very green. Would suggest reaching early to enjoy the whole day by the riverside. Will visit again!",
-        },
-        {
-          name: "Vikram Joshi",
-          tag: "Pet Friendly",
-          rating: 5,
-          text: "Finally a resort where our dog was genuinely welcome! Lots of open space to walk around, clean rooms and the staff even arranged a bowl for him. Thank you for the warm stay.",
-        },
-        {
-          name: "Anjali Nair",
-          tag: "Family Stay",
-          rating: 5,
-          text: "Booked the couple package for our parents' anniversary. Everything was arranged neatly — cake, good food and a beautiful riverside setting. They still talk about it!",
-        },
-      ],
+      // Deliberately empty. The previous entries were written for a different
+      // property and inventing reviews for a real business is not on. The
+      // whole section hides itself while this is empty — paste in real,
+      // attributable guest quotes and it reappears.
+      items: [],
     },
 
     /* ------------------------------------------------------------------ */
@@ -487,20 +465,28 @@ window.buildResortData = function (manifest) {
     faq: {
       items: [
         {
-          q: "What are the check-in and check-out timings?",
+          q: "Do we get the whole property to ourselves?",
+          a: "Yes. Bade Farms is let as one booking at a time, so the villa, the pool and both acres are yours for the duration of your stay or event.",
+        },
+        {
+          q: "How many people can you host?",
+          a: "Around 250 seated or 500 standing across the grounds for an event. For an overnight stay the villa has five bedrooms.",
+        },
+        {
+          q: "Can we bring our own caterer and decorators?",
+          a: "Yes. In-house catering is available for both veg and non-veg menus, and outside caterers and decorators are welcome.",
+        },
+        {
+          q: "Is there parking?",
+          a: "There is space for around 50 cars on the property.",
+        },
+        {
+          q: "What are the check-in and check-out times?",
           a: "Check-in is at {checkIn} and check-out is at {checkOut}.",
         },
         {
-          q: "Do your stay packages include meals?",
-          a: "Yes, every stay package includes all meals and access to all amenities.",
-        },
-        {
-          q: "Is the resort pet friendly?",
-          a: "Yes, The Riverfront Resort is pet friendly — pets are welcome.",
-        },
-        {
-          q: "How do I book a stay or enquire about availability?",
-          a: "Tap any Book Now / Enquire Now button or use the enquiry form — it opens WhatsApp with your details and we reply with availability.",
+          q: "How do we book?",
+          a: "Tap any Book Now or Enquire button, or use the form — it opens WhatsApp with your details and we reply with dates and a quote.",
         },
       ],
     },
@@ -511,45 +497,43 @@ window.buildResortData = function (manifest) {
     /* ------------------------------------------------------------------ */
     amenities: {
       popular: {
-        title: "Popular Amenities",
+        title: "The Property",
         items: [
-          { icon: "pool", label: "Swimming pool" },
-          { icon: "parking", label: "Free parking" },
+          { icon: "pool", label: "Private swimming pool" },
           { icon: "ac", label: "Air conditioning" },
-          { icon: "coffee", label: "Breakfast" },
+          { icon: "parking", label: "Parking for 50 cars" },
           { icon: "wifi", label: "Wi-Fi" },
-          { icon: "food", label: "Food and drink" },
-          { icon: "service", label: "Table service" },
-          { icon: "buffet", label: "Buffet dinner" },
-          { icon: "roomsvc", label: "Room service" },
-          { icon: "breakfast", label: "Breakfast buffet" },
+          { icon: "food", label: "In-house catering" },
+          { icon: "coffee", label: "Full kitchen" },
+          { icon: "tree", label: "Two acres of grounds" },
+          { icon: "sun", label: "Open lawn" },
         ],
       },
-      services: {
-        title: "Services",
+      events: {
+        title: "For Events",
         items: [
-          { icon: "storage", label: "Baggage storage" },
-          { icon: "cleaning", label: "Daily housekeeping" },
-          { icon: "shuttle", label: "Local shuttle service" },
+          { icon: "sparkle", label: "Lighting and sound" },
+          { icon: "service", label: "DJ setup" },
+          { icon: "storage", label: "Bridal suite" },
+          { icon: "buffet", label: "Veg and non-veg menus" },
+          { icon: "generic", label: "Power backup" },
+          { icon: "flower", label: "Outside decorators welcome" },
         ],
       },
-      family: {
-        title: "Family & Accessibility",
+      stay: {
+        title: "For Overnight Stays",
         items: [
-          { icon: "child", label: "Child-friendly property" },
-          { icon: "accessible", label: "Accessible premises" },
-          { icon: "parking", label: "Accessible parking" },
-          { icon: "pet", label: "Pet-friendly facilities" },
-          { icon: "petfree", label: "Pets stay free" },
-          { icon: "dog", label: "Dogs allowed" },
-          { icon: "cat", label: "Cats allowed" },
+          { icon: "roomsvc", label: "Five bedrooms" },
+          { icon: "cleaning", label: "Housekeeping" },
+          { icon: "breakfast", label: "Breakfast on request" },
+          { icon: "child", label: "Child friendly" },
         ],
       },
       languages: {
         title: "Languages Spoken",
         items: [
+          { icon: "hi", label: "Marathi / Hindi" },
           { icon: "en", label: "English" },
-          { icon: "hi", label: "Hindi" },
         ],
       },
     },
@@ -567,16 +551,18 @@ window.buildResortData = function (manifest) {
     /*  check-out times (the FAQ and packages read them from here).         */
     /* ------------------------------------------------------------------ */
     importantInfo: {
+      // TODO CONFIRM: not published anywhere the business controls. These are
+      // the usual times for a whole-villa let; check before publishing.
       checkIn: "1:00 PM",
-      checkOut: "10:00 AM",
+      checkOut: "11:00 AM",
       items: [
-        "Smoke-free property",
-        "Credit cards are not accepted",
-        "Debit cards accepted",
-        "NFC mobile payments accepted",
-        "Cash accepted",
-        "No hot tub",
-        "No fitness centre",
+        "Whole property let to one booking at a time",
+        "Around 250 seated or 500 standing for events",
+        "Parking for approximately 50 cars",
+        "Outside caterers and decorators welcome",
+        "Veg and non-veg both available",
+        "Power backup on site",
+        "Event bookings: 30% on booking, balance on the day",
       ],
     },
 
@@ -585,22 +571,22 @@ window.buildResortData = function (manifest) {
     /* ------------------------------------------------------------------ */
     location: {
       addressLines: [
-        "The Riverfront Resort",
-        "Solu, Alandi-Markal Road, behind Dosti Hotel,",
-        "Pimpri-Chinchwad, Maharashtra 412105",
+        "Bade Farms",
+        "Behind Khadicha Ganapati, Ratnappa Kumbhar Nagar,",
+        "Kolhapur, Maharashtra 416013",
       ],
       // Structured version of the same address, used for Google rich results.
-      street: "Solu, Alandi-Markal Road, behind Dosti Hotel",
-      city: "Pimpri-Chinchwad",
+      street: "Behind Khadicha Ganapati, Ratnappa Kumbhar Nagar",
+      city: "Kolhapur",
       region: "Maharashtra",
-      postalCode: "412105",
+      postalCode: "416013",
       country: "IN",
       // ==========================================================
       //  ⭐ GOOGLE MAP — change the address string below and both
       //  the embedded map and the "Get Directions" button follow.
       // ==========================================================
       fullAddress:
-        "The Riverfront Resort, Solu, Alandi-Markal Road, behind Dosti Hotel, Pimpri-Chinchwad, Maharashtra 412105",
+        "Bade Farms, Behind Khadicha Ganapati, Ratnappa Kumbhar Nagar, Kolhapur, Maharashtra 416013",
       // Backdrop shown before the Google map is loaded. Uses the first photo
       // in assets/images/surroundings/.
       image: nextPhoto("surroundings", "resort", "gallery"),
@@ -613,18 +599,18 @@ window.buildResortData = function (manifest) {
     /*  that icon.                                                          */
     /* ------------------------------------------------------------------ */
     footer: {
-      note: "Escape the noise of the city and enjoy a peaceful riverside stay.",
+      note: "A private five-bedroom villa and pool on two acres in Kolhapur.",
       // ==========================================================
       //  ⭐ SOCIAL — paste your real page addresses. An entry with a
       //  blank href is hidden, so an unused network shows no icon
       //  and never becomes a dead link.
       // ==========================================================
       social: [
-        { icon: "instagram", label: "Instagram", href: "https://www.instagram.com/theriverfrontresort/" },
-        { icon: "facebook", label: "Facebook", href: "" },
+        { icon: "instagram", label: "Instagram", href: "https://www.instagram.com/badefarms/" },
+        { icon: "facebook", label: "Facebook", href: "https://www.facebook.com/BadeFarms/" },
         { icon: "youtube", label: "YouTube", href: "" },
       ],
-      copyrightHolder: "The Riverfront Resort",
+      copyrightHolder: "Bade Farms",
     },
   };
 
