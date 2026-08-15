@@ -47,7 +47,21 @@
 
   var IMAGES_BASE = "assets/images/";
   var CONFIG_URL = IMAGES_BASE + "folders.json";
-  var IMAGE_EXT = /\.(jpe?g|png|webp|gif|avif)$/i;
+  /* Only formats a browser can actually render. Overridden from
+     assets/images/folders.json so this and scripts/generate-images.py can
+     never drift apart — a format one accepts and the other ignores shows up
+     locally and then vanishes after a build. Anything else (a .heic straight
+     off a phone, a .tif) is converted to JPEG by the build script, and only
+     appears once that has run. */
+  var DEFAULT_BROWSER_EXTS = ["jpg", "jpeg", "jfif", "png", "webp", "gif", "avif"];
+  var IMAGE_EXT = extPattern(DEFAULT_BROWSER_EXTS);
+
+  function extPattern(list) {
+    var safe = list
+      .map(function (e) { return String(e).toLowerCase().replace(/[^a-z0-9]/g, ""); })
+      .filter(Boolean);
+    return new RegExp("\.(" + safe.join("|") + ")$", "i");
+  }
 
   /* Give up rather than delay the page if the server is slow to answer. */
   var TIMEOUT_MS = 4000;
@@ -269,7 +283,11 @@
       .then(function (r) { return r.json(); })
       .catch(function () { return null; })
       .then(function (loaded) {
-        if (loaded) config = loaded;
+        if (loaded) {
+          config = loaded;
+          var browser = loaded.formats && loaded.formats.browserSafe;
+          if (browser && browser.length) IMAGE_EXT = extPattern(browser);
+        }
         return listFolder(IMAGES_BASE);
       })
       .then(function (links) {

@@ -4,9 +4,13 @@ PUT YOUR PHOTOS HERE
 Drop photos into the folder that matches what they show. That is the whole job.
 
   * Filenames DO NOT MATTER. "IMG_4821.jpg" works exactly as well as
-    "pool-sunset.jpg". You never have to rename anything.
+    "pool-sunset.jpg". Spaces and non-English names are fine too.
   * HOW MANY DO NOT MATTER. Five photos in a folder shows five. Add three
     more and it shows eight. Delete some and it shows fewer.
+  * THE FORMAT DOES NOT MATTER. jpg, jpeg, jfif, png, webp, gif, avif, bmp,
+    tif, tiff and heic all work. Photos straight off an iPhone (.heic) and
+    scans (.tif) are converted automatically, because no browser can show
+    those as they are.
   * You do not need to resize or convert anything. Small copies for phones
     are made for you.
 

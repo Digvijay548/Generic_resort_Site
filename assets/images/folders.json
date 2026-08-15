@@ -17,6 +17,29 @@
 
   "siteName": "Bade Farms",
 
+  "_formats": [
+    "Which file types count as a photo. Read by BOTH scripts/generate-images.py",
+    "and js/autoscan.js so the two can never disagree — a format listed in one",
+    "but not the other would show up locally and then vanish after a build.",
+    "",
+    "source        - everything accepted when you drop files in.",
+    "browserSafe   - what a browser can display directly. Anything in `source`",
+    "                but NOT in `browserSafe` (a .heic straight off an iPhone,",
+    "                a .tif from a photographer) is converted to JPEG during",
+    "                the build, and the converted copy is what the page uses.",
+    "",
+    "HEIC needs the pillow-heif package. Without it those files are skipped",
+    "with a clear message rather than silently producing a broken image."
+  ],
+  "formats": {
+    "source": [
+      "jpg", "jpeg", "jfif", "png", "webp", "gif", "avif",
+      "bmp", "tif", "tiff", "heic", "heif"
+    ],
+    "browserSafe": ["jpg", "jpeg", "jfif", "png", "webp", "gif", "avif"]
+  },
+
+
   "galleryOrder": [
     "gallery",
     "resort",
