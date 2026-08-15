@@ -14,13 +14,33 @@
 #  So the workflow stays the same as locally — drop photos in, commit, push.
 #  You never have to run the script by hand.
 #
-#  The build can never fail the deploy: scripts/netlify-build.sh always exits
-#  0, so a bad photo or a pip hiccup falls back to whatever is committed.
+#  THE BUILD IS OPTIONAL
+#  ---------------------
+#  The site is complete without it. js/images.js and the optimised WebP copies
+#  in assets/images/_optimized/ are committed, so the deploy publishes a
+#  working site even if every line below fails. The build only refreshes them.
+#
+#  The command is therefore written so it CANNOT fail:
+#    * every step is guarded with `|| echo ...`
+#    * it ends in `true`, so the exit code is always 0
+#    * it is inline rather than a separate .sh file, so there is no second
+#      file that could be missing from the clone
+#
+#  IF THE DEPLOY STILL FAILS WITH "No such file or directory"
+#  ----------------------------------------------------------
+#  Netlify is using a build command typed into its dashboard, which OVERRIDES
+#  everything in this file. Check the resolved config in the deploy log: if it
+#  says `commandOrigin: ui`, go to
+#      Site configuration -> Build & deploy -> Build settings
+#  and CLEAR the "Build command" and "Publish directory" fields. Netlify then
+#  reads them from here instead.
 # ============================================================================
 
 [build]
   publish = "."
-  command = "bash scripts/netlify-build.sh"
+  # Kept on one line on purpose: a multi-line command would stop at the first
+  # non-zero step on build images that run the shell with `set -e`.
+  command = "echo '--- build starting ---'; ls -1 scripts 2>/dev/null || echo 'note: no scripts/ directory in this clone'; python3 -m pip install --quiet --disable-pip-version-check Pillow 2>/dev/null || echo 'note: Pillow unavailable, skipping image optimisation'; python3 scripts/generate-images.py || echo 'note: image build skipped, serving the committed js/images.js'; echo '--- build done ---'; true"
 
 #  Do NOT pin PYTHON_VERSION here. Netlify reads that variable during its
 #  "install dependencies" stage, before the build command runs, and hands it to
