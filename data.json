@@ -1,15 +1,4 @@
-/**
- * ============================================================================
- *  BADE FARMS — LOCAL FALLBACK SITE DATA
- * ============================================================================
- *  This file acts as a fallback for window.FALLBACK_RESORT_DATA.
- *  If loading data.json fails (e.g. running via file:// protocol directly off
- *  the disk without a server), this data is used instead to ensure the site
- *  remains fully functional.
- * ============================================================================
- */
-
-window.FALLBACK_RESORT_DATA = {
+{
   "name": "Bade Farms",
   "shortName": "Bade",
   "seo": {
@@ -484,4 +473,4 @@ window.FALLBACK_RESORT_DATA = {
       "zoomScale": 1.08
     }
   }
-};
+}

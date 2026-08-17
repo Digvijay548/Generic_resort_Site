@@ -3,6 +3,129 @@
 
   var DATA = null;
 
+  function resolveData(raw, manifest) {
+    var IMG = manifest || window.IMAGE_MANIFEST || { version: 2, order: [], folders: {} };
+
+    function folderImages(name) {
+      var folder = IMG.folders && IMG.folders[name];
+      return (folder && folder.images) || [];
+    }
+
+    function folderLabel(name) {
+      var folder = IMG.folders && IMG.folders[name];
+      return (folder && folder.label) || "";
+    }
+
+    function tag(image, category) {
+      if (!image) return null;
+      return {
+        src: image.src,
+        original: image.original || image.src,
+        srcset: image.srcset || "",
+        alt: image.alt || "",
+        w: image.w || 0,
+        h: image.h || 0,
+        category: category || "",
+      };
+    }
+
+    var pools = {};
+    function nextPhoto() {
+      var names = Array.prototype.slice.call(arguments);
+      var key = names.join("|");
+      if (!pools[key]) {
+        var images = [];
+        names.forEach(function (name) {
+          images = images.concat(folderImages(name));
+        });
+        pools[key] = { images: images, used: 0 };
+      }
+      var pool = pools[key];
+      if (!pool.images.length) return null;
+      var image = pool.images[pool.used % pool.images.length];
+      pool.used += 1;
+      return tag(image);
+    }
+
+    function galleryPhotos() {
+      var out = [];
+      (IMG.order || []).forEach(function (name) {
+        var label = folderLabel(name);
+        folderImages(name).forEach(function (image) {
+          out.push(tag(image, label));
+        });
+      });
+      return out;
+    }
+
+    function galleryTabs() {
+      var labels = [];
+      (IMG.order || []).forEach(function (name) {
+        var label = folderLabel(name);
+        if (label && !folderImages(name).length) return;
+        if (label && labels.indexOf(label) === -1) labels.push(label);
+      });
+      return labels.length ? ["All"].concat(labels) : [];
+    }
+
+    // Deep clone raw so we don't modify the fallback source.
+    var data = JSON.parse(JSON.stringify(raw));
+
+    // Resolve hero image slideshow
+    if (data.hero && data.hero.imagesPool) {
+      var desktop = nextPhoto.apply(null, data.hero.imagesPool);
+      var mobile = nextPhoto.apply(null, data.hero.imagesPool) || desktop;
+      data.hero.images = [desktop, mobile].filter(Boolean);
+    }
+
+    // Resolve About images
+    if (data.about) {
+      data.about.image = nextPhoto.apply(null, data.about.imagePoolA || ["resort", "gallery", "surroundings"]);
+      data.about.imageB = nextPhoto.apply(null, data.about.imagePoolB || ["resort", "gallery", "surroundings"]);
+    }
+
+    // Resolve Stay cards images
+    if (data.stays && Array.isArray(data.stays)) {
+      data.stays.forEach(function (stay) {
+        stay.image = nextPhoto.apply(null, stay.imagePool || ["rooms", "gallery"]);
+      });
+    }
+
+    // Resolve Gallery & filters
+    data.galleryFilters = galleryTabs();
+    data.gallery = galleryPhotos();
+
+    // Resolve Location backdrop image
+    if (data.location && data.location.imagePool) {
+      data.location.image = nextPhoto.apply(null, data.location.imagePool);
+    }
+
+    // Derive maps and query details
+    var mapQuery = encodeURIComponent(data.location.fullAddress);
+    data.location.mapEmbedSrc = "https://www.google.com/maps?q=" + mapQuery + "&output=embed";
+    data.location.directionsUrl = "https://www.google.com/maps/dir/?api=1&destination=" + mapQuery;
+
+    data.footer.quickLinks = data.nav.slice();
+
+    var times = {
+      checkIn: data.importantInfo.checkIn,
+      checkOut: data.importantInfo.checkOut,
+    };
+    data.faq.items.forEach(function (item) {
+      item.a = item.a
+        .replace("{checkIn}", times.checkIn)
+        .replace("{checkOut}", times.checkOut);
+    });
+    data.packages.plans.forEach(function (plan) {
+      plan.features = plan.features.concat([
+        "Check-in " + times.checkIn,
+        "Check-out " + times.checkOut,
+      ]);
+    });
+
+    return data;
+  }
+
   function $(sel, ctx) { return (ctx || document).querySelector(sel); }
   function $all(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
 
@@ -472,7 +595,8 @@
 
     function start() {
       if (timer) return;
-      timer = setInterval(function () { show(index + 1); }, KEN_BURNS_HOLD_MS);
+      var hold = (DATA.animations && DATA.animations.kenBurns && DATA.animations.kenBurns.holdMs) || KEN_BURNS_HOLD_MS;
+      timer = setInterval(function () { show(index + 1); }, hold);
     }
     function stop() {
       if (!timer) return;
@@ -488,7 +612,8 @@
 
   function buildHeroParticles() {
     if (REDUCED_MOTION) return;
-    var cfg = HERO_EFFECTS;
+    var cfg = DATA.animations && DATA.animations.heroParticles;
+    if (!cfg || !cfg.enabled) return;
     var hero = $("#home");
     if (!hero) return;
 
@@ -498,18 +623,25 @@
     wrap.setAttribute("aria-hidden", "true");
     hero.insertBefore(wrap, hero.querySelector(".hero-content"));
 
-    for (var i = 0; i < cfg.count; i++) {
+    var colors = cfg.colors || ["#d4af37", "#f2e6c4", "#ffffff"];
+    var count = cfg.count !== undefined ? cfg.count : 10;
+    var minSize = cfg.minSize !== undefined ? cfg.minSize : 2;
+    var maxSize = cfg.maxSize !== undefined ? cfg.maxSize : 6;
+    var minSway = cfg.minSway !== undefined ? cfg.minSway : -15;
+    var maxSway = cfg.maxSway !== undefined ? cfg.maxSway : 15;
+
+    for (var i = 0; i < count; i++) {
       var p = document.createElement("span");
       p.className = "hero-particle";
-      var size = cfg.minSize + Math.random() * (cfg.maxSize - cfg.minSize);
+      var size = minSize + Math.random() * (maxSize - minSize);
       p.style.width = size.toFixed(1) + "px";
       p.style.height = size.toFixed(1) + "px";
       p.style.left = (Math.random() * 100).toFixed(2) + "%";
       p.style.top = (10 + Math.random() * 78).toFixed(2) + "%";
-      p.style.color = cfg.colors[i % cfg.colors.length];
+      p.style.color = colors[i % colors.length];
       p.style.setProperty("--dur", (14 + Math.random() * 12).toFixed(1) + "s");
       p.style.setProperty("--amp", (-(30 + Math.random() * 50)).toFixed(1) + "px");
-      p.style.setProperty("--sway", ((Math.random() * 30) - 15).toFixed(1) + "px");
+      p.style.setProperty("--sway", (minSway + Math.random() * (maxSway - minSway)).toFixed(1) + "px");
       p.style.setProperty("--op", (0.10 + Math.random() * 0.14).toFixed(2));
       p.style.animationDelay = (-Math.random() * 20).toFixed(1) + "s";
       wrap.appendChild(p);
@@ -1600,6 +1732,10 @@
   /* ------------------------------ reveal animations ------------------------------ */
   function initReveal() {
     var targets = $all(".reveal");
+    var cfg = DATA.animations && DATA.animations.reveal;
+    var thresh = (cfg && cfg.threshold !== undefined) ? cfg.threshold : 0.12;
+    var margin = (cfg && cfg.rootMargin) || "0px 0px -40px 0px";
+
     if (REDUCED_MOTION || !("IntersectionObserver" in window)) {
       targets.forEach(function (el) { el.classList.add("in"); });
       return;
@@ -1614,13 +1750,160 @@
           observer.unobserve(entry.target);
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+      { threshold: thresh, rootMargin: margin }
     );
     targets.forEach(function (el) { observer.observe(el); });
   }
 
+  /* ------------------------------ dynamic themes ------------------------------ */
+  function applyTheme() {
+    var activeTheme = DATA.activeTheme || "luxury-emerald";
+    var theme = DATA.themes && DATA.themes[activeTheme];
+    if (theme) {
+      for (var prop in theme) {
+        if (theme.hasOwnProperty(prop)) {
+          document.documentElement.style.setProperty("--" + prop, theme[prop]);
+        }
+      }
+    }
+    var anim = DATA.animations;
+    if (anim) {
+      if (anim.bgBlobDrift && anim.bgBlobDrift.enabled) {
+        var drift = anim.bgBlobDrift.driftTimeSeconds || 48;
+        document.documentElement.style.setProperty("--bg-drift-time-1", (drift - 2) + "s");
+        document.documentElement.style.setProperty("--bg-drift-time-2", (drift + 14) + "s");
+        document.documentElement.style.setProperty("--bg-drift-time-3", (drift + 6) + "s");
+      }
+      if (anim.kenBurns) {
+        var zoom = anim.kenBurns.zoomScale || 1.08;
+        document.documentElement.style.setProperty("--kb-zoom-scale", zoom);
+      }
+    }
+  }
+
+  /* ------------------------------ reveal settings ------------------------------ */
+  function applyRevealSettings() {
+    var cfg = DATA.animations && DATA.animations.reveal;
+    if (cfg && cfg.enabled) {
+      document.documentElement.style.setProperty("--reveal-duration", cfg.duration || "1.1s");
+      document.documentElement.style.setProperty("--reveal-ease", cfg.ease || "cubic-bezier(0.22, 0.61, 0.36, 1)");
+      document.documentElement.style.setProperty("--reveal-distance-y", cfg.distanceY || "24px");
+    }
+  }
+
+  /* ------------------------------ custom cursor ------------------------------ */
+  function initCustomCursor() {
+    var cfg = DATA.animations && DATA.animations.customCursor;
+    if (!cfg || !cfg.enabled || REDUCED_MOTION) return;
+    if (!window.matchMedia || !window.matchMedia("(pointer: fine)").matches) return;
+
+    var dot = document.createElement("div");
+    dot.className = "custom-cursor-dot";
+    dot.style.width = (cfg.dotSize || 6) + "px";
+    dot.style.height = (cfg.dotSize || 6) + "px";
+    dot.style.backgroundColor = cfg.dotColor || "#d4af37";
+
+    var ring = document.createElement("div");
+    ring.className = "custom-cursor-ring";
+    ring.style.width = (cfg.ringSize || 36) + "px";
+    ring.style.height = (cfg.ringSize || 36) + "px";
+    ring.style.borderColor = cfg.ringColor || "rgba(212, 175, 55, 0.4)";
+
+    document.body.appendChild(dot);
+    document.body.appendChild(ring);
+
+    var mouseX = 0, mouseY = 0;
+    var ringX = 0, ringY = 0;
+    var dotX = 0, dotY = 0;
+
+    document.addEventListener("mousemove", function (e) {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    }, { passive: true });
+
+    document.addEventListener("pointerover", function (e) {
+      var target = e.target;
+      if (!target) return;
+      var interactive = target.closest && (target.closest("a") || target.closest(".btn") || target.closest("button") || target.closest("input") || target.closest("select") || target.closest("textarea") || target.closest("summary"));
+      if (interactive) {
+        ring.classList.add("hover");
+        ring.style.transform = "scale(" + (cfg.ringScaleHover || 1.6) + ")";
+        ring.style.borderColor = cfg.ringHoverColor || "#ffffff";
+        ring.style.backgroundColor = "rgba(255, 255, 255, 0.08)";
+      }
+    });
+
+    document.addEventListener("pointerout", function (e) {
+      var target = e.target;
+      if (!target) return;
+      var interactive = target.closest && (target.closest("a") || target.closest(".btn") || target.closest("button") || target.closest("input") || target.closest("select") || target.closest("textarea") || target.closest("summary"));
+      if (interactive) {
+        var related = e.relatedTarget;
+        if (!related || !interactive.contains(related)) {
+          ring.classList.remove("hover");
+          ring.style.transform = "scale(1)";
+          ring.style.borderColor = cfg.ringColor || "rgba(212, 175, 55, 0.4)";
+          ring.style.backgroundColor = "transparent";
+        }
+      }
+    });
+
+    function tick() {
+      dotX += (mouseX - dotX) * 0.45;
+      dotY += (mouseY - dotY) * 0.45;
+      dot.style.left = dotX + "px";
+      dot.style.top = dotY + "px";
+
+      ringX += (mouseX - ringX) * (cfg.ease || 0.15);
+      ringY += (mouseY - ringY) * (cfg.ease || 0.15);
+      ring.style.left = ringX + "px";
+      ring.style.top = ringY + "px";
+
+      requestAnimationFrame(tick);
+    }
+    tick();
+
+    document.documentElement.classList.add("hide-native-cursor");
+  }
+
+  /* ------------------------------ 3d card tilt ------------------------------ */
+  function initCardTilt() {
+    var cfg = DATA.animations && DATA.animations.cardTilt;
+    if (!cfg || !cfg.enabled || REDUCED_MOTION) return;
+    if (!window.matchMedia || !window.matchMedia("(pointer: fine)").matches) return;
+
+    var cards = $all(".stay-card, .offer-card, .plan-card");
+    cards.forEach(function (card) {
+      card.addEventListener("mousemove", function (e) {
+        var box = card.getBoundingClientRect();
+        var x = e.clientX - box.left;
+        var y = e.clientY - box.top;
+        var xc = box.width / 2;
+        var yc = box.height / 2;
+        var dx = x - xc;
+        var dy = y - yc;
+
+        var maxAngle = cfg.maxAngle || 8;
+        var rx = -(dy / yc) * maxAngle;
+        var ry = (dx / xc) * maxAngle;
+
+        card.style.transform = "perspective(" + (cfg.perspective || 1000) + "px) rotateX(" + rx.toFixed(2) + "deg) rotateY(" + ry.toFixed(2) + "deg) scale(" + (cfg.scale || 1.02) + ")";
+        card.style.transition = "transform 0.1s ease-out";
+      });
+
+      card.addEventListener("mouseleave", function () {
+        card.style.transform = "perspective(" + (cfg.perspective || 1000) + "px) rotateX(0deg) rotateY(0deg) scale(1)";
+        card.style.transition = "transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+      });
+    });
+  }
+
   /* ------------------------------ init ------------------------------ */
   function init() {
+    applyTheme();
+    applyRevealSettings();
+    initCustomCursor();
+    initCardTilt();
     buildSeo();
     applyUi();
     buildHeader();
@@ -1655,23 +1938,37 @@
    *   2. work out the photo list — js/autoscan.js reads the folders live so
    *      newly dropped images appear without running anything; if the server
    *      cannot list folders it falls back to the generated js/images.js
-   *   3. build the content from js/data.js using that list
+   *   3. build the content from data.json (or js/data.js fallback) using that list
    *   4. render
    */
   function boot() {
-    if (typeof window.buildResortData !== "function") {
-      showBootError();
-      return;
-    }
-
     function render(manifest) {
-      try {
-        DATA = window.buildResortData(manifest);
-        window.RESORT_DATA = DATA;
-        init();
-      } catch (err) {
-        showBootError();
-        throw err;
+      fetch("data.json")
+        .then(function (res) {
+          if (!res.ok) throw new Error("Status " + res.status);
+          return res.json();
+        })
+        .then(function (jsonData) {
+          proceed(jsonData);
+        })
+        .catch(function (err) {
+          console.warn("Could not load data.json, falling back to local JS data. Error:", err);
+          proceed(window.FALLBACK_RESORT_DATA || null);
+        });
+
+      function proceed(rawData) {
+        if (!rawData) {
+          showBootError();
+          return;
+        }
+        try {
+          DATA = resolveData(rawData, manifest);
+          window.RESORT_DATA = DATA;
+          init();
+        } catch (bootErr) {
+          showBootError();
+          throw bootErr;
+        }
       }
     }
 
